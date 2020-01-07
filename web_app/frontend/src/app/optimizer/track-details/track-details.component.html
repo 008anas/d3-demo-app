@@ -1,0 +1,120 @@
+<sqy-sidebar [show]="display" [closeCallback]="toggleSidebar">
+
+  <form class="ui form h-1-1" name="track-form" #trackForm="ngForm" (ngSubmit)="save()">
+
+    <div class="field">
+      <img src="{{_track.glyph_thumbnail}}" class="ui medium circular centered image">
+    </div>
+
+    <div class="field">
+
+      <table class="ui collapsing inverted blue table w-1-2 m-auto">
+
+        <thead>
+          <tr>
+            <th>
+              Type
+            </th>
+            <th>
+              Position
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{_track.name}}</td>
+            <td>#{{_track['pos']+1}}</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="two fields">
+
+      <div class="field">
+        <label>Label</label>
+        <input type="text" name="track-label" [(ngModel)]="_track.label">
+      </div>
+
+      <div class=" field">
+        <sqy-color-picker [color]="_track.color" [heading]="'Color'" (event)="setColor($event)"></sqy-color-picker>
+      </div>
+
+    </div>
+
+    <div class="required field" [ngClass]="{'error': sequence.invalid && (sequence.dirty || sequence.touched)}">
+      <label>Sequence</label>
+
+      <span class="info">
+        Equivalent sequence will be displayed below original sequence. You can set options for each base by clicking on.
+      </span>
+
+      <textarea name="track-seq" rows="8" cols="80" required #sequence="ngModel" [(ngModel)]="_track.sequence" [pattern]="dnaRegex"></textarea>
+      <span class="ui error" *ngIf="sequence.errors?.pattern && (sequence.dirty || sequence.touched)">Not a valid DNA sequence</span>
+    </div>
+
+    <!-- <div class="field">
+      <button type="button" class="ui fluid button" [disabled]="!_track.seq" (click)="generateSeq(_track.seq)">Generate</button>
+    </div>
+
+    <div class="field base-editor" *ngIf="seq">
+
+      <div class="ui padded grid">
+
+        <div class="ten wide column">
+          <p> <strong>Bases:</strong> {{_track.seq?.length}}</p>
+        </div>
+
+        <div class="six wide column">
+          <select class="ui dropdown" name="action" [(ngModel)]="action">
+            <option value="fix" selected>Fix</option>
+            <option value="remove">Remove</option>
+          </select>
+        </div>
+
+        <div class="sixteen wide column">
+          <div class="ui form">
+            <div class="inline fields">
+              <label>From:</label>
+              <div class="field">
+                <input type="number" placeholder="Min: 0" [(ngModel)]="_track.start" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="field">
+                <label>To:</label>
+                <input type="number" placeholder="Max: {{seq.length}}" [(ngModel)]="_track.end" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="field">
+                <a class="link" (click)="fromTo()">apply</a>
+              </div>
+              <div class="field">
+                <a class="link" (click)="restart()">restart</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sixteen wide column">
+          <div class="seq" [ngClass]="{'fixed': s.fix, 'removed': s.remove}" *ngFor="let s of seq; let y = index" (click)="doAction(s)">
+            {{s.base | uppercase}}
+          </div>
+        </div>
+
+      </div>
+
+    </div> -->
+
+    <div class="bottom field">
+
+      <button class="ui right labeled icon primary fluid button" name="save" type="submit" [disabled]="trackForm.invalid">
+        <i class="save icon"></i>
+        Save
+      </button>
+
+    </div>
+
+  </form>
+
+</sqy-sidebar>

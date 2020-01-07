@@ -1,0 +1,281 @@
+<div class="ui basic segment internally celled grid" [ngClass]="{loading: isSubmitting}">
+
+  <div class="one column row">
+    <div class="column p-4">
+      <div class="ui breadcrumb">
+        <div class="ui breadcrumb">
+          <a class="section" [routerLink]="'/'">Home</a>
+          <i class="right chevron icon divider"></i>
+          <a class="section">Sequence Optimizator</a>
+          <i class="right arrow icon divider"></i>
+          <div class="active section">Skectcher</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="one column row">
+    <div class="column p-0">
+
+      <div class="ui equal width center aligned middle aligned grid actions">
+
+        <div class="column">
+          <div class="slider-wraper">
+            <i class="zoom-in icon"></i>
+            <nz-slider [nzMin]="50" [nzMax]="110" [nzTooltipVisible]="'never'" [(ngModel)]="zoom"></nz-slider>
+            <i class="zoom-in icon"></i>
+          </div>
+        </div>
+
+        <div class="column">
+          <a data-inverted="" data-tooltip="Load example construct" data-position="bottom center" [ngClass]="{'disabled': isLoading}" (click)="exampleConstruct()">
+            <i class="database large circular link icon"></i>
+          </a>
+        </div>
+
+        <div class="column">
+          <a data-inverted="" data-tooltip="Clear construct" data-position="bottom center" (click)="clear()" [ngClass]="{'disabled': !construct.tracks.length}">
+            <i class="eraser large circular link icon"></i>
+          </a>
+        </div>
+
+        <div class="column">
+          <a data-inverted="" data-tooltip="Add tracks" data-position="bottom center" (click)="showPicker = true" [ngClass]="{'disabled': isTracksLoading}">
+            <i class="plus square outline large circular link icon"></i>
+          </a>
+        </div>
+
+        <div class="column">
+          <button class="ui primary right labeled icon button simple dropdown" type="button">
+            Save as
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <a class="item disabled" [ngClass]="{'disabled': !construct.tracks.length}">
+                <i class="file icon"></i>
+                PNG/JPG
+              </a>
+              <a class="item disabled" [ngClass]="{'disabled': !construct.tracks.length}">
+                <i class="dna icon"></i>
+                GenBank
+              </a>
+              <a class="item disabled" [ngClass]="{'disabled': !construct.tracks.length}">
+                <i class="pdf file outline icon"></i>
+                PDF
+              </a>
+              <a (click)="downloadAsJson()" [ngClass]="{'disabled': !construct.tracks.length}" class="item">
+                <i class="file code icon"></i>
+                JSON
+              </a>
+            </div>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row vh-90">
+
+    <div class="thirteen wide column">
+
+      <div class="ui placeholder segment h-1-1" [hidden]="construct.tracks.length || isLoading">
+        <div class="ui icon header">
+          The construct is empty. To add new elements click on button below.
+        </div>
+        <button class="ui primary button" type="button" (click)="showPicker = true" [ngClass]="{'disabled loading': isTracksLoading}">
+          Add elements
+        </button>
+      </div>
+
+      <div class="construct-canvas" [hidden]="!construct.tracks.length || isLoading">
+
+        <div class="strand">
+
+          <div class="track" [style.width]="zoom/5.5+'rem'" [ngClass]="{'invalid': t.invalid}" *ngFor="let t of construct.tracks; let i = index">
+            <div class="header">
+              <div class="ui fluid transparent large input" [ngClass]="{'show': t.label}">
+                <input type="text" name="track-label" placeholder="(label)" #trackLabel="ngModel" [(ngModel)]="t.label">
+              </div>
+              <a class="remove" (click)="removeElem(t)">
+                <i class="x red link icon"></i>
+              </a>
+            </div>
+            <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color, 'background-size': 'auto '+zoom+'%'}" (click)="openSidebar(t, i)" data-inverted="" [attr.data-tooltip]="t.name"
+              data-position="bottom center"></div>
+            <div class="index">
+              {{i + 1}}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="credits">
+        <p>
+          Centre for Genomic Regulation ©
+        </p>
+      </div>
+
+    </div>
+
+    <div class="three wide column">
+
+      <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()">
+
+        <div class="inline field">
+          <label>Total elements:</label> {{construct.tracks.length}}
+        </div>
+
+        <div class="field">
+          <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks.length || constructForm.invalid" type="submit">
+            Submit
+            <i class="angle right icon"></i>
+          </button>
+        </div>
+
+        <div class="field">
+          <label>Specie</label>
+          <select class="ui dropdown" name="construct-specie" required [(ngModel)]="specie.ncbi_tax_id">
+            <option *ngFor="let s of species" [ngValue]="s.ncbi_tax_id">{{s.name}}</option>
+          </select>
+        </div>
+
+        <div class="field" [ngClass]="{'error': label.invalid && (label.dirty || label.touched)}">
+          <label for="">Label</label>
+          <input type="text" class="transparent" placeholder="(Name this construct)" name="construct-label" #label="ngModel" required [(ngModel)]="construct.label">
+        </div>
+
+        <div class="inline field">
+          <label for="">Circular</label>
+          <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Track SideBar -->
+<sqy-track-details (onSave)="saveElem($event)" [track]="track" *ngIf="track"></sqy-track-details>
+
+<!-- Tracks Modal Picker -->
+<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose elements" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isLoading" [nzOkDisabled]="!someSelected()" (nzOnCancel)="showPicker = false"
+  (nzOnOk)="addTracks()">
+  <ng-container *ngIf="showPicker">
+    <div class="ui basic segment one column grid track-picker mt-0" [ngClass]="{'loading': isLoading}">
+      <div class="column">
+        <div class="ui message">
+          <div class="header">
+            Instructions
+          </div>
+          <ul class="list">
+            <li>Click on each element to selected or deselect it.</li>
+            <li>Hover the mouse over a track to display name</li>
+            <li>Elements will be added in selection order</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="column hov-track">
+        {{trackHovered}}
+
+        <div class="ui form" style="position: absolute; right: 0; top: 50%">
+          <div class="field">
+            <div class="ui checkbox">
+              <input type="checkbox" (click)="toggleSelection($event)">
+              <label>Select all</label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <ng-container *ngFor="let c of categories">
+        <div class="column">
+          <div class="ui horizontal divider">
+            {{c.name}}
+          </div>
+        </div>
+        <div class="eight column row">
+          <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="trackHovered=e.name" (mouseout)="trackHovered=null"
+            (click)="e.selected = !e.selected">
+            <a class="floating ui blue label" *ngIf="e.selected">
+              ✓
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+
+</nz-modal>
+
+<!-- Construct submit modal-->
+<nz-modal [nzFooter]="null" [nzWidth]="800" [(nzVisible)]="submitted" (nzAfterClose)="goToHistory()" (nzOnCancel)="submitted = false">
+
+  <div class="ui very padded one column grid" *ngIf="history.id">
+
+    <div class="column">
+      <h2 class="ui icon center aligned header">
+        <i class="check green circle icon"></i>
+        <div class="content">
+          Your construct: "{{construct.label}}" has been submitted!
+        </div>
+      </h2>
+    </div>
+
+    <div class="column">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+        aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <div class="column">
+      <div class="ui horizontal divider">
+        Summary
+      </div>
+    </div>
+
+    <div class="column">
+      <table class="ui blue small inverted table">
+
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Specie</th>
+            <th>Total elements</th>
+            <th>Circular</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>
+              {{history?.construct?.label}}
+            </td>
+            <td>
+              {{history?.construct?.specie.name}}
+            </td>
+            <td>
+              {{history?.construct?.n_tracks}}
+            </td>
+            <td>
+              <i class="icon" [ngClass]="{'green check': history?.construct.circular, 'times red': !history?.construct.circular}"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="w-1-1 p-3" *nzModalFooter>
+      <button type="button" class="ui primary fluid right labeled icon button" [disabled]="!history" (click)="goToHistory()">
+        Go to construct <i class="external alternate icon"></i>
+      </button>
+    </div>
+
+  </div>
+
+</nz-modal>

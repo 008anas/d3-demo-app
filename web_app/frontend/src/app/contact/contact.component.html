@@ -1,0 +1,59 @@
+<div class="ui grid container p-7">
+
+  <div class="one column row">
+
+    <div class="column">
+      <form class="ui form" #contactForm="ngForm" [ngClass]="{'disabled': isLoading}" (ngSubmit)="submitForm()" autocomplete="off">
+
+        <div class="field">
+          <img src="assets/img/crg_logo.png" class="ui small centered image" alt="CRG logo">
+        </div>
+
+        <div class="field">
+          <h2>Bioroboost Contact</h2>
+          <p>The Centre for Genomic Regulation (CRG) is an international biomedical research institute of excellence, created in December 2000. It is a non-profit foundation funded by the Catalan Government through the Departments of Business &
+            Knowledge, the Spanish Ministry of Science, Innovation & Universities, the "la Caixa" Banking Foundation, and includes the participation of Pompeu Fabra University.
+            The mission of the CRG is to discover and advance knowledge for the benefit of society, public health and economic prosperity.
+            The CRG believes that the medicine of the future depends on the groundbreaking science of today. This requires an interdisciplinary scientific team focused on understanding the complexity of life from the genome to the cell to a whole
+            organism and its interaction with the environment, offering an integrated view of genetic diseases. You can contact us by writing to: <a href="mailto:{{email}}?subject=feedback">{{email}}</a>. Or you can use the form below.</p>
+        </div>
+
+        <h4 class="ui dividing header">Contact form</h4>
+
+        <div class="field">
+          <label>Name</label>
+          <div class="field">
+            <input type="text" name="name" [(ngModel)]="contact.name" placeholder="Name">
+          </div>
+        </div>
+
+        <div class="field required">
+          <label>Email</label>
+          <div class="field">
+            <input type="text" type="email" name="email" [(ngModel)]="contact.email" required placeholder="Email">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Subject</label>
+          <div class="field">
+            <input type="text" name="subject" [(ngModel)]="contact.subject" placeholder="Subject">
+          </div>
+        </div>
+
+        <div class="field">
+          <textarea name="body" [(ngModel)]="contact.body" required rows="15"></textarea>
+        </div>
+
+        <div class="ui hidden divider"></div>
+
+        <div class="field">
+          <button class="ui submit fluid button" type="submit" [ngClass]="{'loading': isLoading}" [disabled]="contactForm.invalid || isLoading">Send</button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+</div>

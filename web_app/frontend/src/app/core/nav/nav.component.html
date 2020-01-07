@@ -1,0 +1,31 @@
+<nav class="ui inverted stackable fixed menu">
+
+  <div class="left menu">
+    <a class="item" routerLink="/">
+      <i class="home large icon"></i>
+      <!-- <crg-logo></crg-logo> -->
+    </a>
+  </div>
+
+  <div class="ui container">
+    <div class="ui large secondary inverted pointing menu">
+      <a class="item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        Home
+      </a>
+      <!-- <a class="item" routerLink="/construct" routerLinkActive="active">
+        Browse
+      </a> -->
+      <a class="item" routerLink="/workspace" routerLinkActive="active">
+        Workspace
+        <div class="ui red label" [hidden]="count < 1">{{count}}</div>
+      </a>
+      <a class="item" routerLink="/documentation" routerLinkActive="active">
+        Documentation
+      </a>
+      <a class="item" routerLink="/contact" routerLinkActive="active">
+        Contact
+      </a>
+    </div>
+  </div>
+
+</nav>

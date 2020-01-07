@@ -1,0 +1,50 @@
+name: bioroboostenv
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - biopython=1.74
+  - bzip2=1.0.8
+  - ca-certificates=2019.11.28
+  - certifi=2019.11.28
+  - click=7.0
+  - django=2.2.6
+  - django-cors-headers=3.0.2
+  - django-rq=2.1.0
+  - djangorestframework=3.10.3
+  - gunicorn=20.0.4
+  - libblas=3.8.0
+  - libcblas=3.8.0
+  - libcxx=9.0.0
+  - libffi=3.2.1
+  - libgfortran=4.0.0
+  - liblapack=3.8.0
+  - libopenblas=0.3.7
+  - llvm-openmp=9.0.0
+  - mysql-connector-c=6.1.11
+  - mysqlclient=1.4.6
+  - ncurses=6.1
+  - numpy=1.17.3
+  - openssl=1.1.1d
+  - pandas=0.25.2
+  - pip=19.3.1
+  - python=3.7.3
+  - python-dateutil=2.8.1
+  - pytz=2019.3
+  - readline=8.0
+  - redis-py=3.3.11
+  - regex=2019.12.9
+  - rq=1.1.0
+  - setuptools=41.6.0
+  - six=1.13.0
+  - sqlite=3.30.1
+  - sqlparse=0.3.0
+  - tk=8.6.9
+  - viennarna=2.4.14
+  - wheel=0.33.6
+  - xz=5.2.4
+  - zlib=1.2.11
+  - pip:
+    - pysbol==2.3.2.post4
+prefix: /Users/agharrab/miniconda3/envs/bioroboostenv

@@ -1,0 +1,84 @@
+<div class="ui padded one column grid p-5">
+
+  <div class="column">
+    <div class="ui padded segment">
+
+      <div class="ui grid">
+
+        <div class="ten wide column">
+          <ul class="ui list">
+            <li>
+              Here you can find all
+            </li>
+            <li>
+              Your history will be cleared after 24 hours
+            </li>
+          </ul>
+        </div>
+
+        <div class="six wide column right aligned">
+          <button type="button" class="ui red right labeled icon button" (click)="clearHistory()" [disabled]="!isLoading && !histories.length" name="button">
+            Clear history <i class="trash icon"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="column">
+
+    <div class="ui placeholder segment" *ngIf="!isLoading && !histories.length">
+      <div class="ui icon header">
+        <i class="list ul icon"></i>
+        Yo have no history yet.
+      </div>
+    </div>
+
+    <div class="ui segment p-0" [ngClass]="{'loading': isLoading}" *ngIf="!isLoading && histories.length">
+
+      <table class="ui very padded selectable basic table b-0">
+
+        <thead>
+          <tr>
+            <th colspan="4">
+              Your history
+            </th>
+            <th class="right aligned">
+              {{histories.length}} entries
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let h of histories">
+            <td>
+              <h3><a [routerLink]="[h.id]">{{h.name}}</a></h3>
+            </td>
+            <td>
+              <h3><a class="disabled">{{h.construct.label}}</a></h3>
+            </td>
+            <td>
+              {{h.construct.specie.name}}
+            </td>
+            <td>
+              <i class="calendar icon"></i>
+              <time [dateTime]="h.created_at">
+                {{h.created_at | date: 'medium'}}
+              </time>
+            </td>
+            <td class="ui center aligned">
+              <a (click)="deleteHistory(h.id)" data-inverted="" data-position="top center" data-tooltip="Delete">
+                <i class="trash link red icon"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+
+</div>

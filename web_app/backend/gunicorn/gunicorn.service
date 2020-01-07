@@ -1,0 +1,18 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=bioroboost
+Group=www-data
+WorkingDirectory=/var/www/html/bioroboost/BioRoboost/web_app/backend
+ExecStart=/home/bioroboost/miniconda3/envs/bioroboostenv/bin/gunicorn \
+          --access-logfile /var/www/html/bioroboost/access.log \
+          --error-logfile /var/www/html/bioroboost/error.log\
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          BioRoboost.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

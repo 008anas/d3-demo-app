@@ -1,0 +1,63 @@
+.status {
+  &.success {
+    border-top: 3px solid #00d97e !important;
+  }
+
+  &.error {
+    border-top: 3px solid #e63757 !important;
+  }
+
+  &.active {
+    border-top: 3px solid #f6c343 !important;
+  }
+}
+
+::ng-deep .ant-statistic-content {
+  font-size: 3rem !important;
+}
+
+h2.ui.header {
+  float: left;
+  margin-right: 1.5rem;
+}
+
+.ui.horizontal.list {
+  .item {
+    .icon,
+    .icon+.content {
+      display: inline !important;
+    }
+
+    .content > a {
+      display: inline !important;
+    }
+  }
+}
+
+.ui.dividing.header {
+  width: 100%;
+}
+
+.protvista.actions {
+  .column {
+    a {
+      color: inherit;
+
+      i.icon {
+        color: inherit;
+        font-size: 1.3rem;
+      }
+    }
+  }
+}
+
+td.fitted {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui.horizontal.list:not(.celled)>.item {
+    padding: .7rem 1.5rem!important;
+}

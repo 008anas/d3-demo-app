@@ -1,0 +1,364 @@
+[{
+    "id": 1,
+    "name": "Promoter",
+    "role": "http://identifiers.org/so/SO:0000167",
+    "glyph_thumbnail": "elem_img/promoter.svg",
+    "visible": true,
+    "default": false,
+    "order": 1,
+    "category": 1,
+    "created_at": "2019-07-24T15:01:24Z",
+    "updated_at": "2019-07-24T15:01:24Z"
+  },
+  {
+    "id": 2,
+    "name": "5'-UTR",
+    "role": "http://identifiers.org/so/SO:0000168",
+    "glyph_thumbnail": "elem_img/5-utr.svg",
+    "visible": true,
+    "default": false,
+    "order": 2,
+    "category": 1,
+    "created_at": "2019-07-24T15:01:53Z",
+    "updated_at": "2019-07-24T15:01:53Z"
+  },
+  {
+    "id": 3,
+    "name": "3'-UTR",
+    "role": "http://identifiers.org/so/SO:0000169",
+    "glyph_thumbnail": "elem_img/3-utr.svg",
+    "visible": true,
+    "default": false,
+    "order": 3,
+    "category": 1,
+    "created_at": "2019-07-24T15:02:10Z",
+    "updated_at": "2019-07-24T15:02:10Z"
+  },
+  {
+    "id": 4,
+    "name": "Ribosome entry site",
+    "role": "http://identifiers.org/so/SO:0000170",
+    "glyph_thumbnail": "elem_img/ribosome-entry-site.svg",
+    "visible": true,
+    "default": false,
+    "order": 4,
+    "category": 1,
+    "created_at": "2019-07-24T15:02:32Z",
+    "updated_at": "2019-07-24T15:02:32Z"
+  },
+  {
+    "id": 5,
+    "name": "Start Codon",
+    "role": "http://identifiers.org/so/SO:0000318",
+    "glyph_thumbnail": "elem_img/ATG.svg",
+    "visible": true,
+    "default": false,
+    "order": 5,
+    "category": 1,
+    "created_at": "2019-07-24T15:03:14Z",
+    "updated_at": "2019-07-24T15:03:14Z"
+  },
+  {
+    "id": 6,
+    "name": "CDS",
+    "role": "http://identifiers.org/so/SO:0000316",
+    "glyph_thumbnail": "elem_img/CDS.svg",
+    "visible": true,
+    "default": false,
+    "order": 6,
+    "category": 1,
+    "created_at": "2019-07-24T15:03:44Z",
+    "updated_at": "2019-07-24T15:03:44Z"
+  },
+  {
+    "id": 7,
+    "name": "Terminator",
+    "role": "http://identifiers.org/so/SO:0000141",
+    "glyph_thumbnail": "elem_img/terminator.svg",
+    "visible": true,
+    "default": false,
+    "order": 7,
+    "category": 1,
+    "created_at": "2019-07-24T15:04:02Z",
+    "updated_at": "2019-07-24T15:04:02Z"
+  },
+  {
+    "id": 8,
+    "name": "Stop Codon",
+    "role": "http://identifiers.org/so/SO:0000319",
+    "glyph_thumbnail": "elem_img/stop-codon.svg",
+    "visible": true,
+    "default": false,
+    "order": 8,
+    "category": 1,
+    "created_at": "2019-07-24T15:04:17Z",
+    "updated_at": "2019-07-24T15:04:17Z"
+  },
+  {
+    "id": 9,
+    "name": "Dummy",
+    "role": "http://identifiers.org/so/SO:0000171",
+    "glyph_thumbnail": "elem_img/user-defined.svg",
+    "visible": true,
+    "default": true,
+    "order": 9,
+    "category": 1,
+    "created_at": "2019-07-24T15:05:10Z",
+    "updated_at": "2019-07-24T15:05:10Z"
+  },
+  {
+    "id": 10,
+    "name": "backbone",
+    "role": "http://identifiers.org/so/SO:0000172",
+    "glyph_thumbnail": "elem_img/backbone.svg",
+    "visible": true,
+    "default": false,
+    "order": 10,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+  {
+    "id": 11,
+    "name": "DNA Binding Element",
+    "role": "http://identifiers.org/so/SO:0000173",
+    "glyph_thumbnail": "elem_img/DNA-binding.svg",
+    "visible": true,
+    "default": false,
+    "order": 11,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+  {
+    "id": 12,
+    "name": "Expression Cassette",
+    "role": "http://identifiers.org/so/SO:0000174",
+    "glyph_thumbnail": "elem_img/expression-cassette.svg",
+    "visible": true,
+    "default": false,
+    "order": 12,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+  {
+    "id": 13,
+    "name": "etc",
+    "role": "http://identifiers.org/so/SO:0000175",
+    "glyph_thumbnail": "elem_img/etc.svg",
+    "visible": true,
+    "default": false,
+    "order": 13,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+  {
+    "id": 14,
+    "name": "Five Prime Overhang",
+    "role": "http://identifiers.org/so/SO:0000176",
+    "glyph_thumbnail": "elem_img/five-prime-overhang.svg",
+    "visible": true,
+    "default": false,
+    "order": 14,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 15,
+    "name": "Homology Arm",
+    "role": "http://identifiers.org/so/SO:0000177",
+    "glyph_thumbnail": "elem_img/homology-arm.svg",
+    "visible": true,
+    "default": false,
+    "order": 15,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 16,
+    "name": "Insulator",
+    "role": "http://identifiers.org/so/SO:0000178",
+    "glyph_thumbnail": "elem_img/insulator.svg",
+    "visible": true,
+    "default": false,
+    "order": 16,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 17,
+    "name": "IRES",
+    "role": "http://identifiers.org/so/SO:0000179",
+    "glyph_thumbnail": "elem_img/IRES.svg",
+    "visible": true,
+    "default": false,
+    "order": 17,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 18,
+    "name": "ITR",
+    "role": "http://identifiers.org/so/SO:0000180",
+    "glyph_thumbnail": "elem_img/ITR.svg",
+    "visible": true,
+    "default": false,
+    "order": 18,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 19,
+    "name": "LTR",
+    "role": "http://identifiers.org/so/SO:0000181",
+    "glyph_thumbnail": "elem_img/LTR.svg",
+    "visible": true,
+    "default": false,
+    "order": 19,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 20,
+    "name": "none",
+    "role": "http://identifiers.org/so/SO:0000182",
+    "glyph_thumbnail": "elem_img/none.svg",
+    "visible": true,
+    "default": false,
+    "order": 20,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 21,
+    "name": "Origin Of Replication",
+    "role": "http://identifiers.org/so/SO:0000183",
+    "visible": true,
+    "default": false,
+    "order": 21,
+    "category": 2,
+    "glyph_thumbnail": "elem_img/origin-of-replication.svg",
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 22,
+    "name": "P2A",
+    "role": "http://identifiers.org/so/SO:0000184",
+    "glyph_thumbnail": "elem_img/P2A.svg",
+    "visible": true,
+    "default": false,
+    "order": 22,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 23,
+    "name": "Part Linker",
+    "role": "http://identifiers.org/so/SO:0000185",
+    "glyph_thumbnail": "elem_img/part-linker.svg",
+    "visible": true,
+    "default": false,
+    "order": 23,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 24,
+    "name": "Peptide Linker",
+    "role": "http://identifiers.org/so/SO:0000186",
+    "glyph_thumbnail": "elem_img/peptide-linker.svg",
+    "visible": true,
+    "default": false,
+    "order": 24,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 25,
+    "name": "Protein Tag",
+    "role": "http://identifiers.org/so/SO:0000187",
+    "glyph_thumbnail": "elem_img/protein-tag.svg",
+    "visible": true,
+    "default": false,
+    "order": 25,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 26,
+    "name": "Recombinase Recognition Sequence",
+    "role": "http://identifiers.org/so/SO:0000188",
+    "glyph_thumbnail": "elem_img/recombinase-recognition-seq.svg",
+    "visible": true,
+    "default": false,
+    "order": 26,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 27,
+    "name": "Restriction enzyme recognition site",
+    "role": "http://identifiers.org/so/SO:0000189",
+    "glyph_thumbnail": "elem_img/restriction-enzyme-recognition-site.svg",
+    "visible": true,
+    "default": false,
+    "order": 27,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 28,
+    "name": "RNA stability sequence",
+    "role": "http://identifiers.org/so/SO:0000190",
+    "glyph_thumbnail": "elem_img/RNA-stability-sequence.svg",
+    "visible": true,
+    "default": false,
+    "order": 28,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  },
+
+  {
+    "id": 29,
+    "name": "Three prime overhang",
+    "role": "http://identifiers.org/so/SO:0000191",
+    "glyph_thumbnail": "elem_img/three-prime-overhang.svg",
+    "visible": true,
+    "default": false,
+    "order": 29,
+    "category": 2,
+    "created_at": "2019-02-08T18:11:55+01:00",
+    "updated_at": "2019-02-08T18:11:55+01:00"
+  }
+]
