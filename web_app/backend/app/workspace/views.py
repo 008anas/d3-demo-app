@@ -3,8 +3,8 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.workspace.models import History
-from app.workspace.serializers import HistorySerializer
+from .models import History
+from .serializers import HistorySerializer
 
 
 class HistoryCountView(APIView):

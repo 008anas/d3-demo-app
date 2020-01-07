@@ -8,7 +8,6 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from BioRoboost.settings import BASE_DIR
 from app.construct.serializers import ConstructCreateSerializer
 from app.matrix.models import Matrix
 from app.serializers import GenBankSerializer
@@ -16,6 +15,7 @@ from app.specie.models import Specie
 from app.utils import *
 from app.workspace.models import History
 from app.workspace.serializers import HistorySerializer
+from sqrutiny.settings import BASE_DIR
 
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence

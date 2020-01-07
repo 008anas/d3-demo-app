@@ -17,4 +17,3 @@ class History(models.Model):
 
     class Meta:
         verbose_name_plural = 'Histories'
-        ordering = ['-created_at']

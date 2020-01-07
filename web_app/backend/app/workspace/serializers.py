@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from app.construct.serializers import ConstructRetrieveSerializer
+from ..construct.serializers import ConstructRetrieveSerializer
 from .models import History
 
 

@@ -3,9 +3,9 @@ import sys
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from BioRoboost.settings import BASE_DIR
 from app.genetic_element.models import GeneticElement
 from app.specie.serializers import SpecieSerializer
+from sqrutiny.settings import BASE_DIR
 
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import is_dna_seq_valid

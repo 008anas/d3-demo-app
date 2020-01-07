@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .api.optimize_sequence.OptimizeSequence import OptimizeSequenceFileView, SearchMotifView, \
+from .optimize.OptimizeSequence import OptimizeSequenceFileView, SearchMotifView, \
     OptimizeSequenceSkectherView
 
 urlpatterns = [

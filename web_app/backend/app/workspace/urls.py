@@ -9,7 +9,7 @@ router.register(r'', HistoryViewSet, basename='History')
 
 urlpatterns = [
     path('all', ClearHistoryView.as_view(), name='Clear user history'),
-    path('', include(router.urls)),
     path('count', HistoryCountView.as_view(), name="User workspace history count"),
-    path('job/<uuid:job_id>', PollJobView.as_view())
+    path('job/<uuid:job_id>', PollJobView.as_view()),
+    path('', include(router.urls))
 ]
