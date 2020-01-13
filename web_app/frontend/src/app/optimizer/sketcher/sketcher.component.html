@@ -128,28 +128,28 @@
           <label>Total elements:</label> {{construct.tracks.length}}
         </div>
 
-        <div class="field">
-          <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks.length || constructForm.invalid" type="submit">
-            Submit
-            <i class="angle right icon"></i>
-          </button>
-        </div>
-
-        <div class="field">
-          <label>Specie</label>
-          <select class="ui dropdown" name="construct-specie" required [(ngModel)]="specie.ncbi_tax_id">
-            <option *ngFor="let s of species" [ngValue]="s.ncbi_tax_id">{{s.name}}</option>
+        <div class="required field">
+          <label>Select organism</label>
+          <select class="ui dropdown" name="construct-specie" required [(ngModel)]="specie.tax_id">
+            <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
           </select>
         </div>
 
-        <div class="field" [ngClass]="{'error': label.invalid && (label.dirty || label.touched)}">
-          <label for="">Label</label>
+        <div class="required field" [ngClass]="{'error': label.invalid && (label.dirty || label.touched)}">
+          <label>Enter a label</label>
           <input type="text" class="transparent" placeholder="(Name this construct)" name="construct-label" #label="ngModel" required [(ngModel)]="construct.label">
         </div>
 
         <div class="inline field">
           <label for="">Circular</label>
           <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+        </div>
+
+        <div class="field">
+          <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks.length || constructForm.invalid" type="submit">
+            Submit
+            <i class="angle right icon"></i>
+          </button>
         </div>
 
       </form>

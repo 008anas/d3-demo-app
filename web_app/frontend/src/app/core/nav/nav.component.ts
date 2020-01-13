@@ -10,8 +10,8 @@ import { HistoryService } from 'src/app/workspace/shared/history.service';
 })
 export class NavComponent implements OnInit {
 
-  isLoading: boolean = false;
-  count: number = 0;
+  isLoading = false;
+  count = 0;
 
   constructor(
     private historySrvc: HistoryService
@@ -25,12 +25,7 @@ export class NavComponent implements OnInit {
   getHistoriesCount() {
     this.historySrvc.getCount()
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(
-        data => this.count = data.count,
-        err => {
-          console.log(err)
-        }
-      );
+      .subscribe(data => this.count = data.count);
   }
 
 }

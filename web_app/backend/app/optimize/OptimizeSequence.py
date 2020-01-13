@@ -31,7 +31,7 @@ class OptimizeSequenceSkectherView(APIView):
         if not serializer.is_valid():
             return Response(dict(msg='Invalid construct.'), status=status.HTTP_400_BAD_REQUEST)
 
-        specie = Specie.objects.filter(ncbi_tax_id=serializer.validated_data.get('specie_tax_id')).first()
+        specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
 
         if specie is None:
             return Response({'msg': 'Specie with ncbi tax id ' + str(
@@ -45,7 +45,7 @@ class OptimizeSequenceSkectherView(APIView):
             return Response({'msg': 'Sorry but it was not possible to perform action. Please try later'},
                             status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        job = django_rq.enqueue(checker, sequence=construct.sequence, matrix_dict=self.matrix_to_dict(matrix),
+        job = django_rq.enqueue(checker, sequence=construct.dna_seq, matrix_dict=self.matrix_to_dict(matrix),
                                 circular=construct.circular, codon_table=specie.codon_table, result_ttl=-1)
 
         if job.get_status() == 'failed':
@@ -109,18 +109,18 @@ class SearchMotifView(APIView):
 
     def get(self, request):
         motif = self.request.query_params.get('motif')
-        sequence = self.request.query_params.get('sequence')
-        if motif and sequence:
+        seq = self.request.query_params.get('sequence')
+        if motif and seq:
             motif = motif.upper()
             if not is_dna_seq_valid(motif, False):
                 return Response(dict(msg='Motif not valid. Please enter a valid one.'),
                                 status=status.HTTP_400_BAD_REQUEST)
-            sequence = sequence.upper()
-            if not is_dna_seq_valid(sequence, False):
+            seq = seq.upper()
+            if not is_dna_seq_valid(seq, False):
                 return Response(dict(msg='Sequence not valid. Please enter a valid one.'),
                                 status=status.HTTP_400_BAD_REQUEST)
 
-            match = match_sequence(motif, sequence)
+            match = match_sequence(motif, seq)
             return Response(dict(
                 data=match,
                 count=len(match)

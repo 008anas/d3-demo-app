@@ -11,7 +11,9 @@ import { KEY_CODE } from 'src/app/shared/models/key-code';
 })
 export class TrackDetailsComponent implements OnDestroy {
 
-  @Output() onSave = new EventEmitter<Track>();
+  @Output() save = new EventEmitter<Track>();
+  @Output() previous = new EventEmitter<number>();
+  @Output() next = new EventEmitter<number>();
   dnaRegex: RegExp;
   @Input() set track(x: Track) {
     if (x) {
@@ -19,7 +21,7 @@ export class TrackDetailsComponent implements OnDestroy {
       this.display = true;
     }
   }
-  display: boolean = false;
+  display = false;
   _track: Track = null;
   action = 'fix';
   bases: Base[];
@@ -44,15 +46,15 @@ export class TrackDetailsComponent implements OnDestroy {
     this._track = null;
   }
 
-  /**
-    * Set color from color picker
+  /*
+  * Set color from color picker
   */
   public setColor(color: string) {
     this._track.color = color;
   }
 
-  save() {
-    this.onSave.emit(this._track);
+  submit() {
+    this.save.emit(this._track);
     this.toggleSidebar();
   }
 
@@ -60,34 +62,34 @@ export class TrackDetailsComponent implements OnDestroy {
     this.bases = seq.replace(/\s/g, '').split('').map(b => new Base(b));
   }
 
-  refresh(b: Base) {
-    if (this.action) {
-      switch (this.action.toLowerCase()) {
-        case 'fix':
-          b.fix = true;
-          break;
-        case 'remove':
-          b.remove = true;
-          break;
-      }
-    }
-  }
+  // refresh(b: Base) {
+  //   if (this.action) {
+  //     switch (this.action.toLowerCase()) {
+  //       case 'fix':
+  //         b.fix = true;
+  //         break;
+  //       case 'remove':
+  //         b.remove = true;
+  //         break;
+  //     }
+  //   }
+  // }
 
-  restart() {
-    this.bases.forEach(s => { s.remove, s.fix = false; });
-  }
+  // restart() {
+  //   this.bases.forEach(s => { s.remove, s.fix = false; });
+  // }
 
-  doAction(b: Base) {
-    if (this.action) {
-      switch (this.action.toLowerCase()) {
-        case 'fix':
-          b.fix = !b.fix;
-          break;
-        case 'remove':
-          b.remove = !b.remove;
-          break;
-      }
-    }
-  }
+  // doAction(b: Base) {
+  //   if (this.action) {
+  //     switch (this.action.toLowerCase()) {
+  //       case 'fix':
+  //         b.fix = !b.fix;
+  //         break;
+  //       case 'remove':
+  //         b.remove = !b.remove;
+  //         break;
+  //     }
+  //   }
+  // }
 
 }

@@ -9,6 +9,12 @@ const SEPARATOR = ' | ';
 
 @Injectable()
 export class TitleService {
+
+  static ucFirst(value: string) {
+    if (!value) { return value; }
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -44,10 +50,5 @@ export class TitleService {
 
   setTitle(str: string) {
     this.titleSrvc.setTitle(`${str}${SEPARATOR}${env.name}`);
-  }
-
-  static ucFirst(string: string) {
-    if (!string) { return string; }
-    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 }

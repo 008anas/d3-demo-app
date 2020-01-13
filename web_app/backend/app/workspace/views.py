@@ -10,7 +10,7 @@ from .serializers import HistorySerializer
 class HistoryCountView(APIView):
 
     def get(self, request):
-        return Response(dict(count=len(self.request.session.get('history'))))
+        return Response(dict(count=len(self.request.session.get('history', []))))
 
 
 class HistoryViewSet(viewsets.ModelViewSet):

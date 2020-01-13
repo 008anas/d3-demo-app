@@ -8,16 +8,20 @@ from app.specie.serializers import SpecieSerializer
 from sqrutiny.settings import BASE_DIR
 
 sys.path.insert(0, BASE_DIR + '/../../dev')
-from tools import is_dna_seq_valid
+from tools import is_dna_seq_valid, seq_translator
 
 from .models import Construct, Track
 
 
 class TrackRetrieveSerializer(serializers.ModelSerializer):
     glyph_thumbnail = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     def get_glyph_thumbnail(self, track):
         return self.context['request'].build_absolute_uri(track.genetic_element.glyph_thumbnail.url)
+
+    def get_name(self, track):
+        return track.genetic_element.name
 
     class Meta:
         model = Track
@@ -27,11 +31,11 @@ class TrackRetrieveSerializer(serializers.ModelSerializer):
 class TrackCreateSerializer(serializers.ModelSerializer):
     element = serializers.PrimaryKeyRelatedField(queryset=GeneticElement.objects.all())
 
-    def validate_sequence(self, value):
-        value = value.upper()
-        if not is_dna_seq_valid(value):
+    def validate_sequence(self, seq):
+        seq = seq.strip().replace('\n', '').upper()
+        if not is_dna_seq_valid(seq):
             raise ValidationError("Sequence not valid")
-        return value
+        return seq
 
     class Meta:
         model = Track
@@ -50,7 +54,7 @@ class ConstructCreateSerializer(serializers.ModelSerializer):
         validated_data.pop('specie_tax_id')
         tracks = validated_data.pop('tracks')
         seq = ''.join([track['sequence'] for track in tracks])
-        construct = Construct.objects.create(**validated_data, sequence=seq)
+        construct = Construct.objects.create(**validated_data, dna_seq=seq, protein_seq=seq_translator(seq))
         i = 1
         for track in tracks:
             element = track.pop('element')

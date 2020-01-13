@@ -13,9 +13,13 @@
             <div class="field">
               <select class="ui dropdown" name="specie" [(ngModel)]="specie" [ngClass]="{'disabled loading': isLoading}">
                 <option *ngFor="let s of species" [ngValue]="s">
-                  {{s.name}} <span class="info" *ngIf="s.comment">({{s.comment}})</span>
+                  {{s.name}}
                 </option>
               </select>
+            </div>
+
+            <div class="field" *ngIf="specie">
+              <p class="comment">{{specie.comment}}</p>
             </div>
 
           </form>

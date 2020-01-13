@@ -39,16 +39,18 @@ export class SketcherComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   specie: Specie = new Specie();
   species: Specie[] = [];
-  isSubmitting: boolean = false;
-  submitted: boolean = false;
-  showPicker: boolean = false;
+  isSubmitting = false;
+  submitted = false;
+  showPicker = false;
   zoom: number = 75;
-  isTracksLoading: boolean = false;
+  isTracksLoading = false;
   construct: Construct = new Construct();
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode === KEY_CODE.ESCAPE) this.showPicker = false;
+    if (event.keyCode === KEY_CODE.ESCAPE) {
+      this.showPicker = false;
+    }
   }
 
   constructor(
@@ -69,7 +71,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.construct.id = params.uuid || null;
       this.specie.slug = params.specie || null;
     });
-    if (this.specie.slug) this.getSpecie();
+    if (this.specie.slug) {
+      this.getSpecie();
+    }
     if (this.construct.id) {
       this.getConstruct();
     } else {
@@ -194,7 +198,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     if (this.checkTracks()) {
       this.response = null;
       this.isSubmitting = true;
-      this.construct['specie_tax_id'] = this.specie.ncbi_tax_id;
+      this.construct['specie_tax_id'] = this.specie.tax_id;
       this.construct.tracks.map(t => t['element'] = t.id);
       this.http.post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
         .pipe(finalize(() => this.isSubmitting = false))
@@ -236,16 +240,16 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   toggleSelection(event: { target: { checked: boolean; }; }) {
-    this.categories.map(c => { c.elements.map(c => c.selected = event.target.checked) });
+    this.categories.map(c => c.elements.map(e => e.selected = event.target.checked));
   }
 
-  // Export/Save Construct
+  // Export / Save Construct
 
   downloadAsJson() {
     if (this.construct.tracks.length) {
-      var sJson = JSON.stringify({ 'construct': this.construct });
-      var element = document.createElement('a');
-      element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
+      const sJson = JSON.stringify({ 'construct': this.construct });
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
       element.setAttribute('download', `${this.construct.label}.json` || 'BioRoboost_construct.json');
       element.style.display = 'none';
       document.body.appendChild(element);

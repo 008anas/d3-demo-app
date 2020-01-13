@@ -7,7 +7,7 @@ from .models import Specie
 @admin.register(Specie)
 class SpecieAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('name', 'ncbi_tax_id', 'gc_content', 'slug')}),
+        ('Information', {'fields': ('name', 'tax_id', 'gc_content', 'slug')}),
         ('Actions', {'fields': ('visible', 'default', 'comment')})
     )
     add_fieldsets = (
@@ -16,6 +16,6 @@ class SpecieAdmin(ModelAdmin):
             'fields': ('name',),
         }),
     )
-    list_display = ('name', 'slug', 'ncbi_tax_id', 'default', 'created_at')
-    search_fields = ('name', 'slug', 'ncbi_tax_id')
+    list_display = ('name', 'slug', 'tax_id', 'default', 'created_at')
+    search_fields = ('name', 'slug', 'tax_id')
     ordering = ('created_at',)

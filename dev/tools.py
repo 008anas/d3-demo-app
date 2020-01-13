@@ -17,7 +17,7 @@ import os
 import pandas as pd
 import regex as re
 from Bio import SeqIO
-from Bio.Alphabet import IUPAC, _verify_alphabet
+from Bio.Alphabet import IUPAC, _verify_alphabet, generic_dna
 from Bio.Seq import Seq
 from RNA import fold
 from Bio.SeqUtils import GC
@@ -34,6 +34,11 @@ from ribosome_binding_site import compute_RBS_affinity
 def is_dna_seq_valid(value, op=True):
     """ Validates DNA sequence. If op is True check IUPACUnambiguousDNA library if False IUPACAmbiguousDNA"""
     return _verify_alphabet(Seq(value, IUPAC.IUPACUnambiguousDNA())) if op else _verify_alphabet(Seq(value, IUPAC.IUPACAmbiguousDNA()))
+
+def seq_translator(seq, to='DNA'):
+    """ DNA/RNA to Protein sequence """
+    generic = generic_dna if to == 'DNA' else generic_rna
+    return Seq(seq, generic).translate()
 
 def load_sequence(sequence):
     """ If sequence is a fasta file, return sequence """
@@ -238,7 +243,7 @@ def codon_adaptation_scoring(sequence, matrix, circular=False, residue_type='DNA
 
 def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA', start_codons=['ATG', 'GTG', 'TTG'],
                 indexed=True, outhandle='json', standardize=True):
-    
+
     """Detects the presence of ribosome binding site motif upstream of any stop codons in the sequence.
     Returns a score for each RBS corresponding to its hybridization energy to the anti-motif.
 
@@ -259,7 +264,7 @@ def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA
             for i in range(len(motif)):
                 rs[rbs_start + i] = energy
             RBSs.append((rbs_start, energy))
-    
+
     print('\RBS_scoring: finished.\n\n')
     return check_outhandle(rs, outhandle)
 

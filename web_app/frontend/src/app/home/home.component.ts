@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+
 import { Specie } from '../shared/models/specie';
 import { SpecieService } from '../shared/services/specie.service';
 
@@ -14,7 +15,7 @@ export class HomeComponent implements OnInit {
   specie: Specie = null;
   species: Specie[] = [];
   history_id: string = null;
-  isLoading: boolean = false;
+  isLoading = false;
 
   constructor(
     private specieSrvc: SpecieService,
@@ -28,7 +29,7 @@ export class HomeComponent implements OnInit {
   getSpecies() {
     this.isLoading = true;
     this.specieSrvc.getAll()
-      .pipe(finalize(() => this.isLoading = false))
+    .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         data => {
           this.species = data.map((e: any) => new Specie().deserialize(e));

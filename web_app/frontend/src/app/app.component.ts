@@ -1,16 +1,16 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 
 import { TitleService } from './shared/services/title.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'sqy-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   providers: [TitleService]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   isOnline: boolean;
 

@@ -6,4 +6,4 @@ from .models import Specie
 class SpecieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Specie
-        fields = ('name', 'comment','slug', 'ncbi_tax_id', 'default')
+        fields = ('name', 'comment','slug', 'tax_id', 'tax_link', 'default')

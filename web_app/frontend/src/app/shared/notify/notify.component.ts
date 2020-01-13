@@ -38,7 +38,9 @@ export class NotifyComponent implements OnInit, OnDestroy {
   }
 
   cssClass(notify: Notify) {
-    if (!notify) return null;
+    if (!notify) {
+      return null;
+    }
 
     // return css class based on notify type
     switch (notify.type) {

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
 
 import { environment as env } from 'src/environments/environment';
 import { UserHistory } from '../shared/user-history';
@@ -20,11 +19,10 @@ import { Job } from '../shared/job';
 })
 export class HistoryComponent implements OnInit {
 
-  history: UserHistory;
-  isLoading: boolean = false;
-  attempt: number = 0;
+  history: UserHistory = null;
+  isLoading = false;
   options: any[] = [];
-  isSearching: boolean = false;
+  isSearching = false;
   msg: string = null;
 
   constructor(
@@ -45,31 +43,32 @@ export class HistoryComponent implements OnInit {
     this.isLoading = true;
     this.options = [];
     this.jobSrvc.getById(this.history.job_id)
-      .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         (data: Job) => {
           this.history.job = data;
           // this.history.job.status = 'started';
-          if (this.history.isDone()) {
-            for (let key in this.history.job.result) {
-              let value = this.history.job.result[key];
-              this.options.push({
-                name: key,
-                display: true,
-                data: value
-              });
-            };
-            setTimeout(() => {
-              document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this.history.construct.sequence.length));
-              document.querySelector('#sequence-track')['data'] = this.history.construct.sequence;
-              document.querySelector('#interpro-track-residues')['data'] = this.getTrackView(this.history.construct.tracks);
-              document.querySelectorAll('.var-graph').forEach((x: any, index: number) => x.data = JSON.parse(this.options[index].data));
-            }, 100);
-          }
+          // if (this.history.isDone()) {
+          //   for (let key in this.history.job.result) {
+          //     let value = this.history.job.result[key];
+          //     this.options.push({
+          //       name: key,
+          //       display: true,
+          //       data: value
+          //     });
+          //   };
+          //   setTimeout(() => {
+          //     document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this.history.construct.dna_seq.length));
+          //     document.querySelector('#dna_sequence')['data'] = this.history.construct.dna_seq;
+          //     document.querySelector('#protein_sequence')['data'] = ' ' + this.history.construct.protein_seq.split('').join('  ') + ' ';
+          //     document.querySelector('#interpro-track-residues')['data'] = this.getTrackView(this.history.construct.tracks);
+          //     document.querySelectorAll('.var-graph').forEach((x: any, index: number) => x.data = JSON.parse(this.options[index].data));
+          //   }, 100);
+          // }
         },
         err => {
           console.log(err);
-        }
+        },
+        () => this.isLoading = false
       );
   }
 
@@ -78,7 +77,7 @@ export class HistoryComponent implements OnInit {
       success: this.history.isDone(),
       active: this.history.isActive(),
       error: !this.history.isActive() && !this.history.isDone()
-    }
+    };
   }
 
   displayAll() {
@@ -90,8 +89,10 @@ export class HistoryComponent implements OnInit {
   }
 
   move(x: number, i: number) {
-    let pos = x + i;
-    if (-1 < pos && pos <= this.options.length - 1) this.options = Utils.array_move(Object.assign([], this.options), x, pos);
+    const pos = x + i;
+    if (-1 < pos && pos <= this.options.length - 1) {
+      this.options = Utils.array_move(Object.assign([], this.options), x, pos);
+    }
   }
 
   getTrackView(tracks: Track[]) {
@@ -102,7 +103,7 @@ export class HistoryComponent implements OnInit {
           start: track.start,
           end: track.end,
           color: track.color
-        }
+        };
       }
     });
   }
@@ -115,15 +116,16 @@ export class HistoryComponent implements OnInit {
     if (event.target.value) {
       this.isSearching = true;
       this.msg = null;
-      const params = { params: { sequence: this.history.construct.sequence, motif: event.target.value } };
+      const params = { params: { sequence: this.history.construct.dna_seq, motif: event.target.value } };
       this.http.get(`${env.endpoints.api}/search-motif`, params)
-        .pipe(finalize(() => this.isSearching = false))
         .subscribe(
           (data: any) => {
             if (data.count > 0) {
               let positions = '';
               data.data.map((pos: number[]) => positions += `,${pos[0]}:${pos[1]}`);
-              if (positions.charAt(0) === ',') positions = positions.substring(1);
+              if (positions.charAt(0) === ',') {
+                positions = positions.substring(1);
+              }
               document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = positions);
             } else {
               this.msg = 'No match was found';
@@ -131,18 +133,23 @@ export class HistoryComponent implements OnInit {
           },
           err => {
             this.msg = err.msg;
-          });
+          },
+          () => this.isSearching = false
+        );
     }
   }
 
   deleteHistory() {
-    this.isLoading = true;
-    this.historySrvc.delete(this.history.id)
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe(() => {
-        this.notify.success('History deleted!', 'bottom-right');
-        this.router.navigate(['/workspace']);
-      });
+    if (confirm('Are you sure?')) {
+      this.isLoading = true;
+      this.historySrvc.delete(this.history.id)
+        .subscribe(() => {
+          this.notify.success('History deleted!', 'bottom-right', true);
+          this.router.navigate(['/workspace']);
+        },
+          err => this.notify.error(err.msg || 'Unable to delete history', 'bottom-right'),
+          () => this.isLoading = false);
+    }
   }
 
 }

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { NgProgressModule } from '@ngx-progressbar/core';
 import { NgProgressHttpModule } from '@ngx-progressbar/http';
@@ -13,7 +14,6 @@ import { NotifyComponent } from './shared/notify/notify.component';
 import { ContactComponent } from './contact/contact.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { SharedModule } from './shared/shared.module';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
 
@@ -32,6 +32,7 @@ import { AppHttpInterceptor } from './core/app.interceptor';
     NgProgressModule.withConfig({
       color: '#fff'
     }),
+    HttpClientModule,
     CoreModule,
     SharedModule
   ],

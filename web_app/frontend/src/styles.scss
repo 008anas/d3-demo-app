@@ -1,25 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
-body,
 html {
-  width: 100%;
+  font-size: 70%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: 'Inter', 'Inter UI', Helvetica, Arial, sans-serif;
   height: 100%;
-  margin: 0;
-}
-
-html {
-  font-size: 75% !important;
-  -webkit-tap-highlight-color: transparent !important;
-  font-family: sans-serif !important;
-  -webkit-font-smoothing: antialiased !important;
 }
 
 body {
-  background-color: white !important;
-  font-size: 13px;
-  line-height: 1.428571429;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans !important;
+  min-height: 100%;
+  font-family: Inter,"Inter UI",Helvetica,Arial,sans-serif;
+  position: relative;
   overflow-x: hidden;
-  text-rendering: optimizeLegibility !important;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 span.date {
@@ -34,32 +29,22 @@ span.date {
   }
 }
 
-.blue-border-hover:hover {
-  border: 1px solid #0a84ff !important;
-  z-index: +20 !important;
-}
-
-.clickable {
-  cursor: pointer !important;
-}
-
-.info {
-  font-size: 0.9rem !important;
-  color: rgba(0, 0, 0, .4) !important;
-}
-
-.icon.disabled,
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-  color: currentColor;
-  cursor: not-allowed;
-  opacity: 0.5;
-  text-decoration: none;
+.meta {
+  font-size: 1em !important;
+  color: rgba(0,0,0,.4) !important;
 }
 
 span.ui.error {
   color: #ce3333;
+}
+// Anchor reference
+
+.target,
+:target {
+  -webkit-animation: fadeIt 3s ease-in-out !important;
+  -moz-animation: fadeIt 3s ease-in-out !important;
+  -o-animation: fadeIt 3s ease-in-out !important;
+  animation: fadeIt 3s ease-in-out !important;
 }
 /* Semantic Override */
 /* Button */
@@ -103,10 +88,19 @@ button.ui.button {
   }
 
   &[data-inverted]:after {
-    background: rgba(97,97,97,.9) !important;
+    background: rgba(97,97,97,.7) !important;
     color: #fff;
     border: none;
     box-shadow: none;
+  }
+
+  &[data-position="bottom center"][data-tooltip]:after {
+    bottom: auto;
+    right: auto;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    margin-top: 2em;
   }
 
   &:after {
@@ -114,3 +108,119 @@ button.ui.button {
     padding: 0.7em !important;
   }
 }
+// /* You can add global styles to this file, and also import other style files */
+// body,
+// html {
+//   width: 100%;
+//   height: 100%;
+//   margin: 0;
+// }
+//
+// html {
+//   font-size: 75% !important;
+//   -webkit-tap-highlight-color: transparent !important;
+//   font-family: sans-serif !important;
+//   -webkit-font-smoothing: antialiased !important;
+// }
+//
+// body {
+//   background-color: white !important;
+//   font-size: 13px;
+//   line-height: 1.428571429;
+//   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans !important;
+//   overflow-x: hidden;
+//   text-rendering: optimizeLegibility !important;
+// }
+//
+// span.date {
+//   color: rgba(0,0,0,.4);
+//   // font-size: 1rem;
+//   font-weight: bold;
+//   margin: 1em;
+//
+//   &::before {
+//     content: '\2022';
+//     padding: 1.13571429rem;
+//   }
+// }
+//
+// .blue-border-hover:hover {
+//   border: 1px solid #0a84ff !important;
+//   z-index: +20 !important;
+// }
+//
+// .clickable {
+//   cursor: pointer !important;
+// }
+//
+// .info {
+//   font-size: 0.9rem !important;
+//   color: rgba(0, 0, 0, .4) !important;
+// }
+//
+// .icon.disabled,
+// a.disabled {
+//   pointer-events: none;
+//   cursor: default;
+//   color: currentColor;
+//   cursor: not-allowed;
+//   opacity: 0.5;
+//   text-decoration: none;
+// }
+//
+// span.ui.error {
+//   color: #ce3333;
+// }
+// /* Semantic Override */
+// /* Button */
+// button.ui.button {
+//   padding: 0.8em 1em !important;
+// }
+//
+// .ui[class*="right labeled"].icon.button {
+//   padding-right: 4.7em!important;
+//   padding-left: 1.5em!important;
+// }
+// /* Header */
+// .sub.header {
+//   display: block;
+//   font-weight: 400;
+//   padding: 0;
+//   margin: 0;
+//   font-size: 1rem;
+//   line-height: 1.2em;
+//   color: rgba(0,0,0,.6);
+// }
+// /* Icon */
+// .link.icon {
+//   opacity: 0.65 !important;
+// }
+// /* Segment */
+// .ui.segment:not(.placeholder):not(.basic) {
+//   border-color: #edf2f9;
+//   box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, .03);
+//   min-width: 0;
+//   word-wrap: break-word;
+//   background-color: #fff;
+//   background-clip: border-box;
+//   border: 1px solid #edf2f9;
+//   border-radius: 0.5rem;
+// }
+// /* Tooltip */
+// [data-tooltip] {
+//   &:before {
+//     content: none;
+//   }
+//
+//   &[data-inverted]:after {
+//     background: rgba(97,97,97,.9) !important;
+//     color: #fff;
+//     border: none;
+//     box-shadow: none;
+//   }
+//
+//   &:after {
+//     font-size: 0.9rem;
+//     padding: 0.7em !important;
+//   }
+// }

@@ -13,7 +13,7 @@ import { UserHistory } from './shared/user-history';
 })
 export class WorkspaceComponent implements OnInit {
 
-  histories: UserHistory[] = []
+  histories: UserHistory[] = [];
   isLoading: boolean = false;
 
   constructor(
@@ -54,7 +54,6 @@ export class WorkspaceComponent implements OnInit {
       this.historySrvc.delete(id)
         .pipe(finalize(() => this.isLoading = false))
         .subscribe(data => {
-          console.log(data)
           this.notify.success('History deleted!', 'bottom-right');
           this.getUserHistory();
         });

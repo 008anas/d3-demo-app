@@ -1,0 +1,160 @@
+<div class="ui protvista padded grid">
+
+  <div class="one column row">
+
+    <div class="column">
+
+      <div class="ui placeholder segment" *ngIf="status === 'failed'">
+        <div class="ui icon header">
+          <i class="times circle red icon"></i>
+          It was not possible to show you the results due to an internal problem. Please try again later or contact us.
+        </div>
+      </div>
+
+      <div class="ui placeholder segment" *ngIf="status !== 'failed' && status !== 'finished'">
+        <div class="ui icon header">
+          <i class="spinner loading icon"></i>
+          The results are being calculated please be patient...
+        </div>
+        <button class="ui primary right labeled icon button" (click)="refresh()" [disabled]="loading" type="button" name="refresh">
+          Refresh <i class="sync icon"></i>
+        </button>
+      </div>
+
+      <div class="ui padded segment" *ngIf="status === 'finished'">
+
+        <div class="ui grid">
+
+          <div class="equal width center aligned middle aligned row protvista actions">
+
+            <div class="column">
+              <a (click)="clearHighlight()" data-inverted="" data-tooltip="Reset charts" data-position="top center">
+                <i class="sync large circular link icon"></i>
+              </a>
+            </div>
+
+            <div class="column">
+              <a (click)="clearHighlight()" data-inverted="" data-tooltip="Clear highlight" data-position="top center">
+                <i class="eraser large circular link icon"></i>
+              </a>
+            </div>
+
+            <div class="column">
+              <div class="ui icon fluid input" [ngClass]="{'loading disabled': isSearching}">
+                <i class="search icon"></i>
+                <input type="text" placeholder="Search for motif" (keyup.enter)="searchMotif($event)">
+              </div>
+            </div>
+
+            <div class="column">
+              <select class="ui select" placeholder="Enzime restriction" name="">
+                <option value="">AAA</option>
+              </select>
+            </div>
+
+            <div class="column">
+              <button class="ui primary right labeled icon button simple dropdown" type="button">
+                Export to
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                  <div class="item">
+                    <i class="file icon"></i>
+                    PNG/JPG
+                  </div>
+                  <div class="item">
+                    <i class="dna icon"></i>
+                    GenBank
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            <div class="column">
+              <button class="ui primary right labeled icon button simple dropdown" type="button">
+                Export to
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                  <div class="item">
+                    <i class="file icon"></i>
+                    PNG/JPG
+                  </div>
+                  <div class="item">
+                    <i class="dna icon"></i>
+                    GenBank
+                  </div>
+                </div>
+              </button>
+            </div>
+
+          </div>
+
+          <div class="equal width center aligned middle aligned row">
+            <div class="column">
+              <!-- <strong>DNA sequence length:</strong> {{history.construct.dna_seq.length}} -->
+            </div>
+            <div class="column">
+              <!-- <strong>Protein sequence length:</strong> {{history.construct.protein_seq.length}} -->
+            </div>
+            <div class="column">
+              <!-- <strong>Number of tracks: {{history.construct.n_tracks}}</strong> -->
+            </div>
+          </div>
+
+          <div class="one column row">
+
+            <div class="column">
+              <protvista-manager attributes="length displaystart displayend highlight">
+
+                <protvista-navigation length="1335" class="protvista"></protvista-navigation>
+                <div>
+                  <p> <i class="info icon"></i>If the sequence is not visible just zoom in to display it</p>
+                </div>
+                <protvista-sequence class="protvista" highlight-event="onmouseover" id="dna_sequence"></protvista-sequence>
+                <protvista-sequence class="protvista" highlight-event="onmouseover" id="protein_sequence"></protvista-sequence>
+                <protvista-interpro-track class="protvista" id="interpro-track-residues" shape="roundRectangle" highlight-event="onmouseover"></protvista-interpro-track>
+
+                <!-- <div class="ui equal width padded center aligned grid">
+                  <div class="column">
+                    <a class="ui label" (click)="displayAll()">
+                      <i class="eye icon"></i>
+                      Display all
+                    </a>
+                  </div>
+                  <div class="column">
+                    <a class="ui label" (click)="hideAll()">
+                      <i class="eye slash icon"></i>
+                      Hide all
+                    </a>
+                  </div>
+                  <div class="column" *ngFor="let o of options">
+                    <a class="ui label" [ngClass]="{'teal': o.display}" (click)="o.display = !o.display">
+                      <i class="eye icon" [ngClass]="{'slash': o.display}"></i>
+                      {{o.name | titlecase}}
+                    </a>
+                  </div>
+
+                  <div class="sixteen wide column" [hidden]="!op.display" *ngFor="let op of options; let i = index">
+                    <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
+                    <div class="float-r">
+                      <span data-inverted="" data-position="top center" data-tooltip="Move up" [hidden]="i < 1 || options.length < 2" (click)="move(i, -1)"><i class="arrow up link icon"></i></span>
+                      <span data-inverted="" data-position="top center" data-tooltip="Move down" [hidden]=" i === options.length - 1 || options.length < 2" (click)="move(i, 1)"><i class="arrow down link icon"></i></span>
+                      <span data-inverted="" data-position="top center" data-tooltip="Hide"><i class="eye slash link icon" (click)="op.display = false"></i></span>
+                    </div>
+                    <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters"></protvista-variation-graph>
+                  </div>
+                </div> -->
+
+              </protvista-manager>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

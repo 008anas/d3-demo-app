@@ -29,7 +29,7 @@ class Command(BaseCommand):
             count += 1
             try:
                 Specie(id=s.get('id'), name=s.get('name'), comment=s.get('comment', None), slug=s.get('slug'),
-                       ncbi_tax_id=s.get('ncbi_tax_id'),
+                       tax_id=s.get('tax_id'), tax_link=s.get('tax_link'),
                        gc_content=s.get('gc_content'), codon_table=s.get('codon_table'), default=s.get('default', None),
                        visible=s.get('visible'),
                        created_at=s.get('created_at', datetime.now()),

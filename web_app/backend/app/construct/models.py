@@ -9,7 +9,8 @@ from app.specie.models import Specie
 class Construct(models.Model):
     uuid = models.UUIDField(editable=False, unique=True, default=uuid.uuid4)
     label = models.CharField(max_length=255)
-    sequence = models.TextField(blank=True)
+    dna_seq = models.TextField(blank=True)
+    protein_seq = models.TextField(blank=True)
     tracks = models.ManyToManyField(GeneticElement, through='Track')
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
     circular = models.BooleanField(blank=True, default=False)

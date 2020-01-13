@@ -4,7 +4,9 @@ export class Specie implements Deserializable {
   name: string;
   slug: string;
   default: boolean;
-  ncbi_tax_id: number;
+  tax_id: number;
+  tax_link: string;
+  comment: string;
 
   deserialize(input: any) {
     Object.assign(this, input);

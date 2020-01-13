@@ -1,6 +1,6 @@
 <sqy-sidebar [show]="display" [closeCallback]="toggleSidebar">
 
-  <form class="ui form h-1-1" name="track-form" #trackForm="ngForm" (ngSubmit)="save()">
+  <form class="ui form h-1-1" name="track-form" #trackForm="ngForm" (ngSubmit)="submit()">
 
     <div class="field">
       <img src="{{_track.glyph_thumbnail}}" class="ui medium circular centered image">
@@ -32,14 +32,15 @@
 
     </div>
 
-    <div class="two fields">
+    <div class="fields">
 
-      <div class="field">
+      <div class="nine wide field">
         <label>Label</label>
         <input type="text" name="track-label" [(ngModel)]="_track.label">
       </div>
 
-      <div class=" field">
+      <div class="seven wide field">
+        <label>Color</label>
         <sqy-color-picker [color]="_track.color" [heading]="'Color'" (event)="setColor($event)"></sqy-color-picker>
       </div>
 
@@ -49,7 +50,7 @@
       <label>Sequence</label>
 
       <span class="info">
-        Equivalent sequence will be displayed below original sequence. You can set options for each base by clicking on.
+        <!-- Equivalent sequence will be displayed below original sequence. You can set options for each base by clicking on. -->
       </span>
 
       <textarea name="track-seq" rows="8" cols="80" required #sequence="ngModel" [(ngModel)]="_track.sequence" [pattern]="dnaRegex"></textarea>
@@ -106,12 +107,28 @@
 
     </div> -->
 
-    <div class="bottom field">
+    <div class="bottom three fields">
 
-      <button class="ui right labeled icon primary fluid button" name="save" type="submit" [disabled]="trackForm.invalid">
-        <i class="save icon"></i>
-        Save
-      </button>
+      <div class="field">
+        <button class="ui left labeled icon primary fluid button" name="action" type="button" [disabled]="_track['pos'] < 1">
+          <i class="left arrow icon"></i>
+          Previous
+        </button>
+      </div>
+
+      <div class="field">
+        <button class="ui right labeled icon secondary fluid button" name="action" type="submit" [disabled]="trackForm.invalid">
+          <i class="save icon"></i>
+          Save
+        </button>
+      </div>
+
+      <div class="field">
+        <button class="ui right labeled icon primary fluid button" name="action" type="button" [disabled]="trackForm.invalid">
+          <i class="right arrow icon"></i>
+          Next
+        </button>
+      </div>
 
     </div>
 

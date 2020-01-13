@@ -23,10 +23,6 @@ export class ErrorInterceptor implements HttpInterceptor {
   private processError(error: any) {
     if (env.production) {
       switch (error) {
-        case 401:
-          // auto logout if 401 response returned from api
-          location.reload(true);
-          break;
         case 500:
           this.router.navigate([env.routes.error500]);
           break;

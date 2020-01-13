@@ -12,22 +12,21 @@
     min-height: 10rem;
     display: inline-block;
 
+    &.invalid {
+      background-color: #ffe8ec;
+    }
+
+    &:not(:first-child) {
+      border-left: 2px dashed #ccc;
+    }
+
     .track {
       display: inline-block;
       min-width: 2rem;
       position: relative;
-      margin-bottom: 1em;
       align-items: center;
       border-bottom: 1.5px solid #ccc;
       margin-bottom: 4rem;
-
-      &.invalid {
-        background-color: #ffe8ec;
-      }
-
-      &:not(:first-child) {
-        border-left: 2px dashed #ccc;
-      }
 
       .index {
         position: absolute;

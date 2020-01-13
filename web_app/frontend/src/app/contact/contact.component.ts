@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ContactComponent implements OnInit {
 
-  isLoading: boolean = false;
+  isLoading = false;
   contact: Contact = new Contact();
   email: string;
 
