@@ -228,6 +228,12 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.track = null;
   }
 
+  changeTrack(pos: number) {
+    if (pos > -1 && this.construct.tracks[pos]) {
+      this.openSidebar(this.construct.tracks[pos], pos);
+    }
+  }
+
   checkTracks() {
     let flag = true;
     this.construct.tracks.map(t => {
@@ -250,7 +256,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       const sJson = JSON.stringify({ 'construct': this.construct });
       const element = document.createElement('a');
       element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
-      element.setAttribute('download', `${this.construct.label}.json` || 'BioRoboost_construct.json');
+      element.setAttribute('download', `${this.construct.label}.json` || 'SQrutiny_construct.json');
       element.style.display = 'none';
       document.body.appendChild(element);
       element.click(); // simulate click

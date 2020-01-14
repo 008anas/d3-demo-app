@@ -1,6 +1,6 @@
 <div class="ui basic segment internally celled grid" [ngClass]="{loading: isSubmitting}">
 
-  <div class="one column row">
+  <!-- <div class="one column row">
     <div class="column p-4">
       <div class="ui breadcrumb">
         <div class="ui breadcrumb">
@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="one column row">
     <div class="column p-0">
@@ -29,20 +29,36 @@
 
         <div class="column">
           <a data-inverted="" data-tooltip="Load example construct" data-position="bottom center" [ngClass]="{'disabled': isLoading}" (click)="exampleConstruct()">
-            <i class="database large circular link icon"></i>
+            <i class="database large link icon"></i>
           </a>
         </div>
 
         <div class="column">
           <a data-inverted="" data-tooltip="Clear construct" data-position="bottom center" (click)="clear()" [ngClass]="{'disabled': !construct.tracks.length}">
-            <i class="eraser large circular link icon"></i>
+            <i class="eraser large link icon"></i>
           </a>
         </div>
 
         <div class="column">
           <a data-inverted="" data-tooltip="Add tracks" data-position="bottom center" (click)="showPicker = true" [ngClass]="{'disabled': isTracksLoading}">
-            <i class="plus square outline large circular link icon"></i>
+            <i class="plus square outline large link icon"></i>
           </a>
+        </div>
+
+        <div class="column">
+          <a nz-dropdown [nzDropdownMenu]="menu" [ngClass]="{'disabled': isTracksLoading}">
+            <i class="cogs large link icon"></i>
+          </a>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <!-- <ul nz-menu nzSelectable>
+              <li nz-menu-item>
+                <div class="ui checkbox">
+                  <input type="checkbox" name="example">
+                  <label>Show/Hide index</label>
+                </div>
+              </li>
+            </ul> -->
+          </nz-dropdown-menu>
         </div>
 
         <div class="column">
@@ -112,12 +128,6 @@
 
       </div>
 
-      <div class="credits">
-        <p>
-          Centre for Genomic Regulation ©
-        </p>
-      </div>
-
     </div>
 
     <div class="three wide column">
@@ -137,7 +147,7 @@
 
         <div class="required field" [ngClass]="{'error': label.invalid && (label.dirty || label.touched)}">
           <label>Enter a label</label>
-          <input type="text" class="transparent" placeholder="(Name this construct)" name="construct-label" #label="ngModel" required [(ngModel)]="construct.label">
+          <input type="text" class="transparent" placeholder="Label / Name" name="construct-label" #label="ngModel" required [(ngModel)]="construct.label">
         </div>
 
         <div class="inline field">
@@ -158,10 +168,20 @@
 
   </div>
 
+  <div class="row">
+    <div class="column">
+      <div class="credits">
+        <p>
+          Centre for Genomic Regulation ©
+        </p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Track SideBar -->
-<sqy-track-details (onSave)="saveElem($event)" [track]="track" *ngIf="track"></sqy-track-details>
+<sqy-track-details (onSave)="saveElem($event)" [track]="track" (onChange)="changeTrack($event)" [max]="construct.tracks.length" *ngIf="track"></sqy-track-details>
 
 <!-- Tracks Modal Picker -->
 <nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose elements" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isLoading" [nzOkDisabled]="!someSelected()" (nzOnCancel)="showPicker = false"

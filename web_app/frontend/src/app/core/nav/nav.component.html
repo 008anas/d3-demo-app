@@ -2,7 +2,7 @@
 
   <div class="left menu">
     <a class="item" routerLink="/">
-      <i class="home large icon"></i>
+      <h2 class="ui inverted header">SQrutiny</h2>
       <!-- <crg-logo></crg-logo> -->
     </a>
   </div>
@@ -15,6 +15,9 @@
       <!-- <a class="item" routerLink="/construct" routerLinkActive="active">
         Browse
       </a> -->
+      <a class="item" routerLink="/optimize/sketcher" routerLinkActive="active">
+        Sketch a construct
+      </a>
       <a class="item" routerLink="/workspace" routerLinkActive="active">
         Workspace
         <div class="ui red label" [hidden]="count < 1">{{count}}</div>

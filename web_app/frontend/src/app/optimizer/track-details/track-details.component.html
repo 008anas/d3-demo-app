@@ -110,21 +110,21 @@
     <div class="bottom three fields">
 
       <div class="field">
-        <button class="ui left labeled icon primary fluid button" name="action" type="button" [disabled]="_track['pos'] < 1">
+        <button class="ui left labeled icon primary fluid button" name="action" type="button" (click)="change(_track['pos']-1)" [disabled]="_track['pos']+1 < 2">
           <i class="left arrow icon"></i>
           Previous
         </button>
       </div>
 
       <div class="field">
-        <button class="ui right labeled icon secondary fluid button" name="action" type="submit" [disabled]="trackForm.invalid">
+        <button class="ui right labeled icon secondary fluid button" name="action" type="submit" [disabled]="!trackForm.touched || trackForm.invalid">
           <i class="save icon"></i>
           Save
         </button>
       </div>
 
       <div class="field">
-        <button class="ui right labeled icon primary fluid button" name="action" type="button" [disabled]="trackForm.invalid">
+        <button class="ui right labeled icon primary fluid button" name="action" type="button" (click)="change(_track['pos']+1)" [disabled]="_track['pos']+1 === max">
           <i class="right arrow icon"></i>
           Next
         </button>

@@ -28,7 +28,7 @@ class HistoryViewSet(viewsets.ModelViewSet):
         return Response(dict(msg='History deleted successfully!'), status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
-        return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False)
+        return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by('-created_at')
 
 
 class ClearHistoryView(APIView):

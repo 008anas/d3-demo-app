@@ -20,7 +20,7 @@ from sqrutiny.settings import BASE_DIR
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
 
-TOOL_NAME = 'BioRoboost - Optimize Sequence - '
+TOOL_NAME = 'SQrutiny - Optimize Sequence - '
 
 
 class OptimizeSequenceSkectherView(APIView):

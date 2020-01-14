@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { NgProgressModule } from '@ngx-progressbar/core';
@@ -16,6 +17,7 @@ import { DocumentationComponent } from './documentation/documentation.component'
 import { SharedModule } from './shared/shared.module';
 import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
+import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,7 @@ import { AppHttpInterceptor } from './core/app.interceptor';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     NgProgressHttpModule,
     NgProgressModule.withConfig({

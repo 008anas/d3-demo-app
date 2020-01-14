@@ -1,3 +1,13 @@
+div.ui.grid.main-h {
+  margin-bottom: 4em;
+}
+
+.ui.protvista {
+  .ui.placeholder.segment {
+    min-height: 400px;
+  }
+}
+
 .status {
   &.success {
     border-top: 3px solid #00d97e !important;
@@ -12,8 +22,8 @@
   }
 }
 
-::ng-deep .ant-statistic-content {
-  font-size: 3rem !important;
+a.delete {
+  color: #e63757;
 }
 
 h2.ui.header {
@@ -32,10 +42,6 @@ h2.ui.header {
       display: inline !important;
     }
   }
-}
-
-.ui.dividing.header {
-  width: 100%;
 }
 
 .protvista.actions {
@@ -124,18 +130,11 @@ table.sequence {
         padding: 1em;
         width: 100%;
         font-size: 0.8rem;
+        text-align: center;
 
-        input {
-          color: rgb(136, 136, 136);
-          text-align: center;
-        }
-
-        .remove {
-          visibility: hidden;
-          position: absolute;
-          top: 0;
-          right: 0;
-          font-size: 1.1rem;
+        * {
+          font-weight: normal;
+          color: rgb(136, 136, 136) !important;
         }
       }
 
@@ -158,5 +157,21 @@ table.sequence {
 .construct-summary {
   .field {
     text-align: center;
+  }
+}
+
+::ng-deep .vertical-center-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .ant-modal {
+    width: 1200px !important;
+    top: 0;
+
+    .ant-modal-body {
+      max-height: calc(90vh - 5em);
+      overflow: auto;
+    }
   }
 }

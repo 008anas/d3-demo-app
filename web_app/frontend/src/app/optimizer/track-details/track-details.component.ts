@@ -12,15 +12,16 @@ import { KEY_CODE } from 'src/app/shared/models/key-code';
 export class TrackDetailsComponent implements OnDestroy {
 
   @Output() save = new EventEmitter<Track>();
-  @Output() previous = new EventEmitter<number>();
-  @Output() next = new EventEmitter<number>();
-  dnaRegex: RegExp;
+  @Output() onChange = new EventEmitter<number>();
+  @Input() max: number;
   @Input() set track(x: Track) {
     if (x) {
       this._track = x;
+      this.max = this.max || this._track['pos'];
       this.display = true;
     }
   }
+  dnaRegex: RegExp;
   display = false;
   _track: Track = null;
   action = 'fix';
@@ -58,9 +59,15 @@ export class TrackDetailsComponent implements OnDestroy {
     this.toggleSidebar();
   }
 
-  generateSeq(seq: string) {
-    this.bases = seq.replace(/\s/g, '').split('').map(b => new Base(b));
+  change(pos: number) {
+    if (pos > -1 && pos < this.max + 1) {
+      this.onChange.emit(pos);
+    }
   }
+
+  // generateSeq(seq: string) {
+  //   this.bases = seq.replace(/\s/g, '').split('').map(b => new Base(b));
+  // }
 
   // refresh(b: Base) {
   //   if (this.action) {

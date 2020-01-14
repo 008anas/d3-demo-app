@@ -21,6 +21,6 @@ export class UserHistory extends Deserializable {
   }
 
   hasFailed() {
-    return this.job && this.job.status === 'failed';
+    return !this.isActive() && !this.isDone()
   }
 }

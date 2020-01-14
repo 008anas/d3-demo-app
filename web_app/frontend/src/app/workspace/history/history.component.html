@@ -1,7 +1,7 @@
 <!-- Loading placeholder -->
 <sqy-history-loading *ngIf="isLoading"></sqy-history-loading>
 
-<div class="ui grid p-4 mt-6" *ngIf="!isLoading">
+<div class="ui grid main-h p-4 mt-6" *ngIf="!isLoading">
 
   <!-- MAIN INFORMATION HEADER -->
 
@@ -10,37 +10,45 @@
     <div class="sixteen wide tablet seven wide computer column">
 
       <div class="ui segment status" [ngClass]="getStatusClass()">
+
         <div class="ui padded one column grid">
 
           <div class="column">
             <h2 class="ui header">
               {{history.name}}
             </h2>
-            <div class="ui icon orange basic label" *ngIf="history.isActive()">
-              <i class="spinner loading icon"></i> {{history.job.status | titlecase}}
-            </div>
-            <div class="ui icon green basic label" *ngIf="history.isDone()">
-              <i class="check icon"></i> {{history.job.status | titlecase}}
-            </div>
-            <div class="ui icon red basic label" *ngIf="history.hasFailed()">
-              <i class="exclamation triangle icon"></i> {{history.job.status | titlecase}}
-            </div>
-            <span class="date">
-              <time [dateTime]="history.created_at">{{history.created_at | date}}</time>
-            </span>
           </div>
 
-          <div class="column">
+          <div class="two column row">
 
-            <button class="ui right labeled icon primary button" type="button" name="action" (click)="getJob()">
-              <i class="sync icon"></i>
-              Refresh content
-            </button>
+            <div class="column">
+              <span class="date r">
+                <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
+              </span>
+              <div class="ui icon orange basic label" *ngIf="history.isActive()">
+                <i class="spinner loading icon"></i> {{history.job?.status | uppercase}}
+              </div>
+              <div class="ui icon green basic label" *ngIf="history.isDone()">
+                <i class="check icon"></i> {{history.job?.status | uppercase}}
+              </div>
+              <div class="ui icon red basic label" *ngIf="history.hasFailed()">
+                <i class="exclamation triangle icon"></i> {{history.job?.status | uppercase}}
+              </div>
+            </div>
 
-            <button class="ui right labeled icon red button" type="button" name="action" (click)="deleteHistory()">
-              <i class="trash icon"></i>
-              Remove
-            </button>
+            <div class="column txt-r">
+
+              <a class="m-4" (click)="getJob()">
+                <i class="sync icon"></i>
+                Refresh content
+              </a>
+
+              <a class="m-4 delete" (click)="deleteHistory()">
+                <i class="trash icon"></i>
+                Delete history
+              </a>
+
+            </div>
 
           </div>
 
@@ -54,21 +62,21 @@
               <div class="item">
                 <i class="barcode large icon"></i>
                 <div class="content">
-                  <a class="header" href="#construct">Construct</a>
+                  <a class="header" onclick="window.location.hash = 'construct'">Construct</a>
                   <p>Check Construct details</p>
                 </div>
               </div>
               <div class="item">
                 <i class="chart bar outline large icon"></i>
                 <div class="content">
-                  <a class="header">Plot area</a>
-                  <p>Go to sequence plot area</p>
+                  <a class="header" onclick="window.location.hash = 'results'">Results area</a>
+                  <p>Go to results visualizator area</p>
                 </div>
               </div>
               <div class="item">
                 <i class="barcode large icon"></i>
                 <div class="content">
-                  <a class="header" href="#construct">History identifier</a>
+                  <a class="header">History identifier</a>
                   <p>{{history.id}}</p>
                 </div>
               </div>
@@ -81,9 +89,9 @@
 
     </div>
 
-    <div class="sixteen wide tablet nine wide computer column">
+    <div class="sixteen wide tablet nine wide computer column" id="construct">
 
-      <div class="ui segment status" [ngClass]="getStatusClass()" id="construct">
+      <div class="ui segment status" [ngClass]="getStatusClass()">
 
         <div class="ui padded form construct-summary grid">
 
@@ -110,7 +118,7 @@
                 </div>
 
                 <div class="field">
-                  <label>Circluar construct:</label>
+                  <label>Circular:</label>
                   <i class="check circle green icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
                 </div>
 
@@ -166,7 +174,7 @@
                 <tbody>
                   <tr>
                     <th>DNA</th>
-                    <td>
+                    <td class="link" (click)="seq = history.construct.dna_seq">
                       {{history.construct.dna_seq}}
                     </td>
                     <td>
@@ -176,7 +184,7 @@
                   </tr>
                   <tr>
                     <th>Protein</th>
-                    <td>
+                    <td class="link" (click)="seq = history.construct.protein_seq">
                       {{history.construct.protein_seq}}
                     </td>
                     <td>
@@ -211,9 +219,7 @@
                   <div class="track" *ngFor="let t of history.construct.tracks; let i = index">
 
                     <div class="header">
-                      <div class="ui fluid transparent large input" [ngClass]="{'show': t.label}">
-                        <input type="text" name="track-label" [value]="t.label">
-                      </div>
+                      <h4>{{t.label}}</h4>
                     </div>
                     <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color}" data-inverted="" [attr.data-tooltip]="t.name" data-position="bottom center"></div>
                     <div class="index">
@@ -244,14 +250,72 @@
     </div>
   </div>
 
-  <div class="one column row">
+  <div class="one column row" id="results">
 
     <div class="column">
+      <div class="ui protvista padded grid">
 
-      <sqy-protvista [loading]="isLoading" (onRefresh)="getJob()" [data]="history.construct" [status]="history.job.status"></sqy-protvista>
+        <div class="one column row">
 
+          <div class="ui basic segment column" [ngClass]="{'disabled loading': isJobLoading}">
+
+            <div class="ui placeholder segment" *ngIf="history.hasFailed()">
+              <div class="ui icon header">
+                <i class="times circle red icon"></i>
+                It was not possible to show you the results due to an internal problem. Please try again later or <a [routerLink]="'/contact'">contact us</a>.
+              </div>
+            </div>
+
+            <div class="ui placeholder segment" *ngIf="history.isActive()">
+              <div class="ui icon header">
+                <i class="spinner loading icon"></i>
+                The results are being calculated please be patient...
+              </div>
+              <button class="ui primary right labeled icon button" (click)="getJob()" [disabled]="isJobLoading" type="button" name="refresh">
+                Refresh <i class="sync icon"></i>
+              </button>
+            </div>
+
+            <div class="ui padded segment" *ngIf="history.isDone()">
+
+              <sqy-protvista [data]="resultData"></sqy-protvista>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
     </div>
 
   </div>
 
 </div>
+
+<!-- Sequence modal-->
+<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Full sequence display" [nzClosable]="false" (nzAfterClose)="seq = null" [nzCancelText]="null" (nzOnOk)="seq = null" [(nzVisible)]="seq">
+
+  <div class="ui grid">
+
+    <div class="two column row">
+      <div class="column">
+        <strong>Sequence length:</strong>{{seq?.length}}
+      </div>
+      <div class="column txt-r">
+        <button class="ui compact right labeled icon primary button" [copy-clipboard]="seq" (copied)="notify.success('Copied!', 'top-right')">
+          <i class="copy icon"></i>
+          Copy
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+        <p>{{seq}}</p>
+      </div>
+    </div>
+
+  </div>
+
+</nz-modal>

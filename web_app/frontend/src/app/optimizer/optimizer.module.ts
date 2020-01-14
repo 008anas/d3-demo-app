@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 import { OptimizerRoutingModule } from './optimizer-routing.module';
 import { OptimizerComponent } from './optimizer.component';
@@ -22,7 +23,8 @@ import { TrackDetailsComponent } from './track-details/track-details.component';
     OptimizerRoutingModule,
     SharedModule,
     NzModalModule,
-    NzSliderModule
+    NzSliderModule,
+    NzDropDownModule
   ]
 })
 export class OptimizerModule { }
