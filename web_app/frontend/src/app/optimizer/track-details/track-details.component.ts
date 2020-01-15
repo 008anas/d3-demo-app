@@ -11,8 +11,8 @@ import { KEY_CODE } from 'src/app/shared/models/key-code';
 })
 export class TrackDetailsComponent implements OnDestroy {
 
-  @Output() save = new EventEmitter<Track>();
-  @Output() onChange = new EventEmitter<number>();
+  @Output() onSave = new EventEmitter<Track>();
+  @Output() changePos = new EventEmitter<number>();
   @Input() max: number;
   @Input() set track(x: Track) {
     if (x) {
@@ -55,13 +55,13 @@ export class TrackDetailsComponent implements OnDestroy {
   }
 
   submit() {
-    this.save.emit(this._track);
+    this.onSave.emit(this._track);
     this.toggleSidebar();
   }
 
   change(pos: number) {
     if (pos > -1 && pos < this.max + 1) {
-      this.onChange.emit(pos);
+      this.changePos.emit(pos);
     }
   }
 

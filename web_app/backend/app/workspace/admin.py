@@ -17,6 +17,6 @@ class HistoryAdmin(ModelAdmin):
         }),
     )
     date_hierarchy = 'created_at'
-    list_display = ('uuid', 'construct', 'job_id', 'deleted', 'created_at')
+    list_display = ('uuid', 'name', 'construct', 'job_id', 'deleted', 'created_at')
     search_fields = ('construct', 'job_id')
     ordering = ('created_at',)

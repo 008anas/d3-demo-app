@@ -48,7 +48,7 @@
         <div class="ui hidden divider"></div>
 
         <div class="field">
-          <button class="ui submit fluid button" type="submit" [ngClass]="{'loading': isLoading}" [disabled]="contactForm.invalid || isLoading">Send</button>
+          <button class="ui submit fluid button" type="submit" [ngClass]="{'loading': isLoading}" [disabled]="!contactForm.dirty || contactForm.invalid || isLoading">Send</button>
         </div>
 
       </form>

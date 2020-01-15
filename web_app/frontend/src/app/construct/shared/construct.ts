@@ -5,6 +5,7 @@ import { Specie } from 'src/app/shared/models/specie';
 export class Construct extends Deserializable {
   id?: string;
   label: string;
+  name?: string;
   circular?: boolean;
   sequence: string;
   dna_seq: string;

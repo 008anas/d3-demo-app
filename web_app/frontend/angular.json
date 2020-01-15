@@ -28,6 +28,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/open-vector-editor/umd/main.css",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "semantic/dist/semantic.min.css",
               "src/assets/styles/helper.scss",
@@ -42,7 +43,8 @@
               "node_modules/protvista-navigation/dist/protvista-navigation.js",
               "node_modules/protvista-sequence/dist/protvista-sequence.js",
               "node_modules/protvista-manager/dist/protvista-manager.js",
-              "node_modules/protvista-interpro-track/dist/protvista-interpro-track.js"
+              "node_modules/protvista-interpro-track/dist/protvista-interpro-track.js",
+              "node_modules/open-vector-editor/umd/open-vector-editor.js"
             ]
           },
           "configurations": {

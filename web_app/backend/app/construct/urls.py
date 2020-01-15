@@ -4,7 +4,7 @@ from rest_framework import routers
 from .views import ConstructListRetrieveView, ExportConstructView, ConstructExampleView
 
 router = routers.DefaultRouter()
-router.register(r'', ConstructListRetrieveView)
+router.register(r'', ConstructListRetrieveView, basename='Construct')
 
 urlpatterns = [
     path('export', ExportConstructView.as_view()),

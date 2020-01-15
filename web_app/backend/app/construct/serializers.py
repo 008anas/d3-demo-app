@@ -15,12 +15,12 @@ from .models import Construct, Track
 
 class TrackRetrieveSerializer(serializers.ModelSerializer):
     glyph_thumbnail = serializers.SerializerMethodField()
-    name = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     def get_glyph_thumbnail(self, track):
         return self.context['request'].build_absolute_uri(track.genetic_element.glyph_thumbnail.url)
 
-    def get_name(self, track):
+    def get_type(self, track):
         return track.genetic_element.name
 
     class Meta:

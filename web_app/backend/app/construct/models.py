@@ -15,7 +15,7 @@ class Construct(models.Model):
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
     circular = models.BooleanField(blank=True, default=False)
     example = models.BooleanField(default=False, help_text='Determine if is it used as example')
-    deleted = models.BooleanField(default=True, help_text='Determine if it is visible in the application')
+    deleted = models.BooleanField(default=False, help_text='Determine if it is visible in the application')
     created_at = models.DateTimeField('creation date', auto_now_add=True)
     updated_at = models.DateTimeField('last update', auto_now=True)
 
@@ -32,6 +32,10 @@ class Construct(models.Model):
             except Construct.DoesNotExist:
                 pass
         super(Construct, self).save(*args, **kwargs)
+
+    # def to_genbank(self):
+    #
+    #     return
 
 
 class Track(models.Model):

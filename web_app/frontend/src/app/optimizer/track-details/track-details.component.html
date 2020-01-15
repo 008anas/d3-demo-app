@@ -117,7 +117,7 @@
       </div>
 
       <div class="field">
-        <button class="ui right labeled icon secondary fluid button" name="action" type="submit" [disabled]="!trackForm.touched || trackForm.invalid">
+        <button class="ui right labeled icon secondary fluid button" name="action" type="submit" [disabled]="!trackForm.dirty || trackForm.invalid">
           <i class="save icon"></i>
           Save
         </button>

@@ -13,7 +13,7 @@ class TrackInline(admin.TabularInline):
 @admin.register(Construct)
 class ConstructAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('label', 'sequence', 'specie')}),
+        ('Information', {'fields': ('label', 'dna_seq', 'specie')}),
         ('Actions', {'fields': ('deleted', 'example')})
     )
     add_fieldsets = (
@@ -23,7 +23,7 @@ class ConstructAdmin(ModelAdmin):
         }),
     )
     date_hierarchy = 'created_at'
-    list_display = ('label', 'sequence_length', 'tracks_count', 'deleted', 'created_at')
+    list_display = ('uuid', 'label', 'dna_seq_length', 'protein_seq_length','tracks_count', 'circular', 'example', 'deleted', 'created_at')
     inlines = (TrackInline,)
     search_fields = ('label', 'sequence')
     ordering = ('created_at',)
@@ -34,5 +34,8 @@ class ConstructAdmin(ModelAdmin):
     def tracks_count(self, obj):
         return obj.tracks_count
 
-    def sequence_length(self, obj):
-        return len(obj.sequence)
+    def dna_seq_length(self, obj):
+        return len(obj.dna_seq)
+
+    def protein_seq_length(self, obj):
+        return len(obj.protein_seq)

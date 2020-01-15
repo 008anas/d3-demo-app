@@ -7,7 +7,7 @@ from app.construct.serializers import ConstructRetrieveSerializer, ConstructCrea
 
 
 class ConstructListRetrieveView(viewsets.ModelViewSet):
-    queryset = Construct.objects.filter(deleted=False)
+    queryset = Construct.objects.filter(deleted=False).order_by('-created_at')
     serializer_class = ConstructRetrieveSerializer
     lookup_field = 'uuid'
 

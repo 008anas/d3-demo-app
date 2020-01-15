@@ -94,10 +94,10 @@ class OptimizeSequenceFileView(APIView):
 
         try:
             handle = open(tmp_file.name, 'rU')
+            tracks = []
             for index, record in enumerate(SeqIO.parse(handle, "genbank")):
-                print(record)
-                print("index %i, ID = %s, length %i, with %i features"
-                      % (index, record.id, len(record.seq), len(record.features)))
+                for feature in record.features:
+                    print(feature)
         except:
             raise
         tmp_file.close()

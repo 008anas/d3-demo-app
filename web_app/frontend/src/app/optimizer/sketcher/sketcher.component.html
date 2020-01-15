@@ -46,18 +46,28 @@
         </div>
 
         <div class="column">
-          <a nz-dropdown [nzDropdownMenu]="menu" [ngClass]="{'disabled': isTracksLoading}">
+          <a nz-dropdown [nzDropdownMenu]="settingsMenu" [nzClickHide]="false" nzTrigger="click" nzOverlayClassName="ui settings dropdown" nzPlacement="bottomCenter" [ngClass]="{'disabled': isTracksLoading}">
             <i class="cogs large link icon"></i>
           </a>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
-            <!-- <ul nz-menu nzSelectable>
-              <li nz-menu-item>
-                <div class="ui checkbox">
-                  <input type="checkbox" name="example">
-                  <label>Show/Hide index</label>
+          <nz-dropdown-menu #settingsMenu="nzDropdownMenu" tabindex="0">
+            <div class="ui vertical menu transition visible" tabindex="-1" style="display: block !important;">
+              <div class="item">
+                Show/Hide indexes
+                <div class="description">
+                  <input type="checkbox" [(ngModel)]="showIndexes">
                 </div>
-              </li>
-            </ul> -->
+              </div>
+              <div class="divider"></div>
+              <div class="item">
+                <i class="dropdown icon"></i>
+                Publish To Web
+                <div class="menu transition hidden">
+                  <div class="item">Google Docs</div>
+                  <div class="item">Dropbox</div>
+                  <div class="item">Another Service...</div>
+                </div>
+              </div>
+            </div>
           </nz-dropdown-menu>
         </div>
 
@@ -70,15 +80,19 @@
                 <i class="file icon"></i>
                 PNG/JPG
               </a>
-              <a class="item disabled" [ngClass]="{'disabled': !construct.tracks.length}">
+              <a class="item disabled" (click)="downloadAs('gb')" [ngClass]="{'disabled': !construct.tracks.length}">
                 <i class="dna icon"></i>
                 GenBank
+              </a>
+              <a class="item disabled" (click)="downloadAs('fasta')" [ngClass]="{'disabled': !construct.tracks.length}">
+                <i class="dna icon"></i>
+                Fasta
               </a>
               <a class="item disabled" [ngClass]="{'disabled': !construct.tracks.length}">
                 <i class="pdf file outline icon"></i>
                 PDF
               </a>
-              <a (click)="downloadAsJson()" [ngClass]="{'disabled': !construct.tracks.length}" class="item">
+              <a (click)="downloadAs('json')" [ngClass]="{'disabled': !construct.tracks.length}" class="item">
                 <i class="file code icon"></i>
                 JSON
               </a>
@@ -119,7 +133,7 @@
             </div>
             <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color, 'background-size': 'auto '+zoom+'%'}" (click)="openSidebar(t, i)" data-inverted="" [attr.data-tooltip]="t.name"
               data-position="bottom center"></div>
-            <div class="index">
+            <div [hidden]="!showIndexes" class="index">
               {{i + 1}}
             </div>
           </div>
@@ -134,8 +148,14 @@
 
       <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()">
 
-        <div class="inline field">
-          <label>Total elements:</label> {{construct.tracks.length}}
+        <div class="inline two fields">
+          <div class="field">
+            <label>Total elements:</label> {{construct.tracks?.length || 0}}
+          </div>
+
+          <div class="field txt-r">
+            <label>Total sequence length:</label> {{totalSeq?.length || 0}}
+          </div>
         </div>
 
         <div class="required field">
@@ -153,6 +173,11 @@
         <div class="inline field">
           <label for="">Circular</label>
           <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+        </div>
+
+        <div class="inline field">
+          <label for="">Description</label>
+          <input type="text" [(ngModel)]="construct.description" name="construct-description">
         </div>
 
         <div class="field">
@@ -181,7 +206,7 @@
 </div>
 
 <!-- Track SideBar -->
-<sqy-track-details (onSave)="saveElem($event)" [track]="track" (onChange)="changeTrack($event)" [max]="construct.tracks.length" *ngIf="track"></sqy-track-details>
+<sqy-track-details (onSave)="addTrack($event)" [track]="track" (changePos)="changeTrack($event)" [max]="construct.tracks.length" *ngIf="track"></sqy-track-details>
 
 <!-- Tracks Modal Picker -->
 <nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose elements" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isLoading" [nzOkDisabled]="!someSelected()" (nzOnCancel)="showPicker = false"

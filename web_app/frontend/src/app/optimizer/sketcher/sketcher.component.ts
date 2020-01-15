@@ -4,8 +4,10 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
-import { environment as env } from 'src/environments/environment';
+import { anyToJson, jsonToGenbank, jsonToFasta } from "bio-parsers";
+import FileSaver from "file-saver";
 
+import { environment as env } from 'src/environments/environment';
 import { SpecieService } from 'src/app/shared/services/specie.service';
 import { KEY_CODE } from 'src/app/shared/models/key-code';
 import { Specie } from 'src/app/shared/models/specie';
@@ -45,6 +47,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
   zoom: number = 75;
   isTracksLoading = false;
   construct: Construct = new Construct();
+  showIndexes = true;
+  totalSeq = '';
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -80,6 +84,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.new();
     }
     this.getTracks();
+    this.getSpecies();
   }
 
   ngOnDestroy() {
@@ -90,12 +95,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.specieSrvc.getBySlug(this.specie)
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(
-        data => {
-          this.specie.deserialize(data);
-          this.getSpecies();
-        }
-      );
+      .subscribe(data => this.specie.deserialize(data));
   }
 
   getConstruct() {
@@ -119,7 +119,14 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.specieSrvc.getAll()
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
-        data => this.species = data.map((e: any) => new Specie().deserialize(e))
+        data =>
+          this.species = data.map((e: any) => {
+            const specie = new Specie().deserialize(e);
+            if (specie.default && !this.specie.slug) {
+              this.specie = Object.assign({}, specie);
+            }
+            return specie;
+          })
       );
   }
 
@@ -149,6 +156,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   clear() {
     if (confirm('Are you sure you want to clear all tracks from construct? These action cannot be reverted.')) {
       this.construct.tracks = [];
+      this.totalSeq = '';
     }
   }
 
@@ -183,15 +191,19 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.construct.tracks[0].label = 'First element';
     this.construct.tracks[0].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[0].color = '#96c582';
+    this.totalSeq += this.construct.tracks[0].sequence;
     this.construct.tracks[1].label = 'Second element';
     this.construct.tracks[1].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[1].color = '#cf0500';
+    this.totalSeq += this.construct.tracks[1].sequence;
     this.construct.tracks[2].label = 'Third element';
     this.construct.tracks[2].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[2].color = '#4b4fce';
+    this.totalSeq += this.construct.tracks[2].sequence;
     this.construct.tracks[3].label = 'Fourth element';
     this.construct.tracks[3].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[3].color = '#f0ca68';
+    this.totalSeq += this.construct.tracks[3].sequence;
   }
 
   submit() {
@@ -220,9 +232,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.track['pos'] = i;
   }
 
-  saveElem(track: Track) {
+  addTrack(track: Track) {
     if (track['pos'] > -1) {
       this.construct.tracks[track['pos']] = track;
+      this.totalSeq += track.sequence;
       delete this.construct.tracks[track['pos']]['invalid']; // Now is valid
     }
     this.track = null;
@@ -251,18 +264,33 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   // Export / Save Construct
 
-  downloadAsJson() {
+  downloadAs(op: string) {
     if (this.construct.tracks.length) {
-      const sJson = JSON.stringify({ 'construct': this.construct });
-      const element = document.createElement('a');
-      element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
-      element.setAttribute('download', `${this.construct.label}.json` || 'SQrutiny_construct.json');
-      element.style.display = 'none';
-      document.body.appendChild(element);
-      element.click(); // simulate click
-      document.body.removeChild(element);
+
+      let data, ext;
+
+      switch (op) {
+        case 'gb':
+          data = jsonToGenbank(this.construct);
+          ext = 'gbk';
+          break;
+        case 'fasta':
+          data = jsonToFasta(this.construct);
+          ext = 'fasta'
+          break;
+        case 'json':
+          data = JSON.stringify({ 'construct': this.construct });
+          ext = 'json';
+          break;
+      }
+
+      const blob = new Blob([data], { type: "text/plain" });
+      const filename = `SQrutiny_${this.construct.label || "untitled"}.${ext}`;
+      FileSaver.saveAs(blob, filename);
     }
   }
+
+
 
   goToHistory() {
     if (this.history.id) {

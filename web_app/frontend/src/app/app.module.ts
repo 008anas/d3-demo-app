@@ -18,6 +18,7 @@ import { SharedModule } from './shared/shared.module';
 import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
 import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
     HomeComponent,
     NotifyComponent,
     ContactComponent,
-    DocumentationComponent
+    DocumentationComponent,
+    EditorComponent
   ],
   imports: [
     BrowserModule,

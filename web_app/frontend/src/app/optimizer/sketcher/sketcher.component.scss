@@ -188,3 +188,13 @@ div.ui.equal.width.center.aligned.middle.aligned.grid.actions > div.column {
     }
   }
 }
+
+::ng-deep {
+  .ant-dropdown.nz-dropdown {
+    margin-top: 17px !important;
+  }
+
+  .ui.settings.dropdown .menu {
+    position: relative !important;
+  }
+}
