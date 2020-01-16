@@ -80,11 +80,11 @@
                 <i class="file icon"></i>
                 PNG/JPG
               </a>
-              <a class="item disabled" (click)="downloadAs('gb')" [ngClass]="{'disabled': !construct.tracks.length}">
+              <a class="item disabled" (click)="downloadAs('GenBank')" [ngClass]="{'disabled': !construct.tracks.length}">
                 <i class="dna icon"></i>
                 GenBank
               </a>
-              <a class="item disabled" (click)="downloadAs('fasta')" [ngClass]="{'disabled': !construct.tracks.length}">
+              <a class="item disabled" (click)="downloadAs('Fasta')" [ngClass]="{'disabled': !construct.tracks.length}">
                 <i class="dna icon"></i>
                 Fasta
               </a>
@@ -92,7 +92,7 @@
                 <i class="pdf file outline icon"></i>
                 PDF
               </a>
-              <a (click)="downloadAs('json')" [ngClass]="{'disabled': !construct.tracks.length}" class="item">
+              <a (click)="downloadAs('Json')" [ngClass]="{'disabled': !construct.tracks.length}" class="item">
                 <i class="file code icon"></i>
                 JSON
               </a>
@@ -107,7 +107,7 @@
 
   <div class="row vh-90">
 
-    <div class="thirteen wide column">
+    <div class="twelve wide column">
 
       <div class="ui placeholder segment h-1-1" [hidden]="construct.tracks.length || isLoading">
         <div class="ui icon header">
@@ -144,50 +144,120 @@
 
     </div>
 
-    <div class="three wide column">
+    <div class="four wide column">
 
-      <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()">
+      <div class="ui grid">
 
-        <div class="inline two fields">
-          <div class="field">
-            <label>Total elements:</label> {{construct.tracks?.length || 0}}
+        <div class="row">
+
+          <div class="sixteen wide column">
+
+            <div class="ui two item secondary pointing menu">
+              <a class="active item">
+                General
+              </a>
+              <a class="item">
+                Tracks
+              </a>
+            </div>
           </div>
 
-          <div class="field txt-r">
-            <label>Total sequence length:</label> {{totalSeq?.length || 0}}
+        </div>
+
+        <div class="row">
+
+          <div class="sixteen wide column">
+
+            <!-- <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()">
+
+              <div class="inline two fields">
+                <div class="field">
+                  <label>Total elements:</label> {{construct.tracks?.length || 0}}
+                </div>
+
+                <div class="field txt-r">
+                  <label>Total sequence length:</label> {{construct.sequence?.length || 0}}
+                </div>
+              </div>
+
+              <div class="required field">
+                <label class="required-msg">Required fields are shown with</label>
+              </div>
+
+              <div class="required field">
+                <label>Select organism</label>
+                <select class="ui dropdown" name="construct-specie" required [(ngModel)]="specie.tax_id">
+                  <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
+                </select>
+              </div>
+
+              <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
+                <label>Enter a label</label>
+                <input type="text" class="transparent" placeholder="Label / Name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
+              </div>
+
+              <div class="inline field">
+                <label for="">Circular</label>
+                <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+              </div>
+
+              <div class="inline field">
+                <label for="">Description</label>
+                <textarea [(ngModel)]="construct.description" name="construct-description" rows="8" cols="80"></textarea>
+              </div>
+
+              <div class="field">
+                <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks.length || constructForm.invalid" type="submit">
+                  Submit
+                  <i class="angle right icon"></i>
+                </button>
+              </div>
+
+            </form> -->
+
+            <table class="ui blue table">
+
+              <thead>
+                <tr>
+                  <th>
+                    color
+                  </th>
+                  <th>
+                    Label
+                  </th>
+                  <th>
+                    Type
+                  </th>
+                  <th>
+                    Size
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let t of construct.tracks">
+                  <td>
+                    {{t.color}}
+                  </td>
+                  <td>
+                    {{t.label}}
+                  </td>
+                  <td>
+                    {{t.type}}
+                  </td>
+                  <td>
+                    {{t.sequence?.length}}
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+
           </div>
+
         </div>
 
-        <div class="required field">
-          <label>Select organism</label>
-          <select class="ui dropdown" name="construct-specie" required [(ngModel)]="specie.tax_id">
-            <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
-          </select>
-        </div>
-
-        <div class="required field" [ngClass]="{'error': label.invalid && (label.dirty || label.touched)}">
-          <label>Enter a label</label>
-          <input type="text" class="transparent" placeholder="Label / Name" name="construct-label" #label="ngModel" required [(ngModel)]="construct.label">
-        </div>
-
-        <div class="inline field">
-          <label for="">Circular</label>
-          <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
-        </div>
-
-        <div class="inline field">
-          <label for="">Description</label>
-          <input type="text" [(ngModel)]="construct.description" name="construct-description">
-        </div>
-
-        <div class="field">
-          <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks.length || constructForm.invalid" type="submit">
-            Submit
-            <i class="angle right icon"></i>
-          </button>
-        </div>
-
-      </form>
+      </div>
 
     </div>
 

@@ -4,8 +4,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
-import { anyToJson, jsonToGenbank, jsonToFasta } from "bio-parsers";
-import FileSaver from "file-saver";
+import { saveAs } from 'file-saver';
 
 import { environment as env } from 'src/environments/environment';
 import { SpecieService } from 'src/app/shared/services/specie.service';
@@ -17,6 +16,7 @@ import { TrackService } from '../shared/track.service';
 import { NotifyService } from 'src/app/shared/services/notify.service';
 import { ConstructService } from 'src/app/construct/shared/construct.service';
 import { UserHistory } from 'src/app/workspace/shared/user-history';
+import Utils from 'src/app/shared/utils';
 
 class Category {
   name: string;
@@ -31,7 +31,6 @@ class Category {
 export class SketcherComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
-
   tracks: Track[] = [];
   track: Track = null;
   history: UserHistory = new UserHistory();
@@ -48,7 +47,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
   isTracksLoading = false;
   construct: Construct = new Construct();
   showIndexes = true;
-  totalSeq = '';
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -67,6 +65,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private notify: NotifyService
   ) {
     this.construct.tracks = [];
+    this.construct.sequence = '';
   }
 
   ngOnInit() {
@@ -156,7 +155,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   clear() {
     if (confirm('Are you sure you want to clear all tracks from construct? These action cannot be reverted.')) {
       this.construct.tracks = [];
-      this.totalSeq = '';
+      this.construct.sequence = '';
     }
   }
 
@@ -186,24 +185,24 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   exampleConstruct() {
-    this.construct.label = 'Example construct';
+    this.construct.name = 'Example construct';
     this.construct.tracks = Object.assign([], this.tracks.slice(0, 4));
     this.construct.tracks[0].label = 'First element';
     this.construct.tracks[0].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[0].color = '#96c582';
-    this.totalSeq += this.construct.tracks[0].sequence;
+    this.construct.sequence += this.construct.tracks[0].sequence;
     this.construct.tracks[1].label = 'Second element';
     this.construct.tracks[1].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[1].color = '#cf0500';
-    this.totalSeq += this.construct.tracks[1].sequence;
+    this.construct.sequence += this.construct.tracks[1].sequence;
     this.construct.tracks[2].label = 'Third element';
     this.construct.tracks[2].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[2].color = '#4b4fce';
-    this.totalSeq += this.construct.tracks[2].sequence;
+    this.construct.sequence += this.construct.tracks[2].sequence;
     this.construct.tracks[3].label = 'Fourth element';
     this.construct.tracks[3].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
     this.construct.tracks[3].color = '#f0ca68';
-    this.totalSeq += this.construct.tracks[3].sequence;
+    this.construct.sequence += this.construct.tracks[3].sequence;
   }
 
   submit() {
@@ -235,7 +234,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   addTrack(track: Track) {
     if (track['pos'] > -1) {
       this.construct.tracks[track['pos']] = track;
-      this.totalSeq += track.sequence;
+      this.construct.sequence += track.sequence;
       delete this.construct.tracks[track['pos']]['invalid']; // Now is valid
     }
     this.track = null;
@@ -267,30 +266,32 @@ export class SketcherComponent implements OnInit, OnDestroy {
   downloadAs(op: string) {
     if (this.construct.tracks.length) {
 
-      let data, ext;
+      let data, ext: string;
 
-      switch (op) {
-        case 'gb':
-          data = jsonToGenbank(this.construct);
+      switch (op.toUpperCase()) {
+        case 'GENBANK':
+          data = Utils.jsonToGenbank(this.construct);
           ext = 'gbk';
           break;
-        case 'fasta':
-          data = jsonToFasta(this.construct);
+        case 'FASTA':
+          data = Utils.jsonToFasta([this.construct]);
           ext = 'fasta'
           break;
-        case 'json':
+        case 'JSON':
           data = JSON.stringify({ 'construct': this.construct });
           ext = 'json';
           break;
       }
 
-      const blob = new Blob([data], { type: "text/plain" });
-      const filename = `SQrutiny_${this.construct.label || "untitled"}.${ext}`;
-      FileSaver.saveAs(blob, filename);
+      if (data) {
+        const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+        saveAs(blob, `SQrutiny_${this.construct.name || 'untitled'}.${ext}`);
+        this.notify.success(`Exported to ${op}!`, 'bottom-right');
+      } else {
+        this.notify.error('Unable to export', 'bottom-right');
+      }
     }
   }
-
-
 
   goToHistory() {
     if (this.history.id) {
@@ -301,7 +302,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   // TODO:
   // canDeactivate(): Observable<boolean> | boolean {
-  // if (this.newExperimentForm.dirty && !this.newExperimentForm.submitted) return confirm('If you leave you\'ll lose all the unsaved form_data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
+  // if (this.newExperimentForm.dirty && !this.newExperimentForm.submitted) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
   //
   //   return true;
   // }

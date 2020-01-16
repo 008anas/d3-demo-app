@@ -2,7 +2,7 @@ import { Deserializable } from 'src/app/shared/models/deserializable.model';
 
 export class Track extends Deserializable {
   id?: number;
-  name: string;
+  type: string;
   label?: string;
   color: string;
   start?: string;

@@ -106,7 +106,7 @@ $notification-toast-total-width: $notification-icon-size + ($notification-toast-
       }
     }
   }
-  @elseif $type == bar {
+  @else if $type == bar {
     #{$position}: 0;
     right: 0;
     left: 0;
