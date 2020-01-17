@@ -13,7 +13,7 @@ class TrackInline(admin.TabularInline):
 @admin.register(Construct)
 class ConstructAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('label', 'dna_seq', 'specie')}),
+        ('Information', {'fields': ('name', 'dna_seq', 'specie')}),
         ('Actions', {'fields': ('deleted', 'example')})
     )
     add_fieldsets = (
@@ -23,9 +23,9 @@ class ConstructAdmin(ModelAdmin):
         }),
     )
     date_hierarchy = 'created_at'
-    list_display = ('uuid', 'label', 'dna_seq_length', 'protein_seq_length','tracks_count', 'circular', 'example', 'deleted', 'created_at')
+    list_display = ('uuid', 'name', 'dna_seq_length', 'protein_seq_length','tracks_count', 'circular', 'example', 'deleted', 'created_at')
     inlines = (TrackInline,)
-    search_fields = ('label', 'sequence')
+    search_fields = ('name', 'sequence')
     ordering = ('created_at',)
 
     def get_queryset(self, request):

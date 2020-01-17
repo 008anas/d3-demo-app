@@ -4,9 +4,14 @@ from .models import GeneticElement, Category
 
 
 class GeneticElementSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
     class Meta:
         model = GeneticElement
-        fields = ('id', 'name', 'glyph_thumbnail', 'default')
+        fields = ('id', 'type', 'glyph_thumbnail', 'default')
+
+    def get_type(self, element):
+        return element.name
 
 
 class CategorySerializer(serializers.ModelSerializer):

@@ -53,12 +53,12 @@ class OptimizeSequenceSkectherView(APIView):
                             status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         history = History.objects.create(
-            name=TOOL_NAME + construct.label,
+            name=TOOL_NAME + construct.name,
             construct=construct, job_id=job.id,
             request_ip=get_request_ip(request) or None
         )
 
-        #Save history in current session
+        # Save history in current session
         self.request.session.setdefault('history', [])
         self.request.session['history'].append(str(history.uuid))
         self.request.session.modified = True
@@ -94,10 +94,22 @@ class OptimizeSequenceFileView(APIView):
 
         try:
             handle = open(tmp_file.name, 'rU')
-            tracks = []
-            for index, record in enumerate(SeqIO.parse(handle, "genbank")):
+            for record in SeqIO.parse(handle, "genbank"):
+                tracks = []
                 for feature in record.features:
-                    print(feature)
+                    if feature.type != 'source':
+                        tracks.append(dict(
+                            sequence=str(feature.extract(record.seq)),
+                            start=feature.location.nofuzzy_start,
+                            end=feature.location.nofuzzy_end))
+                serializer = ConstructCreateSerializer(data=dict(
+                    name='Form genbank',
+                    dna_seq=record.seq,
+                    specie_tax_id=record.features[0].qualifiers['db_xref'][0],
+                    tracks=tracks
+                ))
+
+                serializer.is_valid(raise_exception=True)
         except:
             raise
         tmp_file.close()

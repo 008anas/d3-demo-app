@@ -1,102 +1,130 @@
-.construct-canvas {
-  width: 100%;
-  min-height: 15em;
-  border-top: none;
-  position: relative;
-  padding: 1em;
+.sketcher {
   max-height: 100vh;
+  max-width: 100vw;
   overflow-y: auto;
 
-  .strand {
-    width: 100%;
-    min-height: 10rem;
-    display: inline-block;
+  .slider-wraper {
+    position: relative;
+    padding: 0 2.5rem;
 
-    &.invalid {
-      background-color: #ffe8ec;
-    }
+    i.icon {
+      position: absolute;
+      top: -2px;
+      line-height: 1;
+      font-size: 15px;
+      color: rgba(0, 0, 0, 0.45);
 
-    &:not(:first-child) {
-      border-left: 2px dashed #ccc;
-    }
-
-    .track {
-      display: inline-block;
-      min-width: 2rem;
-      position: relative;
-      align-items: center;
-      border-bottom: 1.5px solid #ccc;
-      margin-bottom: 4rem;
-
-      .index {
-        position: absolute;
-        bottom: -3.2em;
-        width: 100%;
-        text-align: center;
-        font-weight: 700;
-        color: #ddd;
-
-        &::before {
-          position: absolute;
-          z-index: 2;
-          content: '|';
-          top: -2em;
-          right: 50%;
-        }
-      }
-
-      .header {
-        padding: 1em;
-        width: 100%;
-        font-size: 0.8rem;
-
-        input {
-          color: rgb(136, 136, 136);
-          text-align: center;
-        }
-
-        .remove {
-          visibility: hidden;
-          position: absolute;
-          top: 0;
-          right: 0;
-          font-size: 1.1rem;
-        }
-      }
-
-      div.image {
-        cursor: pointer;
-        font-size: 1em!important;
+      &:first-child {
         left: 0;
-        width: 100%!important;
-        line-height: 0.8em!important;
-        height: 5.5em!important;
-        background-repeat: no-repeat !important;
-        background-position: 50% 100% !important;
-        z-index: 3;
       }
 
-      &:hover > .header > .remove {
-        visibility: visible;
+      &:last-child {
+        right: 0;
       }
     }
   }
-}
 
-.credits {
-  width: 100%;
-  text-align: center;
-  padding: 1.5rem;
+  .canvas {
+    height: 90vh;
 
-  p {
-    font-size: 12px;
-    font-weight: bold;
-    color: transparent;
-    background: #bdbdbd;
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    text-shadow: 0 3px 3px rgba(255,255,255,0.5);
+    .top-details-bar {
+      padding: 0.3em 1em;
+    }
+
+    .construct {
+      min-height: 75vh;
+      max-height: 85vh;
+      overflow-y: auto;
+
+      .strand {
+        width: 100%;
+        display: inline-block;
+
+        .track {
+          display: inline-block;
+          min-width: 2rem;
+          position: relative;
+          align-items: center;
+          border-bottom: 1.5px solid #ccc;
+          margin-bottom: 4rem;
+
+          &.invalid {
+            background-color: #ffe8ec;
+          }
+
+          &:not(:first-child) {
+            border-left: 2px dashed #ccc;
+          }
+
+          .index {
+            position: absolute;
+            bottom: -3.2em;
+            width: 100%;
+            text-align: center;
+            font-weight: 700;
+            color: #ddd;
+
+            &::before {
+              position: absolute;
+              z-index: 2;
+              content: '|';
+              top: -2em;
+              right: 50%;
+            }
+          }
+
+          .header {
+            padding: 1em;
+            width: 100%;
+            font-size: 0.8rem;
+
+            input {
+              color: rgb(136, 136, 136);
+              text-align: center;
+            }
+
+            .remove {
+              visibility: hidden;
+              position: absolute;
+              top: 0;
+              right: 0;
+              font-size: 1.1rem;
+            }
+          }
+
+          div.image {
+            cursor: pointer;
+            font-size: 1em!important;
+            left: 0;
+            width: 100%!important;
+            line-height: 0.8em!important;
+            height: 5.5em!important;
+            background-repeat: no-repeat !important;
+            background-position: 50% 100% !important;
+            z-index: 3;
+          }
+
+          &:hover > .header > .remove {
+            visibility: visible;
+          }
+        }
+      }
+    }
+  }
+
+  .credits {
+    text-align: center;
+
+    p {
+      font-size: 12px;
+      font-weight: bold;
+      color: transparent;
+      background: #bdbdbd;
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+      text-shadow: 0 3px 3px rgba(255,255,255,0.5);
+    }
   }
 }
 
@@ -114,6 +142,8 @@
       overflow: auto;
 
       .track-picker {
+        min-height: 500px;
+
         .column.track {
           z-index: 100 !important;
           height: 4.5em !important;
@@ -137,6 +167,12 @@
           text-align: center;
           color: grey;
           font-weight: bold;
+
+          .option {
+            position: absolute;
+            right: 0;
+            top: 50%;
+          }
         }
 
         .ui.horizontal.divider {
@@ -152,43 +188,6 @@
   visibility: visible !important;
 }
 
-div.ui.equal.width.center.aligned.middle.aligned.grid.actions > div.column {
-  padding: 1.5rem !important;
-
-  &:first-child {
-    padding-left: 4rem !important;
-  }
-
-  &:last-child {
-    padding-right: 4rem !important;
-  }
-}
-
-.actions > .column > a {
-  color: inherit !important;
-}
-
-.slider-wraper {
-  position: relative;
-  padding: 0 2.5rem;
-
-  i.icon {
-    position: absolute;
-    top: -2px;
-    line-height: 1;
-    font-size: 15px;
-    color: rgba(0, 0, 0, 0.45);
-
-    &:first-child {
-      left: 0;
-    }
-
-    &:last-child {
-      right: 0;
-    }
-  }
-}
-
 ::ng-deep {
   .ant-dropdown.nz-dropdown {
     margin-top: 17px !important;
@@ -199,6 +198,10 @@ div.ui.equal.width.center.aligned.middle.aligned.grid.actions > div.column {
   }
 }
 
-.required-msg{
+.required-msg {
   font-weight: normal !important;
+}
+
+.ui.circular.label.no-color {
+  background-color: #fff !important;
 }

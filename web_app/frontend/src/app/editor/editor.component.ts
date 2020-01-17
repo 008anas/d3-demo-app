@@ -75,7 +75,7 @@ export class EditorComponent implements OnInit, OnDestroy {
               return {
                 color: t.color, //you can override the default color for each individual feature if you want
                 name: t.label,
-                type: t.name,
+                type: t.type,
                 start: t.start, //start and end are 0-based inclusive for all annotations
                 end: t.end,
                 forward: true //ie true=positive strand     false=negative strange

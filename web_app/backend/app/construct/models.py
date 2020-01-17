@@ -1,5 +1,6 @@
 import uuid
 
+from Bio import SeqIO
 from django.db import models
 
 from app.genetic_element.models import GeneticElement
@@ -8,7 +9,7 @@ from app.specie.models import Specie
 
 class Construct(models.Model):
     uuid = models.UUIDField(editable=False, unique=True, default=uuid.uuid4)
-    label = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     dna_seq = models.TextField(blank=True)
     protein_seq = models.TextField(blank=True)
     tracks = models.ManyToManyField(GeneticElement, through='Track')
@@ -20,7 +21,7 @@ class Construct(models.Model):
     updated_at = models.DateTimeField('last update', auto_now=True)
 
     def __str__(self):
-        return self.label
+        return self.name
 
     def save(self, *args, **kwargs):
         if self.example:
@@ -33,9 +34,11 @@ class Construct(models.Model):
                 pass
         super(Construct, self).save(*args, **kwargs)
 
-    # def to_genbank(self):
-    #
-    #     return
+    def from_genbank(self, gb_file):
+        for index, record in enumerate(SeqIO.parse(gb_file, "genbank")):
+            for feature in record.features:
+                print(feature)
+        return
 
 
 class Track(models.Model):

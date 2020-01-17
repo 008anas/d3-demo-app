@@ -344,7 +344,7 @@ export default class Utils {
 
   static getCurrentDateString() {
     let date = new Date();
-    date = date.toString().split(" ");
+    // date = date.toString().split(" ");
     const day = date[2];
     const month = date[1].toUpperCase();
     const year = date[3];
@@ -380,6 +380,11 @@ export default class Utils {
       }
     });
     return fastaString;
+  }
+
+  getPosFromSeq(main_seq: string, seq: string) {
+    if (!main_seq || seq || main_seq.length < seq.length) return null;
+    return main_seq.indexOf(seq);
   }
 
 }

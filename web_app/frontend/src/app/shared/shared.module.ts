@@ -7,6 +7,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { SafeDatePipe } from './pipes/date.pipe';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
+import { IfNotIconComponent } from './if-not-icon/if-not-icon.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
     SidebarComponent,
     ColorPickerComponent,
     SafeDatePipe,
-    CopyClipboardDirective
+    CopyClipboardDirective,
+    IfNotIconComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
     SidebarComponent,
     ColorPickerComponent,
     SafeDatePipe,
-    CopyClipboardDirective
+    CopyClipboardDirective,
+    IfNotIconComponent
   ]
 })
 export class SharedModule { }

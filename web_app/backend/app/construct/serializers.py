@@ -48,7 +48,7 @@ class ConstructCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Construct
-        fields = ['label', 'tracks', 'specie_tax_id', 'circular']
+        fields = ['name', 'tracks', 'specie_tax_id', 'circular']
 
     def create(self, validated_data):
         validated_data.pop('specie_tax_id')

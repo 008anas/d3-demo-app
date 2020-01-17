@@ -47,6 +47,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
   isTracksLoading = false;
   construct: Construct = new Construct();
   showIndexes = true;
+  view = 'general';
+  locked = false;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -159,7 +161,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeElem(x: Track) {
+  removeTrack(x: Track) {
     const i: number = this.construct.tracks.indexOf(x);
     if (i !== -1) {
       this.construct.tracks.splice(i, 1);
@@ -171,7 +173,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   addTracks() {
-    if (this.someSelected()) {
+    if (this.someSelected() && !this.locked) {
       this.categories.map(c => {
         c.elements.map(e => {
           if (e.selected) {
@@ -227,8 +229,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
   // Track Details Sidebar
 
   openSidebar(e: Track, i: number) {
-    this.track = Object.assign({}, e);
-    this.track['pos'] = i;
+    if (!this.locked) {
+      this.track = Object.assign({}, e);
+      this.track['pos'] = i;
+    }
   }
 
   addTrack(track: Track) {
