@@ -10,13 +10,15 @@ import { OptimizerComponent } from './optimizer.component';
 import { SketcherComponent } from './sketcher/sketcher.component';
 import { SharedModule } from '../shared/shared.module';
 import { TrackDetailsComponent } from './track-details/track-details.component';
+import { FilterTracksPipe } from './shared/filter-tracks.pipe';
 
 
 @NgModule({
   declarations: [
     OptimizerComponent,
     SketcherComponent,
-    TrackDetailsComponent
+    TrackDetailsComponent,
+    FilterTracksPipe
   ],
   imports: [
     CommonModule,

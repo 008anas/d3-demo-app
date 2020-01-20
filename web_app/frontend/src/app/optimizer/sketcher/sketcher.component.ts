@@ -35,6 +35,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   track: Track = null;
   history: UserHistory = new UserHistory();
   trackHovered: Track = null;
+  hoveredName: string = null;
   isLoading = false;
   response: any = null;
   categories: Category[] = [];
@@ -49,6 +50,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   showIndexes = true;
   view = 'general';
   locked = false;
+  search: string;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -112,7 +114,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.constructSrvc.getExample()
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => this.construct = new Construct().deserialize(data));
+      .subscribe(data => data.length ? this.construct = new Construct().deserialize(data[0]) : this.notify.warn('Sorry but no construct was found', 'top-right'),
+        () => this.notify.warn('Sorry but no construct was found', 'top-right'));
   }
 
   getSpecies() {
@@ -187,24 +190,32 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   exampleConstruct() {
-    this.construct.name = 'Example construct';
-    this.construct.tracks = Object.assign([], this.tracks.slice(0, 4));
-    this.construct.tracks[0].label = 'First element';
-    this.construct.tracks[0].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-    this.construct.tracks[0].color = '#96c582';
-    this.construct.sequence += this.construct.tracks[0].sequence;
-    this.construct.tracks[1].label = 'Second element';
-    this.construct.tracks[1].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-    this.construct.tracks[1].color = '#cf0500';
-    this.construct.sequence += this.construct.tracks[1].sequence;
-    this.construct.tracks[2].label = 'Third element';
-    this.construct.tracks[2].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-    this.construct.tracks[2].color = '#4b4fce';
-    this.construct.sequence += this.construct.tracks[2].sequence;
-    this.construct.tracks[3].label = 'Fourth element';
-    this.construct.tracks[3].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-    this.construct.tracks[3].color = '#f0ca68';
-    this.construct.sequence += this.construct.tracks[3].sequence;
+    let flag = true;
+    if (this.construct.tracks.length > 0) {
+      if (!confirm('You really want to load an example construct? You\'re gonna lose all actual data. Proceed?')) {
+        flag = false;
+        // this.construct.name = 'Example construct';
+        // this.construct.tracks = Object.assign([], this.tracks.slice(0, 4));
+        // this.construct.tracks[0].label = 'First track';
+        // this.construct.tracks[0].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
+        // this.construct.tracks[0].color = '#96c582';
+        // this.construct.sequence += this.construct.tracks[0].sequence;
+        // this.construct.tracks[1].label = 'Second track';
+        // this.construct.tracks[1].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
+        // this.construct.tracks[1].color = '#cf0500';
+        // this.construct.sequence += this.construct.tracks[1].sequence;
+        // this.construct.tracks[2].label = 'Third track';
+        // this.construct.tracks[2].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
+        // this.construct.tracks[2].color = '#4b4fce';
+        // this.construct.sequence += this.construct.tracks[2].sequence;
+        // this.construct.tracks[3].label = 'Fourth track';
+        // this.construct.tracks[3].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
+        // this.construct.tracks[3].color = '#f0ca68';
+        // this.construct.sequence += this.construct.tracks[3].sequence;
+      }
+    }
+
+    if (flag) { this.getExampleConstruct(); }
   }
 
   submit() {
@@ -212,7 +223,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.response = null;
       this.isSubmitting = true;
       this.construct['specie_tax_id'] = this.specie.tax_id;
-      this.construct.tracks.map(t => t['element'] = t.id);
+      this.construct.tracks.map(t => t['track'] = t.id);
       this.http.post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
         .pipe(finalize(() => this.isSubmitting = false))
         .subscribe(
@@ -250,6 +261,11 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
+  moveTrack(x: number, i: number) {
+    const pos = x + i;
+    if (-1 < pos && pos <= this.construct.tracks.length - 1) { this.construct.tracks = Utils.array_move(this.construct.tracks, x, pos); }
+  }
+
   checkTracks() {
     let flag = true;
     this.construct.tracks.map(t => {
@@ -279,10 +295,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
           break;
         case 'FASTA':
           data = Utils.jsonToFasta([this.construct]);
-          ext = 'fasta'
+          ext = 'fasta';
           break;
         case 'JSON':
-          data = JSON.stringify({ 'construct': this.construct });
+          data = JSON.stringify({ construct: this.construct });
           ext = 'json';
           break;
       }

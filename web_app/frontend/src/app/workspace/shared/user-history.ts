@@ -21,6 +21,6 @@ export class UserHistory extends Deserializable {
   }
 
   hasFailed() {
-    return !this.isActive() && !this.isDone()
+    return !this.isActive() && !this.isDone();
   }
 }

@@ -2,6 +2,7 @@ import sys
 import tempfile
 
 import django_rq
+from sbol import *
 from Bio import SeqIO
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
@@ -94,22 +95,69 @@ class OptimizeSequenceFileView(APIView):
 
         try:
             handle = open(tmp_file.name, 'rU')
-            for record in SeqIO.parse(handle, "genbank"):
-                tracks = []
-                for feature in record.features:
-                    if feature.type != 'source':
-                        tracks.append(dict(
-                            sequence=str(feature.extract(record.seq)),
-                            start=feature.location.nofuzzy_start,
-                            end=feature.location.nofuzzy_end))
-                serializer = ConstructCreateSerializer(data=dict(
-                    name='Form genbank',
-                    dna_seq=record.seq,
-                    specie_tax_id=record.features[0].qualifiers['db_xref'][0],
-                    tracks=tracks
-                ))
 
-                serializer.is_valid(raise_exception=True)
+            setHomespace('http://sys-bio.org')
+            doc = Document()
+
+            gene = ComponentDefinition('gene_example')
+            r0010 = ComponentDefinition('R0010')
+            b0032 = ComponentDefinition('B0032')
+            e0040 = ComponentDefinition('E0040')
+            b0012 = ComponentDefinition('B0012')
+
+            r0010.roles = SO_PROMOTER
+            b0032.roles = SO_CDS
+            e0040.roles = SO_RBS
+            b0012.roles = SO_TERMINATOR
+
+            doc.addComponentDefinition(gene)
+            doc.addComponentDefinition([r0010, b0032, e0040, b0012])
+
+            gene.assemblePrimaryStructure([r0010, b0032, e0040, b0012])
+
+            first = gene.getFirstComponent()
+            print(first.identity)
+            last = gene.getLastComponent()
+            print(last.identity)
+
+            r0010.sequence = Sequence('R0010', 'ggctgca')
+            b0032.sequence = Sequence('B0032', 'aattatataaa')
+            e0040.sequence = Sequence('E0040', "atgtaa")
+            b0012.sequence = Sequence('B0012', 'attcga')
+
+            target_sequence = gene.compile()
+            print(gene.sequence.elements)
+
+            doc.export
+
+            # for record in SeqIO.parse(handle, "genbank"):
+            #     tracks = []
+            #     tax_id = record.features[0].qualifiers['db_xref'][0].partition('taxon:')[2]
+            #     for feature in record.features:
+            #         if feature.type != 'source':
+            #             tracks.append(dict(
+            #                 element=10,
+            #                 sequence=str(feature.extract(record.seq)),
+            #                 start=feature.location.nofuzzy_start,
+            #                 end=feature.location.nofuzzy_end))
+            #     serializer = ConstructCreateSerializer(data=dict(
+            #         name='From genbank',
+            #         dna_seq=record.seq,
+            #         specie_tax_id=tax_id,
+            #         tracks=tracks
+            #     ))
+            #
+            #     serializer.is_valid(raise_exception=True)
+            #
+            #     specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
+            #
+            #     if specie is None:
+            #         return Response({'msg': 'Specie with ncbi tax id ' + str(
+            #             serializer.validated_data['specie_tax_id']) + ' was not found'},
+            #                         status=status.HTTP_404_NOT_FOUND)
+            #
+            #     construct = serializer.save(specie=specie)
+
         except:
             raise
         tmp_file.close()

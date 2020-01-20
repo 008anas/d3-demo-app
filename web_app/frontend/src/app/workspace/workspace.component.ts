@@ -14,7 +14,7 @@ import { UserHistory } from './shared/user-history';
 export class WorkspaceComponent implements OnInit {
 
   histories: UserHistory[] = [];
-  isLoading: boolean = false;
+  isLoading = false;
 
   constructor(
     private router: Router,

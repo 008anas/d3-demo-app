@@ -4,61 +4,32 @@ const nameUtils = {
 	 * @param {String} pName
 	 * @returns {String} New name.
 	 */
-  reformatName: function(pName: string): string {
-    return pName.toString().replace(/ /g, '_');
-  },
+  reformatName: (pName: string): string => pName.toString().replace(/ /g, '_'),
 };
-const pragmasAndTypes = [
-  { //primers don't need a pragma because they already have a feature type of primer
-    type: "primers"
-  },
-  {
-    pragma: "Teselagen_Part",
-    type: "parts"
-  },
-  {
-    pragma: "j5_warning",
-    type: "warnings"
-  },
-  {
-    pragma: "j5_assembly_piece",
-    type: "assemblyPieces"
-  },
-  {
-    pragma: "j5_lineage_annotation",
-    type: "lineageAnnotations"
-  }
-]
 const StringUtil = {
   /** Trims white space at beginning and end of string
    * @param {String} line
    * @returns {String} line
    */
-  trim: function(line: string): string {
-    return line.replace(/^\s+|\s+$/g, "");
-  },
+  trim: (line: string): string => line.replace(/^\s+|\s+$/g, ''),
 
   /** Trims white space at beginning string
    * @param {String} line
    * @returns {String} line
    */
-  ltrim: function(line: string): string {
-    return line.replace(/^\s+/, "");
-  },
+  ltrim: (line: string): string => line.replace(/^\s+/, ''),
 
   /** Trims white space at end of string
    * @param {String} line
    * @returns {String} line
    */
-  rtrim: function(line: string): string {
-    return line.replace(/\s+$/, "");
-  },
+  rtrim: (line: string): string => line.replace(/\s+$/, ''),
 
   /** Pads white space at beginning of string
    * @param {String} line
    * @returns {String} line
    */
-  lpad: function(line: string, padString, length): string {
+  lpad: (line: string, padString, length): string => {
     let str = line;
     while (str.length < length) str = padString + str;
     return str;
@@ -68,7 +39,7 @@ const StringUtil = {
    * @param {String} line
    * @returns {String} line
    */
-  rpad: function(line: string, padString, length): string {
+  rpad: (line: string, padString, length): string => {
     let str = line;
     while (str.length < length) str = str + padString;
     return str;
@@ -99,34 +70,34 @@ export default class Utils {
     if (!serSeq) return false;
 
     try {
-      if (serSeq.isProtein || serSeq.type === "protein" || serSeq.type === "AA") {
+      if (serSeq.isProtein || serSeq.type === 'protein' || serSeq.type === 'AA') {
         serSeq.isProtein = true;
         serSeq.sequence = serSeq.proteinSequence || serSeq.sequence;
         options.isProtein = true;
       }
       let content = null;
-      const cutUp = typeof serSeq.sequence === "string" ? Utils.cutUpStr : Utils.cutUpArray;
-      if (!serSeq.sequence) serSeq.sequence = "";
+      const cutUp = typeof serSeq.sequence === 'string' ? Utils.cutUpStr : Utils.cutUpArray;
+      if (!serSeq.sequence) serSeq.sequence = '';
 
       let lines = [];
       lines.push(Utils.createGenbankLocus(serSeq, options));
       if (serSeq.definition || serSeq.description) {
-        lines.push("DEFINITION  " + (serSeq.definition || serSeq.description));
+        lines.push('DEFINITION  ' + (serSeq.definition || serSeq.description));
       }
 
       if (serSeq.extraLines) {
         lines = lines.concat(serSeq.extraLines);
       }
       if (serSeq.comments) {
-        serSeq.comments.forEach((comment) => lines.push("COMMENT             " + comment));
+        serSeq.comments.forEach((comment: string) => lines.push('COMMENT             ' + comment));
       }
       if (serSeq.teselagen_unique_id) {
         lines.push(
-          "COMMENT             teselagen_unique_id: " + serSeq.teselagen_unique_id
+          'COMMENT             teselagen_unique_id: ' + serSeq.teselagen_unique_id
         );
       }
       if (serSeq.library) {
-        lines.push("COMMENT             library: " + serSeq.library);
+        lines.push('COMMENT             library: ' + serSeq.library);
       }
 
       return content;
@@ -152,31 +123,31 @@ export default class Utils {
       // serSeq.features.foreach((feat, index) => {
       //   if (!printedFeatureHeader) {
       //     printedFeatureHeader = true;
-      //     lines.push("FEATURES             Location/Qualifiers");
+      //     lines.push('FEATURES             Location/Qualifiers');
       //   }
       //   lines.push(Utils.featureToGenbankString(feat, options));
       // });
       //
-      // lines.push("ORIGIN      ");
+      // lines.push('ORIGIN      ');
       // for (let i = 0; i < serSeq.sequence.length; i = i + 60) {
       //   const line = [];
-      //   const ind = StringUtil.lpad("" + (i + 1), " ", 9);
+      //   const ind = StringUtil.lpad('' + (i + 1), ' ', 9);
       //   line.push(ind);
       //
       //   for (let j = i; j < i + 60; j = j + 10) {
       //     // line.push(serSeq.sequence.slice(j,j+10).join(''));
       //     line.push(cutUp(serSeq.sequence, j, j + 10));
       //   }
-      //   lines.push(line.join(" "));
+      //   lines.push(line.join(' '));
       // }
       //
-      // lines.push("//");
+      // lines.push('//');
       //
-      // content = lines.join("\r\n");
+      // content = lines.join('\r\n');
       // // return cb(err, content);
       // return content;
     } catch (e) {
-      console.warn("Error processing sequence << Check jsonToGenbank.js");
+      console.warn('Error processing sequence << Check jsonToGenbank.js');
       console.warn(serSeq);
       console.warn(e.stack);
       return false;
@@ -184,7 +155,7 @@ export default class Utils {
   }
 
   static cutUpArray(val, start, end) {
-    return val.slice(start, end).join("");
+    return val.slice(start, end).join('');
   }
 
   static cutUpStr(val, start, end) {
@@ -193,54 +164,54 @@ export default class Utils {
 
   static createGenbankLocus(serSeq, options) {
     if (serSeq.sequence.symbols) {
-      serSeq.sequence = serSeq.sequence.symbols.split("");
+      serSeq.sequence = serSeq.sequence.symbols.split('');
     }
 
     let tmp;
     let dnaType;
     if (serSeq.isProtein) {
-      dnaType = "";
-    } else if (serSeq.type === "RNA") {
-      dnaType = "RNA";
+      dnaType = '';
+    } else if (serSeq.type === 'RNA') {
+      dnaType = 'RNA';
     } else {
-      dnaType = "DNA";
+      dnaType = 'DNA';
     }
     const date = Utils.getCurrentDateString();
 
-    let line = StringUtil.rpad("LOCUS", " ", 12);
-    let nameToUse = serSeq.name || "Untitled_Sequence";
+    let line = StringUtil.rpad('LOCUS', ' ', 12);
+    let nameToUse = serSeq.name || 'Untitled_Sequence';
     nameToUse = options.reformatSeqName
       ? nameUtils.reformatName(nameToUse)
       : nameToUse;
-    line += StringUtil.rpad(nameToUse, " ", 16);
-    line += " "; // T.H line 2778 of GenbankFormat.as col 29 space
-    line += StringUtil.lpad(String(serSeq.sequence.length), " ", 11);
-    line += serSeq.isProtein ? " aa " : " bp "; // col 41
-    // if (strandType !== "") {
-    // 	tmp =  strandType + "-";
+    line += StringUtil.rpad(nameToUse, ' ', 16);
+    line += ' '; // T.H line 2778 of GenbankFormat.as col 29 space
+    line += StringUtil.lpad(String(serSeq.sequence.length), ' ', 11);
+    line += serSeq.isProtein ? ' aa ' : ' bp '; // col 41
+    // if (strandType !== '') {
+    // 	tmp =  strandType + '-';
     // } else {
-    tmp = "";
+    tmp = '';
     // }
-    line += StringUtil.lpad(tmp, " ", 3);
-    line += StringUtil.rpad(dnaType, " ", 6);
-    line += "  ";
+    line += StringUtil.lpad(tmp, ' ', 3);
+    line += StringUtil.rpad(dnaType, ' ', 6);
+    line += '  ';
 
-    if (!serSeq.circular || serSeq.circular === "0") {
-      line += "linear  ";
-      //line += "        ";
+    if (!serSeq.circular || serSeq.circular === '0') {
+      line += 'linear  ';
+      //line += '        ';
     } else {
-      line += "circular";
+      line += 'circular';
     }
 
-    line += " "; //col 64
+    line += ' '; //col 64
     if (serSeq.gbDivision) {
-      line += StringUtil.rpad(serSeq.gbDivision || "SYN", " ", 10);
+      line += StringUtil.rpad(serSeq.gbDivision || 'SYN', ' ', 10);
     }
     // }
-    line += " "; // col 68
+    line += ' '; // col 68
     // DOES NOT PARSE DATE USEFULLY ORIGINALLY!
     line += date;
-    //line += "\n";
+    //line += '\n';
 
     return line;
   }
@@ -248,8 +219,8 @@ export default class Utils {
   static featureToGenbankString(feat, options) {
     const lines = [];
 
-    const line = "     " + StringUtil.rpad(feat.type || "misc_feature", " ", 16);
-    let locStr = "";
+    const line = '     ' + StringUtil.rpad(feat.type || 'misc_feature', ' ', 16);
+    let locStr = '';
 
     //for(var i=0;i<feat.locations.length;i++) {
     //	var loc = feat.locations[i];
@@ -263,66 +234,64 @@ export default class Utils {
             parseInt(loc.start, 10) + (options.inclusive1BasedStart ? 0 : 1),
             options.isProtein
           ) +
-          ".." +
+          '..' +
           Utils.getProteinEnd(
             parseInt(loc.end, 10) + (options.inclusive1BasedEnd ? 0 : 1),
             options.isProtein
           );
 
         if (i !== feat.locations.length - 1) {
-          locStr += ",";
+          locStr += ',';
         }
       });
-      locStr = "join(" + locStr + ")";
+      locStr = 'join(' + locStr + ')';
     } else {
       locStr +=
         Utils.getProteinStart(
           parseInt(feat.start, 10) + (options.inclusive1BasedStart ? 0 : 1),
           options.isProtein
         ) +
-        ".." +
+        '..' +
         Utils.getProteinEnd(
           parseInt(feat.end, 10) + (options.inclusive1BasedEnd ? 0 : 1),
           options.isProtein
         );
     }
 
-    // locStr = locStr.join(",");
+    // locStr = locStr.join(',');
 
     if (feat.strand === -1) {
-      locStr = "complement(" + locStr + ")";
+      locStr = 'complement(' + locStr + ')';
     }
 
     lines.push(line + locStr);
 
     lines.push(
-      Utils.featureNoteInDataToGenbankString("label", feat.name || "Untitled Feature")
+      Utils.featureNoteInDataToGenbankString('label', feat.name || 'Untitled Feature')
     );
 
     let notes = feat.notes;
     if (notes) {
       try {
-        if (typeof notes === "string") {
+        if (typeof notes === 'string') {
           try {
             notes = JSON.parse(notes);
           } catch (e) {
-            console.warn("Warning: Note incorrectly sent as a string.");
+            console.warn('Warning: Note incorrectly sent as a string.');
             notes = {}; //set the notes to a blank object
           }
         }
-        Object.keys(notes).forEach(function(key) {
-          if (key === "color" || key === "labelColor") return; //we'll handle this below
+        Object.keys(notes).forEach((key) => {
+          if (key === 'color' || key === 'labelColor') return; //we'll handle this below
           if (notes[key] instanceof Array) {
-            notes[key].forEach(function(value) {
-              lines.push(Utils.featureNoteInDataToGenbankString(key, value));
-            });
+            notes[key].forEach((value) => lines.push(Utils.featureNoteInDataToGenbankString(key, value)));
           } else {
-            console.warn("Warning: Note object expected array values");
+            console.warn('Warning: Note object expected array values');
             console.warn(notes);
           }
         });
       } catch (e) {
-        console.warn("Warning: Note cannot be processed");
+        console.warn('Warning: Note cannot be processed');
       }
     }
     feat.color = (feat.notes && feat.notes.color) || feat.color;
@@ -333,22 +302,22 @@ export default class Utils {
     //   color.rgb(feat.color).string() !==
     //   color.rgb(featureColors[feat.type]).string() //don't save a color note if the color is already the same as our defaults
     // ) {
-    //   lines.push(Utils.featureNoteInDataToGenbankString("color", feat.color));
+    //   lines.push(Utils.featureNoteInDataToGenbankString('color', feat.color));
     // }
     if (feat.labelColor) {
-      lines.push(Utils.featureNoteInDataToGenbankString("labelColor", feat.labelColor));
+      lines.push(Utils.featureNoteInDataToGenbankString('labelColor', feat.labelColor));
     }
 
-    return lines.join("\r\n");
+    return lines.join('\r\n');
   }
 
   static getCurrentDateString() {
     let date = new Date();
-    // date = date.toString().split(" ");
+    // date = date.toString().split(' ');
     const day = date[2];
     const month = date[1].toUpperCase();
     const year = date[3];
-    return day + "-" + month + "-" + year;
+    return day + '-' + month + '-' + year;
   }
 
   static getProteinStart(val, isProtein) {
@@ -361,7 +330,7 @@ export default class Utils {
   }
 
   static featureNoteInDataToGenbankString(name, value) {
-    return StringUtil.lpad("/", " ", 22) + name + '="' + value + '"';
+    return StringUtil.lpad('/', ' ', 22) + name + '="' + value + '"';
   }
 
   static jsonToFasta(data: any[]) {
@@ -371,7 +340,7 @@ export default class Utils {
     data.forEach((c: any) => {
       if (c.sequence) {
         console.log(c.sequence);
-        fastaString += `>${c.name || "Untitled Sequence"}`;
+        fastaString += `>${c.name || 'Untitled Sequence'}`;
         fastaString += `|${c.sequence.length}`;
         fastaString += c.description ? '|' + c.description : '';
         fastaString += '|' + (c.circular ? 'circular' : 'linear') || 'linear';

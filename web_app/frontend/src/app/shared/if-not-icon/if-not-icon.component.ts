@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
 export class IfNotIconComponent {
 
   @Input() value: any;
-  @Input() icon: string = 'ban';
-  @Input() iconColor: string = 'red';
+  @Input() icon = 'ban';
+  @Input() iconColor = 'red';
 
 }

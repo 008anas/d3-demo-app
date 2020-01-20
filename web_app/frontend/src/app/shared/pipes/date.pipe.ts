@@ -17,7 +17,7 @@ export class SafeDatePipe implements PipeTransform {
   transform(value: Date | string, ...args: any[]): any {
     if (value) {
       const [format] = args;
-      if (format && format.toLowerCase() === 'ago') return this.dateAgo(value);
+      if (format && format.toLowerCase() === 'ago') { return this.dateAgo(value); }
       value = moment(value).format(format);
     }
     return value;

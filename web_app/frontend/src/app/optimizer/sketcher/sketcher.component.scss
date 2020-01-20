@@ -202,6 +202,15 @@
   font-weight: normal !important;
 }
 
-.ui.circular.label.no-color {
-  background-color: #fff !important;
+.ui.circular.label {
+  font-weight: bold;
+
+  &:not(.no-color) {
+    color: #fff !important;
+  }
+
+  &.no-color {
+    background-color: #fff !important;
+    color: black !important;
+  }
 }
