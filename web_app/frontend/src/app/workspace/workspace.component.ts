@@ -42,7 +42,7 @@ export class WorkspaceComponent implements OnInit {
       this.historySrvc.deleteAll()
         .pipe(finalize(() => this.isLoading = false))
         .subscribe(data => {
-          this.notify.success(data.msg, 'bottom-right');
+          this.notify.success(data.msg);
           this.getUserHistory();
         });
     }
@@ -54,7 +54,7 @@ export class WorkspaceComponent implements OnInit {
       this.historySrvc.delete(id)
         .pipe(finalize(() => this.isLoading = false))
         .subscribe(() => {
-          this.notify.success('History deleted!', 'bottom-right');
+          this.notify.success('History deleted!');
           this.getUserHistory();
         });
     }

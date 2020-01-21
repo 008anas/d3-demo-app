@@ -11,6 +11,8 @@ import { SketcherComponent } from './sketcher/sketcher.component';
 import { SharedModule } from '../shared/shared.module';
 import { TrackDetailsComponent } from './track-details/track-details.component';
 import { FilterTracksPipe } from './shared/filter-tracks.pipe';
+import { FromFileComponent } from './from-file/from-file.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -18,7 +20,8 @@ import { FilterTracksPipe } from './shared/filter-tracks.pipe';
     OptimizerComponent,
     SketcherComponent,
     TrackDetailsComponent,
-    FilterTracksPipe
+    FilterTracksPipe,
+    FromFileComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +29,8 @@ import { FilterTracksPipe } from './shared/filter-tracks.pipe';
     SharedModule,
     NzModalModule,
     NzSliderModule,
-    NzDropDownModule
+    NzDropDownModule,
+    ReactiveFormsModule
   ]
 })
 export class OptimizerModule { }

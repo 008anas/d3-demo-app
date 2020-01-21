@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { NotifyService } from '../services/notify.service';
 import { Notify, NotifyType } from '../models/notify';
 
-
 @Component({
   selector: 'notify',
   templateUrl: './notify.component.html',

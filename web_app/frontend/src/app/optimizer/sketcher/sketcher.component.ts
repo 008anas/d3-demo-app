@@ -297,6 +297,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
           data = Utils.jsonToFasta([this.construct]);
           ext = 'fasta';
           break;
+        case 'XLSX':
+        // TODO: 
+          break;
         case 'JSON':
           data = JSON.stringify({ construct: this.construct });
           ext = 'json';
@@ -306,9 +309,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
       if (data) {
         const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
         saveAs(blob, `SQrutiny_${this.construct.name || 'untitled'}.${ext}`);
-        this.notify.success(`Exported to ${op}!`, 'bottom-right');
+        this.notify.success(`Exported to ${op}!`);
       } else {
-        this.notify.error('Unable to export', 'bottom-right');
+        this.notify.error('Unable to export');
       }
     }
   }

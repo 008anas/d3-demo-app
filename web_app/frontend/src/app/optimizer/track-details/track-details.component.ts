@@ -65,38 +65,4 @@ export class TrackDetailsComponent implements OnDestroy {
     }
   }
 
-  // generateSeq(seq: string) {
-  //   this.bases = seq.replace(/\s/g, '').split('').map(b => new Base(b));
-  // }
-
-  // refresh(b: Base) {
-  //   if (this.action) {
-  //     switch (this.action.toLowerCase()) {
-  //       case 'fix':
-  //         b.fix = true;
-  //         break;
-  //       case 'remove':
-  //         b.remove = true;
-  //         break;
-  //     }
-  //   }
-  // }
-
-  // restart() {
-  //   this.bases.forEach(s => { s.remove, s.fix = false; });
-  // }
-
-  // doAction(b: Base) {
-  //   if (this.action) {
-  //     switch (this.action.toLowerCase()) {
-  //       case 'fix':
-  //         b.fix = !b.fix;
-  //         break;
-  //       case 'remove':
-  //         b.remove = !b.remove;
-  //         break;
-  //     }
-  //   }
-  // }
-
 }

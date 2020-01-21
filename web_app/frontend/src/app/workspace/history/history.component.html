@@ -5,9 +5,9 @@
 
   <!-- MAIN INFORMATION HEADER -->
 
-  <div class="row">
+  <div class="row" id="history">
 
-    <div class="sixteen wide tablet seven wide computer column">
+    <div class="sixteen wide column">
 
       <div class="ui segment status" [ngClass]="getStatusClass()">
 
@@ -89,7 +89,10 @@
 
     </div>
 
-    <div class="sixteen wide tablet nine wide computer column" id="construct">
+  </div>
+
+  <div class="row" id="construct">
+    <div class="sixteen column">
 
       <div class="ui segment status" [ngClass]="getStatusClass()">
 
@@ -105,7 +108,7 @@
 
             <div class="column">
 
-              <div class="three inline fields">
+              <div class="four inline fields">
 
                 <div class="field">
                   <label>Label:</label>
@@ -120,6 +123,10 @@
                 <div class="field">
                   <label>Circular:</label>
                   <i class="check circle green icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
+                </div>
+
+                <div class="field">
+                  <a [routerLink]="['/editor', history.construct.id]">See this construct on vector editor <i class="external link icon"></i> </a>
                 </div>
 
               </div>
@@ -179,7 +186,7 @@
                     </td>
                     <td>
                       <strong>Total:</strong>
-                      {{history.construct.dna_seq.length}}
+                      {{history.construct.dna_seq.length}} bps
                     </td>
                   </tr>
                   <tr>
@@ -239,16 +246,9 @@
       </div>
 
     </div>
-
   </div>
 
   <!-- GRAPHS -->
-
-  <div class="one column row">
-    <div class="column">
-      <h2 class="ui dividing header">Plot area</h2>
-    </div>
-  </div>
 
   <div class="one column row" id="results">
 

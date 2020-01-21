@@ -33,6 +33,7 @@ export class HistoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
     this.getJob();
   }
@@ -40,7 +41,10 @@ export class HistoryComponent implements OnInit {
   getJob() {
     this.isJobLoading = true;
     this.jobSrvc.getById(this.history.job_id)
-      .pipe(finalize(() => this.isJobLoading = false))
+      .pipe(finalize(() => {
+        this.isLoading = false;
+        this.isJobLoading = false;
+      }))
       .subscribe(
         (data: Job) => {
           this.history.job = data;
@@ -75,7 +79,7 @@ export class HistoryComponent implements OnInit {
           this.notify.success('History deleted!', 'bottom-right', true);
           this.router.navigate(['/workspace']);
         },
-          err => this.notify.error(err.msg || 'Unable to delete history', 'bottom-right')
+          err => this.notify.error(err.msg || 'Unable to delete history')
         );
     }
   }

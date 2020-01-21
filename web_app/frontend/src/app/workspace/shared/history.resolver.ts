@@ -12,6 +12,6 @@ export class HistoryResolver implements Resolve<Observable<UserHistory>> {
   }
 
   resolve(route: ActivatedRouteSnapshot) {
-    return this.historySrvc.getById(route.paramMap.get('id'));
+    return this.historySrvc.getById(route.paramMap.get('history'));
   }
 }

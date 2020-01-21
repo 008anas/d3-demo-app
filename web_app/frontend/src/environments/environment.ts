@@ -16,14 +16,14 @@ export const environment = {
     optimize: {
       root: 'optimize',
       sketcher: 'sketcher',
-      from_file: 'file'
+      from_file: 'upload'
     },
     construct: {
       root: 'construct'
     },
     workspace: {
       root: 'workspace',
-      detail: ':id'
+      detail: ':history'
     },
     documentation: 'documentation',
     home: 'home',

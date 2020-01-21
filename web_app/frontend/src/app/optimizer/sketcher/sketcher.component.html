@@ -46,11 +46,6 @@
               <div class="item">
                 <i class="dropdown icon"></i>
                 Publish To Web
-                <div class="menu transition hidden">
-                  <div class="item">Google Docs</div>
-                  <div class="item">Dropbox</div>
-                  <div class="item">Another Service...</div>
-                </div>
               </div>
             </div>
           </nz-dropdown-menu>
@@ -60,6 +55,13 @@
           <button class="ui circular icon button" [ngClass]="{'orange': locked}" data-inverted="" [attr.data-tooltip]="!locked ? 'Lock' : 'Unlock'" data-position="bottom center" (click)="locked = !locked">
             <i class="lock icon" [ngClass]="{'open': !locked}"></i>
           </button>
+        </div>
+
+        <div class="column">
+          <div class="ui icon fluid input">
+            <i class="search icon"></i>
+            <input type="text" placeholder="Search...">
+          </div>
         </div>
 
         <div class="column">

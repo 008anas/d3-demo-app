@@ -3,15 +3,15 @@
   <div class="equal width center aligned middle aligned row protvista actions">
 
     <div class="column">
-      <a (click)="clearHighlight()" data-inverted="" data-tooltip="Reset charts" data-position="top center">
-        <i class="sync large link icon"></i>
-      </a>
+      <button class="ui circular icon button" data-inverted="" data-tooltip="Reset charts" data-position="top center" (click)="clearHighlight()">
+        <i class="sync icon"></i>
+      </button>
     </div>
 
     <div class="column">
-      <a (click)="clearHighlight()" data-inverted="" data-tooltip="Clear highlight" data-position="top center">
-        <i class="eraser large link circular icon"></i>
-      </a>
+      <button class="ui circular icon button" data-inverted="" data-tooltip="Clear highlight" data-position="top center" (click)="clearHighlight()">
+        <i class="eraser icon"></i>
+      </button>
     </div>
 
     <div class="column">
@@ -26,23 +26,6 @@
       <select class="ui select" placeholder="Enzime restriction" name="">
         <option value="">AAA</option>
       </select>
-    </div>
-
-    <div class="column">
-      <button class="ui primary right labeled icon button simple dropdown" type="button">
-        Export to
-        <i class="dropdown icon"></i>
-        <div class="menu">
-          <div class="item">
-            <i class="file icon"></i>
-            PNG/JPG
-          </div>
-          <div class="item">
-            <i class="dna icon"></i>
-            GenBank
-          </div>
-        </div>
-      </button>
     </div>
 
     <div class="column">

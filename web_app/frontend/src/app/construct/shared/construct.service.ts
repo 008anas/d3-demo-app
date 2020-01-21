@@ -22,7 +22,7 @@ export class ConstructService {
   }
 
   getById(id: string): Observable<Construct> {
-    return this.http.get<Construct>(`${this.url}${id}`).pipe();
+    return this.http.get<Construct>(`${this.url}${id}/`).pipe();
   }
 
   getExample(): Observable<Construct[]> {

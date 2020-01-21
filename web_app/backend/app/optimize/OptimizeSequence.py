@@ -128,8 +128,7 @@ class OptimizeSequenceFileView(APIView):
             target_sequence = gene.compile()
             print(gene.sequence.elements)
 
-            doc.export
-
+            print(doc.convert('FASTA'))
             # for record in SeqIO.parse(handle, "genbank"):
             #     tracks = []
             #     tax_id = record.features[0].qualifiers['db_xref'][0].partition('taxon:')[2]

@@ -8,6 +8,7 @@ import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { SafeDatePipe } from './pipes/date.pipe';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
 import { IfNotIconComponent } from './if-not-icon/if-not-icon.component';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { IfNotIconComponent } from './if-not-icon/if-not-icon.component';
     ColorPickerComponent,
     SafeDatePipe,
     CopyClipboardDirective,
-    IfNotIconComponent
+    IfNotIconComponent,
+    ProgressBarComponent
   ],
   imports: [
     CommonModule,
