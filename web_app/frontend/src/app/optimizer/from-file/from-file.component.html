@@ -2,24 +2,54 @@
 
   <div class="row">
     <div class="column">
-      <h1 class="ui header">Upload a file: GenBank, Fasta, GFF, SBOL</h1>
+      <h1 class="ui header">Upload a file: GenBank, Fasta, GFF or SBOL</h1>
     </div>
   </div>
 
   <div class="row">
 
     <div class="column">
-      <div class="ui very padded segment">
-        <div class="ui teal progress" data-percent="74" id="example1">
-          <div class="bar" [style.width]="progress+'%'"></div>
-          <div class="label">74% Funded</div>
+      <div class="ui padded segment">
+
+        <div class="ui grid">
+
+          <div class="row">
+            <div class="eight wide column">
+              <form class="ui form" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                <div class="field" *ngIf="response">
+                  <sqy-errors-list [errors]="response"></sqy-errors-list>
+                </div>
+
+                <div class="field">
+                  <label for="construct_file">Upload your file:</label>
+                  <input type="file" id="construct_file" name="upload-file" (change)="onChange($event)">
+                </div>
+
+                <div class="field">
+                  <button class="ui right labeled icon button" type="submit" name="upload">Upload <i class="upload icon"></i> </button>
+                </div>
+
+                <div class="field">
+                  <sqy-progress-bar [progress]="progress"></sqy-progress-bar>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
         </div>
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-          <input type="file" name="file" (change)="onChange($event)" />
-          <button type="submit">Upload Image File</button>
+      </div>
+    </div>
 
-        </form>
+  </div>
+
+  <div class="row">
+
+    <div class="column">
+      <div class="ui padded segment">
+
       </div>
     </div>
 

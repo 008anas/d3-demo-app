@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from ..construct.serializers import ConstructRetrieveSerializer
 from .models import History
+from ..construct.serializers import ConstructRetrieveSerializer
 
 
 class HistorySerializer(serializers.ModelSerializer):

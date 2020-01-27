@@ -31,7 +31,8 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
     ColorPickerComponent,
     SafeDatePipe,
     CopyClipboardDirective,
-    IfNotIconComponent
+    IfNotIconComponent,
+    ProgressBarComponent
   ]
 })
 export class SharedModule { }

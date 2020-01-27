@@ -3,7 +3,7 @@ import tempfile
 
 import django_rq
 # from sbol import *
-# from Bio import SeqIO
+from Bio import SeqIO
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -29,10 +29,10 @@ class OptimizeSequenceSkectherView(APIView):
     def post(self, request):
         serializer = ConstructCreateSerializer(data=request.data)
 
-        if not serializer.is_valid():
+        if not serializer.is_valid(raise_exception=True):
             return Response(dict(msg='Invalid construct.'), status=status.HTTP_400_BAD_REQUEST)
 
-        specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
+        specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id', None)).first()
 
         if specie is None:
             return Response({'msg': 'Specie with ncbi tax id ' + str(
@@ -129,33 +129,33 @@ class OptimizeSequenceFileView(APIView):
             # print(gene.sequence.elements)
             #
             # print(doc.convert('FASTA'))
-            # for record in SeqIO.parse(handle, "genbank"):
-            #     tracks = []
-            #     tax_id = record.features[0].qualifiers['db_xref'][0].partition('taxon:')[2]
-            #     for feature in record.features:
-            #         if feature.type != 'source':
-            #             tracks.append(dict(
-            #                 element=10,
-            #                 sequence=str(feature.extract(record.seq)),
-            #                 start=feature.location.nofuzzy_start,
-            #                 end=feature.location.nofuzzy_end))
-            #     serializer = ConstructCreateSerializer(data=dict(
-            #         name='From genbank',
-            #         dna_seq=record.seq,
-            #         specie_tax_id=tax_id,
-            #         tracks=tracks
-            #     ))
-            #
-            #     serializer.is_valid(raise_exception=True)
-            #
-            #     specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
-            #
-            #     if specie is None:
-            #         return Response({'msg': 'Specie with ncbi tax id ' + str(
-            #             serializer.validated_data['specie_tax_id']) + ' was not found'},
-            #                         status=status.HTTP_404_NOT_FOUND)
-            #
-            #     construct = serializer.save(specie=specie)
+            for record in SeqIO.parse(handle, "genbank"):
+                tracks = []
+                tax_id = record.features[0].qualifiers['db_xref'][0].partition('taxon:')[2]
+                for feature in record.features:
+                    if feature.type != 'source':
+                        tracks.append(dict(
+                            type=feature.type,
+                            sequence=str(feature.extract(record.seq)),
+                            start=feature.location.nofuzzy_start,
+                            end=feature.location.nofuzzy_end))
+                serializer = ConstructCreateSerializer(data=dict(
+                    name='From genbank',
+                    dna_seq=record.seq,
+                    specie_tax_id=tax_id,
+                    tracks=tracks
+                ))
+
+                serializer.is_valid(raise_exception=True)
+
+                specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
+
+                if specie is None:
+                    return Response({'msg': 'Specie with ncbi tax id ' + str(
+                        serializer.validated_data['specie_tax_id']) + ' was not found'},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+                construct = serializer.save(specie=specie)
 
         except:
             raise

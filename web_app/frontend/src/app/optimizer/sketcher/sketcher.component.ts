@@ -76,7 +76,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isLoading = true;
     this.sub = this.route.queryParams.subscribe(params => {
-      this.construct.id = params.uuid || null;
+      this.construct.id = params.id || null;
       this.specie.slug = params.specie || null;
       this.toSubmit = params.to_submit || false;
     });
@@ -116,8 +116,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.constructSrvc.getExample()
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => data.length ? this.construct = new Construct().deserialize(data[0]) : this.notify.warn('Sorry but no construct was found', 'top-right'),
-        () => this.notify.warn('Sorry but no construct was found', 'top-right'));
+      .subscribe(data => data.length ? this.construct = new Construct().deserialize(data[0]) : this.notify.info('Sorry but no example construct was found'),
+        err => this.notify.warn(err.msg || 'Unable to load model construct'));
   }
 
   getSpecies() {
@@ -225,7 +225,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.response = null;
       this.isSubmitting = true;
       this.construct['specie_tax_id'] = this.specie.tax_id;
-      this.construct.tracks.map(t => t['track'] = t.id);
       this.http.post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
         .pipe(finalize(() => this.isSubmitting = false))
         .subscribe(

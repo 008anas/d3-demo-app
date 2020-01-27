@@ -15,7 +15,7 @@
       "prefix": "sqy",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "public",
             "index": "src/index.html",
@@ -80,7 +80,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "ngx-build-plus:dev-server",
           "options": {
             "browserTarget": "sqrutiny:build"
           },
@@ -97,7 +97,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "ngx-build-plus:karma",
           "options": {
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
@@ -139,6 +139,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "sqrutiny"
 }

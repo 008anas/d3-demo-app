@@ -26,7 +26,7 @@ class ConstructAdmin(ModelAdmin):
     list_display = ('uuid', 'name', 'dna_seq_length', 'protein_seq_length','tracks_count', 'circular', 'example', 'deleted', 'created_at')
     inlines = (TrackInline,)
     search_fields = ('name', 'sequence')
-    ordering = ('created_at',)
+    ordering = ('-created_at',)
 
     def get_queryset(self, request):
         return Construct.objects.annotate(tracks_count=Count('tracks'))

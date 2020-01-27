@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { HttpClient, HttpHeaders, HttpEventType } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
@@ -12,6 +12,7 @@ export class FromFileComponent implements OnInit {
 
   progress = 0;
   form: FormGroup;
+  response: any = null;
 
   constructor(private http: HttpClient, private formBuilder: FormBuilder) { }
 
@@ -47,12 +48,10 @@ export class FromFileComponent implements OnInit {
               break;
             case HttpEventType.Response:
               console.log('User successfully created!', event.body);
-              setTimeout(() => {
-                this.progress = 0;
-              }, 1500);
           }
         },
         err => {
+          this.response = err;
           console.log(err)
         }
       )

@@ -29,7 +29,7 @@ class TrackRetrieveSerializer(serializers.ModelSerializer):
 
 
 class TrackCreateSerializer(serializers.ModelSerializer):
-    element = serializers.PrimaryKeyRelatedField(queryset=GeneticElement.objects.all())
+    type = serializers.CharField()
 
     def validate_sequence(self, seq):
         seq = seq.strip().replace('\n', '').upper()
@@ -48,7 +48,7 @@ class ConstructCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Construct
-        fields = ['name', 'tracks', 'specie_tax_id', 'circular']
+        fields = ['name', 'tracks', 'description', 'specie_tax_id', 'circular']
 
     def create(self, validated_data):
         validated_data.pop('specie_tax_id')
@@ -57,12 +57,17 @@ class ConstructCreateSerializer(serializers.ModelSerializer):
         construct = Construct.objects.create(**validated_data, dna_seq=seq, protein_seq=seq_translator(seq))
         i = 1
         for track in tracks:
-            element = track.pop('element')
-            if 'start' not in track or 'end' not in track:
-                track['start'] = i
-                track['end'] = i + len(track['sequence']) - 1
-                i += len(track['sequence'])
-            Track.objects.create(**track, construct=construct, genetic_element=element)
+            type = track.pop('type').lower()
+            element = GeneticElement.objects.filter(name__iexact=type).first()
+            if element:
+                if 'start' not in track or 'end' not in track:
+                    track['start'] = i
+                    track['end'] = i + len(track['sequence']) - 1
+                    i += len(track['sequence'])
+                Track.objects.create(**track, construct=construct, genetic_element=element)
+            else:
+                construct.delete()
+                raise ValidationError("Element type: " + type + " not valid. Please enter a valid one.")
         return construct
 
 
@@ -85,7 +90,7 @@ class ConstructRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Construct
-        exclude = ['example', 'deleted', 'updated_at']
+        exclude = ['uuid', 'example', 'deleted', 'updated_at']
 
 
 class SearchMotifSerializer(serializers.Serializer):

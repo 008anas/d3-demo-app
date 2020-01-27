@@ -7,7 +7,8 @@ from .models import History
 @admin.register(History)
 class HistoryAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('construct', 'job_id')}),
+        ('Information', {'fields': ('uuid', 'name', 'construct', 'job_id')}),
+        ('Details', {'fields': ('request_ip',)}),
         ('Actions', {'fields': ('deleted',)})
     )
     add_fieldsets = (
@@ -19,4 +20,5 @@ class HistoryAdmin(ModelAdmin):
     date_hierarchy = 'created_at'
     list_display = ('uuid', 'name', 'construct', 'job_id', 'deleted', 'created_at')
     search_fields = ('construct', 'job_id')
-    ordering = ('created_at',)
+    ordering = ('-created_at',)
+    readonly_fields = ('uuid', 'request_ip')

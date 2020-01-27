@@ -11,6 +11,7 @@ const MIN = 0;
 export class ProgressBarComponent implements OnInit {
 
   @Input() progress = 0;
+  @Input() msg = 'Funded';
   max = MAX;
   min = MIN;
 
