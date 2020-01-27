@@ -3,7 +3,7 @@ import tempfile
 
 import django_rq
 # from sbol import *
-from Bio import SeqIO
+# from Bio import SeqIO
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response

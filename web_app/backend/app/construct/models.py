@@ -1,6 +1,5 @@
 import uuid
 
-from Bio import SeqIO
 from django.db import models
 
 from app.genetic_element.models import GeneticElement
@@ -34,12 +33,6 @@ class Construct(models.Model):
             except Construct.DoesNotExist:
                 pass
         super(Construct, self).save(*args, **kwargs)
-
-    def from_genbank(self, gb_file):
-        for index, record in enumerate(SeqIO.parse(gb_file, "genbank")):
-            for feature in record.features:
-                print(feature)
-        return
 
 
 class Track(models.Model):
