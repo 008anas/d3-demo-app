@@ -13,6 +13,7 @@ dependencies:
   - django-cors-headers=3.0.2=py_0
   - django-rq=2.2.0=py_0
   - djangorestframework=3.11.0=py_0
+  - gunicorn=20.0.4=py37_0
   - libblas=3.8.0=14_openblas
   - libcblas=3.8.0=14_openblas
   - libcxx=9.0.1=1
