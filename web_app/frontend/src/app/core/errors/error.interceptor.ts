@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { environment as env } from 'src/environments/environment';
+import { routes } from 'src/app/config/routes';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -24,10 +25,10 @@ export class ErrorInterceptor implements HttpInterceptor {
     if (env.production) {
       switch (error) {
         case 500:
-          this.router.navigate([env.routes.error500]);
+          this.router.navigate([routes.error500]);
           break;
         case 404:
-          this.router.navigate([env.routes.error404]);
+          this.router.navigate([routes.error404]);
           break;
         default:
       }

@@ -205,16 +205,6 @@
 
             <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()" *ngIf="view === 'general'">
 
-              <div class="inline two fields">
-                <div class="field">
-                  <label>Total tracks:</label> {{construct.tracks?.length || 0}}
-                </div>
-
-                <div class="field txt-r">
-                  <label>Total sequence length:</label> {{construct.sequence?.length || 0}}
-                </div>
-              </div>
-
               <div class="required field">
                 <label class="required-msg">Required fields are shown with</label>
               </div>
@@ -241,7 +231,7 @@
                 <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
               </div>
 
-              <div class="field">
+              <div class="field" *ngIf="toSubmit">
                 <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
                   Submit
                   <i class="angle right icon"></i>
@@ -401,7 +391,7 @@
       <h2 class="ui icon center aligned header">
         <i class="check green circle icon"></i>
         <div class="content">
-          Your construct: "{{construct.label}}" has been submitted!
+          Your construct: "{{construct.name}}" has been submitted!
         </div>
       </h2>
     </div>
@@ -432,7 +422,7 @@
         <tbody>
           <tr>
             <td>
-              {{history?.construct?.label}}
+              {{history?.construct?.name}}
             </td>
             <td>
               {{history?.construct?.specie.name}}

@@ -11,6 +11,8 @@ const MIN = 0;
 export class ProgressBarComponent implements OnInit {
 
   @Input() progress = 0;
+  max = MAX;
+  min = MIN;
 
   constructor() { }
 

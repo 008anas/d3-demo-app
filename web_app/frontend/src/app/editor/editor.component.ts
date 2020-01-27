@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { finalize } from 'rxjs/operators';
 
+declare var createVectorEditor: any;
+
 import { Construct } from '../construct/shared/construct';
 import { ConstructService } from '../construct/shared/construct.service';
 
@@ -50,7 +52,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   loadConstructInEditor() {
-    const editor = window.createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe'); /* createDomNodeForMe will make a dom node for you and append it to the document.body*/
+    const editor = createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe'); /* createDomNodeForMe will make a dom node for you and append it to the document.body*/
     editor.updateEditor({
       sequenceData: {
         sequence: this.construct.dna_seq,

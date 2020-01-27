@@ -2,6 +2,8 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
+import { CookieService } from 'ngx-cookie-service';
+
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { FooterComponent } from './footer/footer.component';
 import { NavComponent } from './nav/nav.component';
@@ -23,7 +25,8 @@ import { Error500Component } from './errors/error500/error500.component';
   exports: [
     FooterComponent,
     NavComponent
-  ]
+  ],
+  providers: [CookieService]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

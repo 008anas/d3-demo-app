@@ -15,6 +15,7 @@ class Construct(models.Model):
     tracks = models.ManyToManyField(GeneticElement, through='Track')
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
     circular = models.BooleanField(blank=True, default=False)
+    description = models.TextField(blank=True, null=True)
     example = models.BooleanField(default=False, help_text='Determine if is it used as example')
     deleted = models.BooleanField(default=False, help_text='Determine if it is visible in the application')
     created_at = models.DateTimeField('creation date', auto_now_add=True)

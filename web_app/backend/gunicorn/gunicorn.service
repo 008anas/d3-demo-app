@@ -6,10 +6,10 @@ After=network.target
 [Service]
 User=bioroboost
 Group=www-data
-WorkingDirectory=/var/www/html/bioroboost/BioRoboost/web_app/backend
-ExecStart=/home/bioroboost/miniconda3/envs/bioroboostenv/bin/gunicorn \
-          --access-logfile /var/www/html/bioroboost/access.log \
-          --error-logfile /var/www/html/bioroboost/error.log\
+WorkingDirectory=/var/www/html/sqrutiny/BioRoboost/web_app/backend
+ExecStart=/home/bioroboost/miniconda3/envs/sqrutinyenv/bin/gunicorn \
+          --access-logfile /var/www/html/sqrutiny/access.log \
+          --error-logfile /var/www/html/sqrutiny/error.log\
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
           BioRoboost.wsgi:application

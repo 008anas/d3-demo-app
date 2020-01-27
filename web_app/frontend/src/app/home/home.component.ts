@@ -29,16 +29,19 @@ export class HomeComponent implements OnInit {
   getSpecies() {
     this.isLoading = true;
     this.specieSrvc.getAll()
-    .pipe(finalize(() => this.isLoading = false))
+      .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         data => {
-          this.species = data.map((e: any) => new Specie().deserialize(e));
-          this.specie = this.species.find((s: Specie) => s.default);
+          this.species = data.map((e: any) => {
+            const specie = new Specie().deserialize(e);
+            if (specie.default) this.specie = specie;
+            return specie;
+          });
         }
       );
   }
 
   goTo(path: string) {
-    this.specie ? this.router.navigate(['/optimize', path], { queryParams: { specie: this.specie.slug } }) : alert('First choose a specie to proceed');
+    this.specie ? this.router.navigate(['/optimize', path], { queryParams: { specie: this.specie.slug, to_submit: 1 } }) : alert('First choose a specie to proceed');
   }
 }

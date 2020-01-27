@@ -12,25 +12,6 @@ export const environment = {
   sentry: {
     dsn: 'https://f35c3be6cd794b069c754d34e0daa7a9@sentry.io/1552997'
   },
-  routes: {
-    optimize: {
-      root: 'optimize',
-      sketcher: 'sketcher',
-      from_file: 'upload'
-    },
-    construct: {
-      root: 'construct'
-    },
-    workspace: {
-      root: 'workspace',
-      detail: ':history'
-    },
-    documentation: 'documentation',
-    home: 'home',
-    contact: 'contact',
-    error404: '404',
-    error500: '500'
-  },
   endpoints: {
     api: 'http://localhost:8000/api/v1',
   }

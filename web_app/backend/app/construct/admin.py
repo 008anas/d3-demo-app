@@ -13,7 +13,7 @@ class TrackInline(admin.TabularInline):
 @admin.register(Construct)
 class ConstructAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('name', 'dna_seq', 'specie')}),
+        ('Information', {'fields': ('name', 'dna_seq', 'specie', 'description')}),
         ('Actions', {'fields': ('deleted', 'example')})
     )
     add_fieldsets = (

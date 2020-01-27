@@ -112,7 +112,7 @@
 
                 <div class="field">
                   <label>Label:</label>
-                  {{history.construct.label}}
+                  {{history.construct.name}}
                 </div>
 
                 <div class="field">
@@ -303,7 +303,7 @@
         <strong>Sequence length:</strong>{{seq?.length}}
       </div>
       <div class="column txt-r">
-        <button class="ui compact right labeled icon primary button" [copy-clipboard]="seq" (copied)="notify.success('Copied!', 'top-right')">
+        <button class="ui compact right labeled icon primary button" [copy-clipboard]="seq" (copied)="notifySuccess('Copied!')">
           <i class="copy icon"></i>
           Copy
         </button>
