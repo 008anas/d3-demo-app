@@ -32,6 +32,8 @@ export class FromFileComponent implements OnInit {
   onSubmit() {
     const params = new FormData();
     params.append('file', this.form.get('file').value);
+    this.response = null;
+    this.progress = 0;
     this.http.post('http://127.0.0.1:8000/api/v1/optimize_seq/from-file', params, { reportProgress: true, observe: 'events' })
       .subscribe(
         event => {

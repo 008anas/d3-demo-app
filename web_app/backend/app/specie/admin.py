@@ -7,7 +7,7 @@ from .models import Specie
 @admin.register(Specie)
 class SpecieAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('name', 'tax_id', 'gc_content', 'slug')}),
+        ('Information', {'fields': ('name', 'tax_id', 'gc_content', 'slug', 'genome_gbk')}),
         ('Actions', {'fields': ('visible', 'default', 'comment')})
     )
     add_fieldsets = (

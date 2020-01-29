@@ -5,8 +5,8 @@ export class Track extends Deserializable {
   type: string;
   label?: string;
   color: string;
-  start?: string;
-  end?: string;
+  start?: number;
+  end?: number;
   sequence: string;
   default?: boolean;
   selected?: boolean;

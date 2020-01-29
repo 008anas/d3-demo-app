@@ -1,4 +1,4 @@
-<div class="ui celled grid">
+<div class="ui vertically divided container grid">
 
   <div class="row">
     <div class="column">
@@ -9,48 +9,36 @@
   <div class="row">
 
     <div class="column">
-      <div class="ui padded segment">
 
-        <div class="ui grid">
+      <div class="ui grid">
 
-          <div class="row">
-            <div class="eight wide column">
-              <form class="ui form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="sixteen wide column">
+            <form class="ui form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
-                <div class="field" *ngIf="response">
-                  <sqy-errors-list [errors]="response"></sqy-errors-list>
-                </div>
+              <div class="field" *ngIf="response">
+                <sqy-errors-list [errors]="response"></sqy-errors-list>
+              </div>
 
-                <div class="field">
-                  <label for="construct_file">Upload your file:</label>
-                  <input type="file" id="construct_file" name="upload-file" (change)="onChange($event)">
-                </div>
+              <div class="field">
+                <label for="construct_file">Upload your file:</label>
+                <input type="file" id="construct_file" name="upload-file" (change)="onChange($event)">
+              </div>
 
-                <div class="field">
-                  <button class="ui right labeled icon button" type="submit" name="upload">Upload <i class="upload icon"></i> </button>
-                </div>
+              <div class="field">
+                <button class="ui right labeled icon button" type="submit" name="upload">Upload <i class="upload icon"></i> </button>
+              </div>
 
-                <div class="field">
-                  <sqy-progress-bar [progress]="progress"></sqy-progress-bar>
-                </div>
+              <div class="field">
+                <sqy-progress-bar [progress]="progress"></sqy-progress-bar>
+              </div>
 
-              </form>
-            </div>
+            </form>
           </div>
-
         </div>
 
       </div>
-    </div>
 
-  </div>
-
-  <div class="row">
-
-    <div class="column">
-      <div class="ui padded segment">
-
-      </div>
     </div>
 
   </div>

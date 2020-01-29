@@ -15,6 +15,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  background-color: #fff !important;
 }
 
 span.date {
@@ -52,9 +53,7 @@ a.disabled {
 span.ui.error {
   color: #ce3333;
 }
-
 /* SEMANTIC OVERRIDE */
-
 /* Button */
 button.ui.button:not(.circular) {
   padding: 0.8em 1em !important;

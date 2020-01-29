@@ -62,14 +62,6 @@ export class HistoryComponent implements OnInit {
       );
   }
 
-  getStatusClass() {
-    return {
-      success: this.history.isDone(),
-      active: this.history.isActive(),
-      error: this.history.hasFailed()
-    };
-  }
-
   deleteHistory() {
     if (confirm('Are you sure?')) {
       this.isLoading = true;

@@ -32,7 +32,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     } else {
       this.sub = this.route.queryParams.subscribe(params => this.construct.id = params.construct || null);
 
-      if (this.construct.id) this.getConstruct();
+      if (this.construct.id){
+         this.getConstruct();
+       }else{
+         createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe');
+       }
     }
   }
 
@@ -128,8 +132,6 @@ export class EditorComponent implements OnInit, OnDestroy {
         //   },
         // }
         ,
-        parts: {},
-        primers: {},
         fromFileUpload: false
       },
       annotationLabelVisibility: {

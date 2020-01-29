@@ -231,6 +231,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
           (data: UserHistory) => {
             this.history = new UserHistory().deserialize(data);
             this.submitted = true;
+            setTimeout(() => {
+              this.submitted = false;
+              this.router.navigate(['/workspace', this.history.id]);
+            }, 4000);
           },
           err => {
             this.notify.error(err.msg, 'bottom-right');
@@ -250,6 +254,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
   addTrack(track: Track) {
     if (track['pos'] > -1) {
       this.construct.tracks[track['pos']] = track;
+      this.construct.tracks[track['pos']].start = this.construct.sequence.length + 1;
+      this.construct.tracks[track['pos']].end = this.construct.sequence.length + track.sequence.length;
       this.construct.sequence += track.sequence;
       delete this.construct.tracks[track['pos']]['invalid']; // Now is valid
     }
@@ -314,13 +320,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
       } else {
         this.notify.error('Unable to export');
       }
-    }
-  }
-
-  goToHistory() {
-    if (this.history.id) {
-      this.router.navigate(['/workspace', this.history.id]);
-      this.submitted = false;
     }
   }
 

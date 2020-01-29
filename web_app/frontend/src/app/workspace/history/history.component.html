@@ -1,7 +1,7 @@
 <!-- Loading placeholder -->
 <sqy-history-loading *ngIf="isLoading"></sqy-history-loading>
 
-<div class="ui grid main-h p-4 mt-6" *ngIf="!isLoading">
+<div class="ui grid container main-h p-4 mt-6" *ngIf="!isLoading">
 
   <!-- MAIN INFORMATION HEADER -->
 
@@ -9,80 +9,76 @@
 
     <div class="sixteen wide column">
 
-      <div class="ui segment status" [ngClass]="getStatusClass()">
+      <div class="ui padded one column grid">
 
-        <div class="ui padded one column grid">
+        <div class="column">
+          <h2 class="ui header">
+            {{history.name}}
+          </h2>
+        </div>
+
+        <div class="two column row">
 
           <div class="column">
-            <h2 class="ui header">
-              {{history.name}}
-            </h2>
-          </div>
-
-          <div class="two column row">
-
-            <div class="column">
-              <span class="date r">
-                <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
-              </span>
-              <div class="ui icon orange basic label" *ngIf="history.isActive()">
-                <i class="spinner loading icon"></i> {{history.job?.status | uppercase}}
-              </div>
-              <div class="ui icon green basic label" *ngIf="history.isDone()">
-                <i class="check icon"></i> {{history.job?.status | uppercase}}
-              </div>
-              <div class="ui icon red basic label" *ngIf="history.hasFailed()">
-                <i class="exclamation triangle icon"></i> {{history.job?.status | uppercase}}
-              </div>
+            <span class="date r">
+              <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
+            </span>
+            <div class="ui icon orange basic label" *ngIf="history.isActive()">
+              <i class="spinner loading icon"></i> {{history.job?.status | uppercase}}
             </div>
-
-            <div class="column txt-r">
-
-              <a class="m-4" (click)="getJob()">
-                <i class="sync icon"></i>
-                Refresh content
-              </a>
-
-              <a class="m-4 delete" (click)="deleteHistory()">
-                <i class="trash icon"></i>
-                Delete history
-              </a>
-
+            <div class="ui icon green basic label" *ngIf="history.isDone()">
+              <i class="check icon"></i> {{history.job?.status | uppercase}}
             </div>
-
-          </div>
-
-          <div class="column">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          </div>
-
-          <div class="column">
-            <div class="ui very relaxed horizontal selection large list">
-              <div class="item">
-                <i class="barcode large icon"></i>
-                <div class="content">
-                  <a class="header" onclick="window.location.hash = 'construct'">Construct</a>
-                  <p>Check Construct details</p>
-                </div>
-              </div>
-              <div class="item">
-                <i class="chart bar outline large icon"></i>
-                <div class="content">
-                  <a class="header" onclick="window.location.hash = 'results'">Results area</a>
-                  <p>Go to results visualizator area</p>
-                </div>
-              </div>
-              <div class="item">
-                <i class="barcode large icon"></i>
-                <div class="content">
-                  <a class="header">History identifier</a>
-                  <p>{{history.id}}</p>
-                </div>
-              </div>
+            <div class="ui icon red basic label" *ngIf="history.hasFailed()">
+              <i class="exclamation triangle icon"></i> {{history.job?.status | uppercase}}
             </div>
           </div>
 
+          <div class="column txt-r">
+
+            <a class="m-4" (click)="getJob()">
+              <i class="sync icon"></i>
+              Refresh content
+            </a>
+
+            <a class="m-4 delete" (click)="deleteHistory()">
+              <i class="trash icon"></i>
+              Delete history
+            </a>
+
+          </div>
+
+        </div>
+
+        <div class="column">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+
+        <div class="column">
+          <div class="ui very relaxed horizontal selection large list">
+            <div class="item">
+              <i class="barcode large icon"></i>
+              <div class="content">
+                <a class="header" onclick="window.location.hash = 'construct'">Construct</a>
+                <p>Check Construct details</p>
+              </div>
+            </div>
+            <div class="item">
+              <i class="chart bar outline large icon"></i>
+              <div class="content">
+                <a class="header" onclick="window.location.hash = 'results'">Results area</a>
+                <p>Go to results visualizator area</p>
+              </div>
+            </div>
+            <div class="item">
+              <i class="barcode large icon"></i>
+              <div class="content">
+                <a class="header">History identifier</a>
+                <p>{{history.id}}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -94,149 +90,145 @@
   <div class="row" id="construct">
     <div class="sixteen column">
 
-      <div class="ui segment status" [ngClass]="getStatusClass()">
+      <div class="ui padded form construct-summary grid">
 
-        <div class="ui padded form construct-summary grid">
-
-          <div class="one column row">
-            <div class="column txt-c">
-              <h2>Construct summary</h2>
-            </div>
+        <div class="one column row">
+          <div class="column txt-c">
+            <h2>Construct summary</h2>
           </div>
+        </div>
 
-          <div class="one column row">
+        <div class="one column row">
 
-            <div class="column">
+          <div class="column">
 
-              <div class="four inline fields">
+            <div class="four inline fields">
 
-                <div class="field">
-                  <label>Label:</label>
-                  {{history.construct.name}}
-                </div>
+              <div class="field">
+                <label>Label:</label>
+                {{history.construct.name}}
+              </div>
 
-                <div class="field">
-                  <label>Number of tracks:</label>
-                  {{history.construct.n_tracks}}
-                </div>
+              <div class="field">
+                <label>Number of tracks:</label>
+                {{history.construct.n_tracks}}
+              </div>
 
-                <div class="field">
-                  <label>Circular:</label>
-                  <i class="check circle green icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
-                </div>
+              <div class="field">
+                <label>Circular:</label>
+                <i class="check circle green icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
+              </div>
 
-                <div class="field">
-                  <a [routerLink]="['/editor', history.construct.id]">See this construct on vector editor <i class="external link icon"></i> </a>
-                </div>
-
+              <div class="field">
+                <a [routerLink]="['/editor', history.construct.id]">See this construct on vector editor <i class="external link icon"></i> </a>
               </div>
 
             </div>
 
           </div>
 
-          <div class="one column row">
+        </div>
 
-            <div class="column">
-              <h4 class="ui horizontal divider header">
-                <i class="bug icon"></i>
-                Organism
-              </h4>
-            </div>
+        <div class="one column row">
 
-            <div class="column">
-              <p>Open on <a href="{{history.construct.specie.tax_link}}" target="_blank">NCBI Taxonomy browser</a> organism info</p>
+          <div class="column">
+            <h4 class="ui horizontal divider header">
+              <i class="bug icon"></i>
+              Organism
+            </h4>
+          </div>
 
-              <div class="two inline fields">
-                <div class="inline field">
-                  <label>Name:</label>
-                  <a href="{{history.construct.specie.tax_link}}" target="_blank">
-                    {{history.construct.specie.name}}
-                  </a>
-                </div>
-                <div class="inline field">
-                  <label>Taxonomy ID:</label>
-                  {{history.construct.specie.tax_id}}
-                </div>
+          <div class="column">
+            <p>Open on <a href="{{history.construct.specie.tax_link}}" target="_blank">NCBI Taxonomy browser</a> organism info</p>
+
+            <div class="two inline fields">
+              <div class="inline field">
+                <label>Name:</label>
+                <a href="{{history.construct.specie.tax_link}}" target="_blank">
+                  {{history.construct.specie.name}}
+                </a>
               </div>
-
+              <div class="inline field">
+                <label>Taxonomy ID:</label>
+                {{history.construct.specie.tax_id}}
+              </div>
             </div>
 
           </div>
 
-          <div class="one column row">
+        </div>
 
-            <div class="column">
-              <h4 class="ui horizontal divider header">
-                <i class="dna icon"></i>
-                Sequence
-              </h4>
-            </div>
+        <div class="one column row">
 
-            <div class="column">
-              <p> <i class="info icon"></i> Click on sequence to display full content</p>
-
-              <table class="ui blue padded sequence definition table">
-
-                <tbody>
-                  <tr>
-                    <th>DNA</th>
-                    <td class="link" (click)="seq = history.construct.dna_seq">
-                      {{history.construct.dna_seq}}
-                    </td>
-                    <td>
-                      <strong>Total:</strong>
-                      {{history.construct.dna_seq.length}} bps
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Protein</th>
-                    <td class="link" (click)="seq = history.construct.protein_seq">
-                      {{history.construct.protein_seq}}
-                    </td>
-                    <td>
-                      <strong>Total:</strong>
-                      {{history.construct.protein_seq.length}}
-                    </td>
-                  </tr>
-                </tbody>
-
-              </table>
-            </div>
-
+          <div class="column">
+            <h4 class="ui horizontal divider header">
+              <i class="dna icon"></i>
+              Sequence
+            </h4>
           </div>
 
-          <div class="one column row">
+          <div class="column">
+            <p> <i class="info icon"></i> Click on sequence to display full content</p>
 
-            <div class="column">
-              <h4 class="ui horizontal divider header">
-                Tracks
-              </h4>
-            </div>
+            <table class="ui blue padded sequence definition table">
 
-            <div class="column txt-r">
-              <p class="meta">{{history.construct.n_tracks}} tracks</p>
-            </div>
+              <tbody>
+                <tr>
+                  <th>DNA</th>
+                  <td class="link" (click)="seq = history.construct.dna_seq">
+                    {{history.construct.dna_seq}}
+                  </td>
+                  <td>
+                    <strong>Total:</strong>
+                    {{history.construct.dna_seq.length}} bps
+                  </td>
+                </tr>
+                <tr>
+                  <th>Protein</th>
+                  <td class="link" (click)="seq = history.construct.protein_seq">
+                    {{history.construct.protein_seq}}
+                  </td>
+                  <td>
+                    <strong>Total:</strong>
+                    {{history.construct.protein_seq.length}}
+                  </td>
+                </tr>
+              </tbody>
 
-            <div class="column">
+            </table>
+          </div>
 
-              <div class="construct">
-                <div class="strand">
+        </div>
 
-                  <div class="track" *ngFor="let t of history.construct.tracks; let i = index">
+        <div class="one column row">
 
-                    <div class="header">
-                      <h4>{{t.label}}</h4>
-                    </div>
-                    <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color}" data-inverted="" [attr.data-tooltip]="t.name" data-position="bottom center"></div>
-                    <div class="index">
-                      {{i + 1}}
-                    </div>
+          <div class="column">
+            <h4 class="ui horizontal divider header">
+              Tracks
+            </h4>
+          </div>
+
+          <div class="column txt-r">
+            <p class="meta">{{history.construct.n_tracks}} tracks</p>
+          </div>
+
+          <div class="column">
+
+            <div class="construct">
+              <div class="strand">
+
+                <div class="track" *ngFor="let t of history.construct.tracks; let i = index">
+
+                  <div class="header">
+                    <h4>{{t.label}}</h4>
                   </div>
-
+                  <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color}" data-inverted="" [attr.data-tooltip]="t.name" data-position="bottom center"></div>
+                  <div class="index">
+                    {{i + 1}}
+                  </div>
                 </div>
-              </div>
 
+              </div>
             </div>
 
           </div>
@@ -276,11 +268,7 @@
               </button>
             </div>
 
-            <div class="ui padded segment" *ngIf="history.isDone()">
-
-              <sqy-protvista [data]="resultData"></sqy-protvista>
-
-            </div>
+            <sqy-protvista [data]="resultData" *ngIf="history.isDone()"></sqy-protvista>
 
           </div>
 

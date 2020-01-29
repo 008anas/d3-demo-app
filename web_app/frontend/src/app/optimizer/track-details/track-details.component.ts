@@ -1,4 +1,6 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+
 import { Track } from '../shared/track';
 import { Base } from '../shared/base';
 import Utils from 'src/app/shared/utils';
@@ -26,9 +28,7 @@ export class TrackDetailsComponent implements OnDestroy {
   _track: Track = null;
   action = 'fix';
   bases: Base[];
-  public backgroundColor = '#fff';
-  public fontColor = '#222';
-  public linkColor = '#4b4fce';
+  trackForm: FormGroup;
 
   constructor() {
     this.dnaRegex = Utils.dnaSeqRegex;
@@ -60,6 +60,7 @@ export class TrackDetailsComponent implements OnDestroy {
   }
 
   change(pos: number) {
+    if (this.trackForm.valid) { this.submit(); }
     if (pos > -1 && pos < this.max + 1) {
       this.changePos.emit(pos);
     }

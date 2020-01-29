@@ -18,7 +18,7 @@
               </select>
             </div>
 
-            <div class="field" *ngIf="specie">
+            <div class="field" *ngIf="specie?.comment">
               <p class="comment">{{specie.comment}}</p>
             </div>
 
@@ -48,15 +48,13 @@
         </div>
       </div> -->
     </div>
-    <!-- <div class="ui vertical inverted divider">
-      or
-    </div> -->
 
   </div>
 
   <div class="ui vertical stripe quote segment" [ngClass]="{'disabled': !specie || isLoading}">
     <div class="ui equal width stackable internally celled grid">
       <div class="center aligned row">
+
         <div class="column">
           <img class="ui big bordered rounded centered image" style="border: none !important" src="assets/img/sketcher.png" />
           <h3>Use our skecther</h3>
@@ -65,6 +63,7 @@
             Start from skecther <i class="right chevron icon"></i>
           </button>
         </div>
+
         <div class="column">
           <img class="ui medium bordered rounded centered image" style="border: none !important" src="https://www.genengnews.com/wp-content/uploads/2019/09/Sep3_2019_Getty_157647511_DNASequence-1-1068x712.jpg" />
           <h3>"I shouldn't have gone with their competitor."</h3>
@@ -75,6 +74,7 @@
             Upload my own file <i class="right chevron icon"></i>
           </button>
         </div>
+
       </div>
     </div>
   </div>
