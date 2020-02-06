@@ -83,7 +83,7 @@
               text-align: center;
             }
 
-            .remove {
+            .actions {
               visibility: hidden;
               position: absolute;
               top: 0;
@@ -104,7 +104,7 @@
             z-index: 3;
           }
 
-          &:hover > .header > .remove {
+          &:hover > .header > .actions {
             visibility: visible;
           }
         }

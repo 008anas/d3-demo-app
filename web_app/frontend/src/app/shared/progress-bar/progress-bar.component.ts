@@ -21,11 +21,11 @@ export class ProgressBarComponent implements OnInit {
   }
 
   increment() {
-    if (this.progress < MAX) this.progress++;
+    if (this.progress < MAX) { this.progress++; }
   }
 
   decrement() {
-    if (this.progress > MIN) this.progress--;
+    if (this.progress > MIN) { this.progress--; }
   }
 
 }

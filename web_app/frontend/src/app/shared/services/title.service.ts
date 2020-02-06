@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { filter, map } from 'rxjs/operators';
-import { environment as env } from 'src/environments/environment';
+import { main } from 'src/app/config/main';
 
 const SEPARATOR = ' | ';
 
@@ -45,10 +45,10 @@ export class TitleService {
           });
         }
       })
-    ).subscribe((pathStr) => this.titleSrvc.setTitle(`${pathStr}${SEPARATOR}${env.name}`));
+    ).subscribe((pathStr) => this.titleSrvc.setTitle(`${pathStr}${SEPARATOR}${main.appName}`));
   }
 
   setTitle(str: string) {
-    this.titleSrvc.setTitle(`${str}${SEPARATOR}${env.name}`);
+    this.titleSrvc.setTitle(`${str}${SEPARATOR}${main.appName}`);
   }
 }

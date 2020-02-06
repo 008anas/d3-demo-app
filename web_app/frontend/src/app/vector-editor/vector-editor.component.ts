@@ -9,11 +9,11 @@ import { Construct } from '../construct/shared/construct';
 import { ConstructService } from '../construct/shared/construct.service';
 
 @Component({
-  selector: 'sqy-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  selector: 'sqy-vector-editor',
+  templateUrl: './vector-editor.component.html',
+  styleUrls: ['./vector-editor.component.scss']
 })
-export class EditorComponent implements OnInit, OnDestroy {
+export class VectorEditorComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
   construct: Construct = null;
@@ -32,16 +32,16 @@ export class EditorComponent implements OnInit, OnDestroy {
     } else {
       this.sub = this.route.queryParams.subscribe(params => this.construct.id = params.construct || null);
 
-      if (this.construct.id){
-         this.getConstruct();
-       }else{
-         createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe');
-       }
+      if (this.construct.id) {
+        this.getConstruct();
+      } else {
+        createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe');
+      }
     }
   }
 
   ngOnDestroy() {
-    if (this.sub) this.sub.unsubscribe();
+    if (this.sub) { this.sub.unsubscribe(); }
   }
 
   getConstruct() {
@@ -91,13 +91,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         },
         features: this.construct.tracks.map(t => {
           return {
-            color: t.color, //you can override the default color for each individual feature if you want
+            color: t.color, // you can override the default color for each individual feature if you want
             name: t.label,
             type: t.type,
-            start: t.start, //start and end are 0-based inclusive for all annotations
+            start: t.start, // start and end are 0-based inclusive for all annotations
             end: t.end,
-            forward: true //ie true=positive strand     false=negative strange
-          }
+            forward: true // ie true=positive strand     false=negative strange
+          };
         })
         // {
         //   '55a4a061f0c5b50asd00a8bfaf5': {
@@ -233,8 +233,8 @@ export class EditorComponent implements OnInit, OnDestroy {
       findTool: {
         isOpen: false,
         searchText: '',
-        dnaOrAA: 'DNA', //or 'AA'
-        ambiguousOrLiteral: 'LITERAL', //or 'AMBIGUOUS'
+        dnaOrAA: 'DNA', // or 'AA'
+        ambiguousOrLiteral: 'LITERAL', // or 'AMBIGUOUS'
         highlightAll: false,
         matchNumber: 0
       },
@@ -243,5 +243,4 @@ export class EditorComponent implements OnInit, OnDestroy {
       instantiated: true
     });
   }
-
 }

@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
         data => {
           this.species = data.map((e: any) => {
             const specie = new Specie().deserialize(e);
-            if (specie.default) this.specie = specie;
+            if (specie.default) { this.specie = specie; }
             return specie;
           });
         }

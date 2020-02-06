@@ -53,6 +53,67 @@ a.disabled {
 span.ui.error {
   color: #ce3333;
 }
+/* Anchor */
+.target,
+:target {
+  -webkit-animation: fadeIt 3s ease-in-out !important;
+  -moz-animation: fadeIt 3s ease-in-out !important;
+  -o-animation: fadeIt 3s ease-in-out !important;
+  animation: fadeIt 3s ease-in-out !important;
+}
+/* Transition effects */
+@-webkit-keyframes fadeIt {
+  0% {
+    background-color: #fff;
+  }
+
+  50% {
+    background-color: #ffa;
+  }
+
+  100% {
+    background-color: #fff;
+  }
+}
+@-moz-keyframes fadeIt {
+  0% {
+    background-color: #fff;
+  }
+
+  50% {
+    background-color: #ffa;
+  }
+
+  100% {
+    background-color: #fff;
+  }
+}
+@-o-keyframes fadeIt {
+  0% {
+    background-color: #fff;
+  }
+
+  50% {
+    background-color: #ffa;
+  }
+
+  100% {
+    background-color: #fff;
+  }
+}
+@keyframes fadeIt {
+  0% {
+    background-color: #fff;
+  }
+
+  50% {
+    background-color: #ffa;
+  }
+
+  100% {
+    background-color: #fff;
+  }
+}
 /* SEMANTIC OVERRIDE */
 /* Button */
 button.ui.button:not(.circular) {

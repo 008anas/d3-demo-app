@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
+import { main } from '../config/main';
 import { environment as env } from 'src/environments/environment';
 import { Contact } from '../shared/models/contact';
 import { HttpClient } from '@angular/common/http';
@@ -19,7 +20,7 @@ export class ContactComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.email = env.email;
+    this.email = main.email;
   }
 
   /**

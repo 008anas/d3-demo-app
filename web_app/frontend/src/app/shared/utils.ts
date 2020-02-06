@@ -67,7 +67,7 @@ export default class Utils {
     options = options || {};
     options.reformatSeqName = options.reformatSeqName !== false;
 
-    if (!serSeq) return false;
+    if (!serSeq) { return false; }
 
     try {
       if (serSeq.isProtein || serSeq.type === 'protein' || serSeq.type === 'AA') {
@@ -75,9 +75,9 @@ export default class Utils {
         serSeq.sequence = serSeq.proteinSequence || serSeq.sequence;
         options.isProtein = true;
       }
-      let content = null;
+      const content = null;
       const cutUp = typeof serSeq.sequence === 'string' ? Utils.cutUpStr : Utils.cutUpArray;
-      if (!serSeq.sequence) serSeq.sequence = '';
+      if (!serSeq.sequence) { serSeq.sequence = ''; }
 
       let lines = [];
       lines.push(Utils.createGenbankLocus(serSeq, options));
@@ -198,12 +198,12 @@ export default class Utils {
 
     if (!serSeq.circular || serSeq.circular === '0') {
       line += 'linear  ';
-      //line += '        ';
+      // line += '        ';
     } else {
       line += 'circular';
     }
 
-    line += ' '; //col 64
+    line += ' '; // col 64
     if (serSeq.gbDivision) {
       line += StringUtil.rpad(serSeq.gbDivision || 'SYN', ' ', 10);
     }
@@ -211,7 +211,7 @@ export default class Utils {
     line += ' '; // col 68
     // DOES NOT PARSE DATE USEFULLY ORIGINALLY!
     line += date;
-    //line += '\n';
+    // line += '\n';
 
     return line;
   }
@@ -222,7 +222,7 @@ export default class Utils {
     const line = '     ' + StringUtil.rpad(feat.type || 'misc_feature', ' ', 16);
     let locStr = '';
 
-    //for(var i=0;i<feat.locations.length;i++) {
+    // for(var i=0;i<feat.locations.length;i++) {
     //	var loc = feat.locations[i];
     //	locStr.push((loc.start+1) + '..' + loc.end);
     //}
@@ -278,11 +278,11 @@ export default class Utils {
             notes = JSON.parse(notes);
           } catch (e) {
             console.warn('Warning: Note incorrectly sent as a string.');
-            notes = {}; //set the notes to a blank object
+            notes = {}; // set the notes to a blank object
           }
         }
         Object.keys(notes).forEach((key) => {
-          if (key === 'color' || key === 'labelColor') return; //we'll handle this below
+          if (key === 'color' || key === 'labelColor') { return; } //we'll handle this below
           if (notes[key] instanceof Array) {
             notes[key].forEach((value) => lines.push(Utils.featureNoteInDataToGenbankString(key, value)));
           } else {
@@ -312,7 +312,7 @@ export default class Utils {
   }
 
   static getCurrentDateString() {
-    let date = new Date();
+    const date = new Date();
     // date = date.toString().split(' ');
     const day = date[2];
     const month = date[1].toUpperCase();
@@ -321,7 +321,7 @@ export default class Utils {
   }
 
   static getProteinStart(val, isProtein) {
-    if (!isProtein) return val;
+    if (!isProtein) { return val; }
     return Math.floor((val + 2) / 3);
   }
   static getProteinEnd(val, isProtein) {
@@ -334,7 +334,7 @@ export default class Utils {
   }
 
   static jsonToFasta(data: any[]) {
-    if (!data) return null;
+    if (!data) { return null; }
 
     let fastaString = '';
     data.forEach((c: any) => {
@@ -352,7 +352,7 @@ export default class Utils {
   }
 
   getPosFromSeq(main_seq: string, seq: string) {
-    if (!main_seq || seq || main_seq.length < seq.length) return null;
+    if (!main_seq || seq || main_seq.length < seq.length) { return null; }
     return main_seq.indexOf(seq);
   }
 

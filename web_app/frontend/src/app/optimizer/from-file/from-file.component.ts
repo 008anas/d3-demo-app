@@ -54,9 +54,9 @@ export class FromFileComponent implements OnInit {
         },
         err => {
           this.response = err;
-          console.log(err)
+          console.log(err);
         }
-      )
+      );
   }
 
 }

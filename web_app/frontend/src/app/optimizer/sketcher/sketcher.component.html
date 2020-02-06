@@ -157,9 +157,17 @@
                   <div class="ui fluid transparent large input" [ngClass]="{'show': t.label}">
                     <input type="text" name="track-label" placeholder="(label)" #trackLabel="ngModel" [(ngModel)]="t.label" [disabled]="locked">
                   </div>
-                  <a class="remove" [ngClass]="{'disabled': locked}" (click)="removeTrack(t)">
-                    <i class="x red link icon"></i>
-                  </a>
+                  <div class="actions">
+                    <a [ngClass]="{'disabled': locked || i===0}" (click)="moveTrack(i, -1)">
+                      <i class="left arrow  link icon"></i>
+                    </a>
+                    <a [ngClass]="{'disabled': locked || i===construct.tracks?.length-1}" (click)="moveTrack(i, +1)">
+                      <i class="right arrow link icon"></i>
+                    </a>
+                    <a [ngClass]="{'disabled': locked}" (click)="removeTrack(t)">
+                      <i class="trash red link icon"></i>
+                    </a>
+                  </div>
                 </div>
                 <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color, 'background-size': 'auto '+zoom+'%'}" (click)="openSidebar(t, i)" data-inverted="" [attr.data-tooltip]="t.name"
                   data-position="bottom center"></div>

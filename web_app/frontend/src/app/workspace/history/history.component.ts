@@ -77,7 +77,7 @@ export class HistoryComponent implements OnInit {
   }
 
   notifySuccess(msg: string) {
-    this.notify.success(msg, 'top-right')
+    this.notify.success(msg, 'top-right');
   }
 
 }

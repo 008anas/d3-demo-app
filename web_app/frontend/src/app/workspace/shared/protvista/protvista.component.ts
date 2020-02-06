@@ -21,14 +21,14 @@ export class ProtvistaComponent implements AfterViewInit {
   @Input() set data(data: ResultData) {
     this._data = data;
     this.options = [];
-    for (let key in this._data.results) {
-      let value = this._data.results[key];
+    for (const key in this._data.results) {
+      const value = this._data.results[key];
       this.options.push({
         name: key,
         display: true,
         data: value
       });
-    };
+    }
   }
 
   _data: ResultData = null;

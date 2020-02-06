@@ -44,7 +44,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   isSubmitting = false;
   submitted = false;
   showPicker = false;
-  zoom: number = 75;
+  zoom = 75;
   isTracksLoading = false;
   construct: Construct = new Construct();
   showIndexes = true;
@@ -116,7 +116,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.constructSrvc.getExample()
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => data.length ? this.construct = new Construct().deserialize(data[0]) : this.notify.info('Sorry but no example construct was found'),
+      .subscribe(data => data.length ? this.construct = new Construct().deserialize(data[0]) : this.notify.warn('Sorry but no example construct was found'),
         err => this.notify.warn(err.msg || 'Unable to load model construct'));
   }
 
