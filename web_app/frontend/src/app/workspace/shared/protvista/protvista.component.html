@@ -62,45 +62,66 @@
   <div class="one column row">
 
     <div class="column">
+
       <protvista-manager attributes="length displaystart displayend highlight">
+        <div class="ui grid">
 
-        <protvista-navigation length="500" class="protvista"></protvista-navigation>
-        <protvista-sequence class="protvista" highlight-event="onmouseover" id="dna_sequence"></protvista-sequence>
-        <protvista-sequence class="protvista" highlight-event="onmouseover" id="protein_sequence"></protvista-sequence>
-        <protvista-interpro-track class="protvista" id="interpro-track-residues" shape="roundRectangle" highlight-event="onmouseover"></protvista-interpro-track>
-
-        <div class="ui equal width padded center aligned grid">
-          <div class="column">
-            <a class="ui label" (click)="displayAll()">
-              <i class="eye icon"></i>
-              Display all
-            </a>
-          </div>
-          <div class="column">
-            <a class="ui label" (click)="hideAll()">
-              <i class="eye slash icon"></i>
-              Hide all
-            </a>
-          </div>
-          <div class="column" *ngFor="let o of options">
-            <a class="ui label" [ngClass]="{'teal': o.display}" (click)="o.display = !o.display">
-              <i class="eye icon" [ngClass]="{'slash': o.display}"></i>
-              {{o.name | titlecase}}
-            </a>
-          </div>
-
-          <div class="sixteen wide column" [hidden]="!op.display" *ngFor="let op of options; let i = index">
-            <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
-            <div class="float-r">
-              <span data-inverted="" data-position="top center" data-tooltip="Move up" [hidden]="i < 1 || options.length < 2" (click)="move(i, -1)"><i class="arrow up link icon"></i></span>
-              <span data-inverted="" data-position="top center" data-tooltip="Move down" [hidden]=" i === options.length - 1 || options.length < 2" (click)="move(i, 1)"><i class="arrow down link icon"></i></span>
-              <span data-inverted="" data-position="top center" data-tooltip="Hide"><i class="eye slash link icon" (click)="op.display = false"></i></span>
+          <div class="one column row">
+            <div class="column">
+              <protvista-navigation length="500" class="protvista"></protvista-navigation>
             </div>
-            <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters"></protvista-variation-graph>
-          </div>
-        </div>
 
+            <div class="column">
+              <protvista-sequence class="protvista" highlight-event="onmouseover" id="dna_sequence"></protvista-sequence>
+            </div>
+
+            <div class="column">
+              <protvista-sequence class="protvista" highlight-event="onmouseover" id="protein_sequence"></protvista-sequence>
+            </div>
+
+            <div class="column">
+              <protvista-interpro-track class="protvista" id="interpro-track-residues" shape="roundRectangle" highlight-event="onmouseover"></protvista-interpro-track>
+            </div>
+
+            <div class="column">
+              <div class="ui equal width padded center aligned grid">
+
+                <div class="column">
+                  <a class="ui label" (click)="displayAll()">
+                    <i class="eye icon"></i>
+                    Display all
+                  </a>
+                </div>
+                <div class="column">
+                  <a class="ui label" (click)="hideAll()">
+                    <i class="eye slash icon"></i>
+                    Hide all
+                  </a>
+                </div>
+                <div class="column" *ngFor="let o of options">
+                  <a class="ui label" [ngClass]="{'teal': o.display}" (click)="o.display = !o.display">
+                    <i class="eye icon" [ngClass]="{'slash': o.display}"></i>
+                    {{o.name | titlecase}}
+                  </a>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="column" [hidden]="!op.display" *ngFor="let op of options; let i = index">
+              <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
+              <div class="float-r">
+                <span data-inverted="" data-position="top center" data-tooltip="Move up" [hidden]="i < 1 || options.length < 2" (click)="move(i, -1)"><i class="arrow up link icon"></i></span>
+                <span data-inverted="" data-position="top center" data-tooltip="Move down" [hidden]=" i === options.length - 1 || options.length < 2" (click)="move(i, 1)"><i class="arrow down link icon"></i></span>
+                <span data-inverted="" data-position="top center" data-tooltip="Hide"><i class="eye slash link icon" (click)="op.display = false"></i></span>
+              </div>
+              <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters"></protvista-variation-graph>
+            </div>
+          </div>
+
+        </div>
       </protvista-manager>
+
     </div>
 
   </div>

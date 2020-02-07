@@ -51,7 +51,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
   view = 'general';
   locked = false;
   search: string;
-  toSubmit = false;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -78,7 +77,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.sub = this.route.queryParams.subscribe(params => {
       this.construct.id = params.id || null;
       this.specie.slug = params.specie || null;
-      this.toSubmit = params.to_submit || false;
     });
     if (this.specie.slug) {
       this.getSpecie();
@@ -221,7 +219,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    if (this.checkTracks() && this.toSubmit) {
+    if (this.checkTracks()) {
       this.response = null;
       this.isSubmitting = true;
       this.construct['specie_tax_id'] = this.specie.tax_id;

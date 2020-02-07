@@ -23,14 +23,9 @@
             <span class="date r">
               <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
             </span>
-            <div class="ui icon orange basic label" *ngIf="history.isActive()">
-              <i class="spinner loading icon"></i> {{history.job?.status | uppercase}}
-            </div>
-            <div class="ui icon green basic label" *ngIf="history.isDone()">
-              <i class="check icon"></i> {{history.job?.status | uppercase}}
-            </div>
-            <div class="ui icon red basic label" *ngIf="history.hasFailed()">
-              <i class="exclamation triangle icon"></i> {{history.job?.status | uppercase}}
+            <div class="ant-badge ant-badge-status ant-badge-not-a-wrapper">
+              <span class="ant-badge-status-dot" [ngClass]="{'ant-badge-status-error': history.hasFailed(), 'ant-badge-status-processing': history.isActive(), 'ant-badge-status-success': history.isDone()}"></span>
+              <span class="ant-badge-status-text">{{history.job?.status | titlecase}}</span>
             </div>
           </div>
 
@@ -67,7 +62,7 @@
             <div class="item">
               <i class="chart bar outline large icon"></i>
               <div class="content">
-                <a class="header" onclick="window.location.hash = 'results'">Results area</a>
+                <a class="header" onclick="window.location.hash = 'results'">Plot area</a>
                 <p>Go to results visualizator area</p>
               </div>
             </div>
@@ -101,6 +96,10 @@
         <div class="one column row">
 
           <div class="column">
+
+            <div class="field" [hidden]="!history.construct.description">
+              <p>{{history.construct.description}}</p>
+            </div>
 
             <div class="four inline fields">
 

@@ -42,6 +42,6 @@ export class HomeComponent implements OnInit {
   }
 
   goTo(path: string) {
-    this.specie ? this.router.navigate(['/optimize', path], { queryParams: { specie: this.specie.slug, to_submit: 1 } }) : alert('First choose a specie to proceed');
+    this.specie ? this.router.navigate(['/optimize', path], { queryParams: { specie: this.specie.slug } }) : alert('First choose a specie to proceed');
   }
 }

@@ -17,6 +17,17 @@ body {
   text-rendering: optimizeLegibility;
   background-color: #fff !important;
 }
+/* Main App color */
+.main {
+  &.color {
+    color: #079ace !important;
+  }
+
+  &.bg {
+    background-color: #079ace !important;
+    color: #fff !important;
+  }
+}
 
 span.date {
   color: rgba(0,0,0,.4);

@@ -238,7 +238,7 @@
                 <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
               </div>
 
-              <div class="field" *ngIf="toSubmit">
+              <div class="field">
                 <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
                   Submit
                   <i class="angle right icon"></i>

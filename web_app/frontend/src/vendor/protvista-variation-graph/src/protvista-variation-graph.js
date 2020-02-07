@@ -12,7 +12,7 @@ class ProtvistaVariationGraph extends ProtvistaTrack {
   constructor() {
     super();
     this._line = line()
-      .x(d => this.xScale(d.x))
+      .x(d => this.getXFromSeqPosition(d.x))
       .y(d => this._yScale(d.y));
   }
 
