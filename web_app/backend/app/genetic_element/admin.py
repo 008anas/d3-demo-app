@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Count
 
 from .models import Category, GeneticElement, image_preview, image_list_preview
 
@@ -17,9 +18,15 @@ class CategoryAdmin(ModelAdmin):
             'fields': ('name',),
         }),
     )
-    list_display = ('name', 'created_at')
+    list_display = ('name', 'elements_count', 'created_at')
     search_fields = ('name',)
     ordering = ('created_at',)
+
+    def get_queryset(self, request):
+        return Category.objects.annotate(elements_count=Count('elements'))
+
+    def elements_count(self, obj):
+        return obj.elements_count
 
 
 @admin.register(GeneticElement)
@@ -40,4 +47,3 @@ class GeneticElementAdmin(ModelAdmin):
     search_fields = ('name',)
     ordering = ('created_at',)
     readonly_fields = [image_preview]
-
