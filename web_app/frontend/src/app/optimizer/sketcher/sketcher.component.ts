@@ -91,7 +91,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub.unsubscribe();
+    if (this.sub) this.sub.unsubscribe();
   }
 
   getSpecie() {
@@ -232,7 +232,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
             setTimeout(() => {
               this.submitted = false;
               this.router.navigate(['/workspace', this.history.id]);
-            }, 4000);
+            }, 3000);
           },
           err => {
             this.notify.error(err.msg, 'bottom-right');

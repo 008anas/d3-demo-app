@@ -18,4 +18,4 @@ class SpecieAdmin(ModelAdmin):
     )
     list_display = ('name', 'slug', 'tax_id', 'default', 'created_at')
     search_fields = ('name', 'slug', 'tax_id')
-    ordering = ('created_at',)
+    ordering = ('-created_at',)

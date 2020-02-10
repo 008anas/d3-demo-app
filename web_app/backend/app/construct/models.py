@@ -16,12 +16,13 @@ class Construct(models.Model):
     circular = models.BooleanField(blank=True, default=False)
     description = models.TextField(blank=True, null=True)
     example = models.BooleanField(default=False, help_text='Determine if is it used as example')
+    from_file = models.BooleanField(default=False, help_text='Describe if construct was loaded from file or using SQRUTINY sketcher')
     deleted = models.BooleanField(default=False, help_text='Determine if it is visible in the application')
     created_at = models.DateTimeField('creation date', auto_now_add=True)
     updated_at = models.DateTimeField('last update', auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.name or ''
 
     def save(self, *args, **kwargs):
         if self.example:
@@ -45,4 +46,4 @@ class Track(models.Model):
     color = models.CharField(max_length=10, default='#4e0a77')
 
     def __str__(self):
-        return self.label
+        return self.label or ''

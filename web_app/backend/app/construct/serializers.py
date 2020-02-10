@@ -90,7 +90,7 @@ class ConstructRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Construct
-        exclude = ['uuid', 'example', 'deleted', 'updated_at']
+        exclude = ['uuid', 'example', 'from_file','deleted', 'updated_at']
 
 
 class SearchMotifSerializer(serializers.Serializer):

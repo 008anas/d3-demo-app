@@ -97,7 +97,6 @@ class GeneticElement(models.Model):
     class Meta:
         verbose_name = 'Genetic Element'
         verbose_name_plural = 'Genetic Elements'
-        ordering = ['order']
 
     def __str__(self):
-        return self.name
+        return self.name or ''

@@ -9,6 +9,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from app.construct.models import Construct
 from app.construct.serializers import ConstructCreateSerializer
 from app.matrix.models import Matrix
 from app.serializers import GenBankSerializer
@@ -22,6 +23,7 @@ sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
 
 TOOL_NAME = 'SQrutiny - Optimize Sequence - '
+FEATURE_PREFIX = 'SQY_BOX_'
 
 
 class OptimizeSequenceSkectherView(APIView):
@@ -77,13 +79,10 @@ class OptimizeSequenceFileView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
+
         serializer = GenBankSerializer(data=request.data)
 
-        if not serializer.is_valid():
-            return Response(
-                data=serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer.is_valid(raise_exception=True)
 
         file = serializer.validated_data['file']
 
@@ -96,29 +95,20 @@ class OptimizeSequenceFileView(APIView):
         try:
             handle = open(tmp_file.name, 'rU')
 
-            try:
-                for record in SeqIO.parse(handle, 'genbank'):
-                    tracks = []
-                    tax_id = record.features[0].qualifiers['db_xref'][0].partition('taxon:')[2]
-                    for feature in record.features:
-                        if feature.type != 'source':
-                            tracks.append(dict(
-                                type=feature.type,
-                                sequence=str(feature.extract(record.seq)),
-                                start=feature.location.nofuzzy_start,
-                                end=feature.location.nofuzzy_end))
+            # try:
+            for record in SeqIO.parse(handle, 'genbank'):
+                tracks = []
+                for feature in record.features:
+                    if feature.type.lower() == 'cds' and feature.type != 'source':
+                        tracks.append(dict(
+                            type=feature.type,
+                            sequence=str(feature.extract(record.seq)),
+                            start=feature.location.nofuzzy_start,
+                            end=feature.location.nofuzzy_end))
 
-                    serializer = ConstructCreateSerializer(data=dict(
-                        name='From genbank',
-                        dna_seq=record.seq,
-                        specie_tax_id=tax_id,
-                        tracks=tracks
-                    ))
-
-                    serializer.is_valid(raise_exception=True)
-            except:
-                return Response({'msg': 'Invalid genbank format file'},
-                                status=status.HTTP_400_BAD_REQUEST)
+                if not len(tracks):
+                    return Response({'msg': 'No CDS was found. Please specify a CDS and try again.'},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
                 specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
 
@@ -127,13 +117,59 @@ class OptimizeSequenceFileView(APIView):
                         serializer.validated_data['specie_tax_id']) + ' was not found'},
                                     status=status.HTTP_404_NOT_FOUND)
 
-                construct = serializer.save(specie=specie)
+                construct = Construct(
+                    name=record.name,
+                    dna_seq=record.seq,
+                    specie=specie,
+                    description=record.annotations.get('comment', None),
+                    circular=True if record.annotations.get('topology', '').lower() == 'circular' else False,
+                    from_file=True
+                )
+
+                construct.save()
+
+                construct.tracks.set(tracks)
+
+            # except:
+            #     return Response({'msg': 'Invalid GenBank format file'},
+            #                     status=status.HTTP_400_BAD_REQUEST)
 
         except:
             raise
+
         tmp_file.close()
 
-        return Response(dict(msg='ok'), status=status.HTTP_201_CREATED)
+        matrix = Matrix.objects.filter(active=True, specie=specie)
+
+        if not matrix:
+            return Response({'msg': 'Sorry but it was not possible to perform action. Please try later'},
+                            status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        job = django_rq.enqueue(checker, sequence=construct.dna_seq, matrix_dict=self.matrix_to_dict(matrix),
+                                circular=construct.circular, codon_table=specie.codon_table, result_ttl=-1)
+
+        if job.get_status() == 'failed':
+            return Response(dict(msg='Sorry There has been a problem. Please try later'),
+                            status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        history = History.objects.create(
+            name=TOOL_NAME + construct.name,
+            construct=construct, job_id=job.id,
+            request_ip=get_request_ip(request) or None
+        )
+
+        # Save history in current session
+        self.request.session.setdefault('history', [])
+        self.request.session['history'].append(str(history.uuid))
+        self.request.session.modified = True
+
+        serializer = HistorySerializer(instance=history, context={'request': request})
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def matrix_to_dict(matrix):
+        return {entry.alias: entry.matrix_file.path for entry in matrix}
 
 
 class SearchMotifView(APIView):

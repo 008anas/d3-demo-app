@@ -27,7 +27,7 @@ class Specie(models.Model):
     updated_at = models.DateTimeField('last update', auto_now=True, editable=False)
 
     def __str__(self):
-        return self.name
+        return self.name or ''
 
     def save(self, *args, **kwargs):
         if self.default:

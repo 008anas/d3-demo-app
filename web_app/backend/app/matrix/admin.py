@@ -18,4 +18,4 @@ class GeneticElementAdmin(ModelAdmin):
     )
     list_display = ('name', 'specie', 'genetic_element', 'active', 'created_at')
     search_fields = ('name',)
-    ordering = ('created_at',)
+    ordering = ('-created_at',)

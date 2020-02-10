@@ -25,7 +25,6 @@ class Matrix(models.Model):
         verbose_name = 'Matrix'
         verbose_name_plural = 'Matrices'
         unique_together = ['alias', 'specie', 'genetic_element']
-        ordering = ['created_at']
 
     def __str__(self):
         return self.name
