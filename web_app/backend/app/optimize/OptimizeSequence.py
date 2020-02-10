@@ -126,9 +126,9 @@ class OptimizeSequenceFileView(APIView):
                     from_file=True
                 )
 
-                construct.save()
+                construct.save(tracks=tracks)
 
-                construct.tracks.set(tracks)
+                # construct.tracks.add(tracks)
 
             # except:
             #     return Response({'msg': 'Invalid GenBank format file'},

@@ -23,6 +23,7 @@ export class FromFileComponent implements OnInit {
   response: any = null;
   sub: Subscription;
   specie: Specie = new Specie();
+  species: Specie[] = [];
   isLoading = false;
   history: UserHistory = null;
 
@@ -39,6 +40,7 @@ export class FromFileComponent implements OnInit {
     });
     this.sub = this.route.queryParams.subscribe(params => this.specie.slug = params.specie || null);
     this.getSpecie();
+    this.getSpecies();
   }
 
   ngOnDestroy() {
@@ -50,6 +52,22 @@ export class FromFileComponent implements OnInit {
     this.specieSrvc.getBySlug(this.specie)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => this.specie.deserialize(data));
+  }
+
+  getSpecies() {
+    this.isLoading = true;
+    this.specieSrvc.getAll()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(
+        data =>
+          this.species = data.map((e: any) => {
+            const specie = new Specie().deserialize(e);
+            if (specie.default && !this.specie.slug) {
+              this.specie = Object.assign({}, specie);
+            }
+            return specie;
+          })
+      );
   }
 
   onChange(event: { target: { files: any[]; }; }) {
