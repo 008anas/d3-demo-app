@@ -21,7 +21,7 @@ export class SqrutinyService {
 
   motifInSeq(sequence: string, motif: string): Observable<any> {
     if (sequence && motif) {
-      return this.http.get(`${this.url}/search-motif`, { params: { sequence: sequence, motif: motif } });
+      return this.http.get(`${this.url}/search-motif`, { params: { sequence, motif } });
     }
   }
 

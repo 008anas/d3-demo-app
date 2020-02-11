@@ -1,32 +1,27 @@
 const nameUtils = {
 	/**
 	 * Reformat name to replaces whitespace with underscores.
-	 * @param {String} pName
 	 * @returns {String} New name.
 	 */
   reformatName: (pName: string): string => pName.toString().replace(/ /g, '_'),
 };
 const StringUtil = {
   /** Trims white space at beginning and end of string
-   * @param {String} line
    * @returns {String} line
    */
   trim: (line: string): string => line.replace(/^\s+|\s+$/g, ''),
 
   /** Trims white space at beginning string
-   * @param {String} line
    * @returns {String} line
    */
   ltrim: (line: string): string => line.replace(/^\s+/, ''),
 
   /** Trims white space at end of string
-   * @param {String} line
    * @returns {String} line
    */
   rtrim: (line: string): string => line.replace(/\s+$/, ''),
 
   /** Pads white space at beginning of string
-   * @param {String} line
    * @returns {String} line
    */
   lpad: (line: string, padString, length): string => {
@@ -225,7 +220,7 @@ export default class Utils {
     // for(var i=0;i<feat.locations.length;i++) {
     //	var loc = feat.locations[i];
     //	locStr.push((loc.start+1) + '..' + loc.end);
-    //}
+    // }
 
     if (feat.locations && feat.locations.length > 1) {
       feat.locations.forEach((loc, i) => {
@@ -325,7 +320,7 @@ export default class Utils {
     return Math.floor((val + 2) / 3);
   }
   static getProteinEnd(val, isProtein) {
-    if (!isProtein) return val;
+    if (!isProtein) { return val; }
     return Math.floor(val / 3);
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { finalize } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ import { UserHistory } from 'src/app/workspace/shared/user-history';
   templateUrl: './from-file.component.html',
   styleUrls: ['./from-file.component.scss']
 })
-export class FromFileComponent implements OnInit {
+export class FromFileComponent implements OnInit, OnDestroy {
 
   progress = 0;
   form: FormGroup;
@@ -26,13 +26,16 @@ export class FromFileComponent implements OnInit {
   species: Specie[] = [];
   isLoading = false;
   history: UserHistory = null;
+  isUploading = false;
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private route: ActivatedRoute,
     private specieSrvc: SpecieService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private modal: NzModalService) { }
+    private modal: NzModalService
+  ) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -44,7 +47,7 @@ export class FromFileComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.sub) this.sub.unsubscribe();
+    if (this.sub) { this.sub.unsubscribe(); }
   }
 
   getSpecie() {
@@ -62,7 +65,7 @@ export class FromFileComponent implements OnInit {
         data =>
           this.species = data.map((e: any) => {
             const specie = new Specie().deserialize(e);
-            if (specie.default && !this.specie.slug) {
+            if (!this.specie.slug && specie.default) {
               this.specie = Object.assign({}, specie);
             }
             return specie;
@@ -74,6 +77,7 @@ export class FromFileComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       this.form.get('file').setValue(file);
+      this.onSubmit();
     }
   }
 
@@ -83,35 +87,42 @@ export class FromFileComponent implements OnInit {
     params.append('specie_tax_id', this.specie.tax_id);
     this.response = null;
     this.progress = 0;
-    this.http.post('http://127.0.0.1:8000/api/v1/optimize_seq/from-file', params, { reportProgress: true, observe: 'events' })
-      .pipe(finalize(() => this.isLoading = false))
-      .subscribe(
-        event => {
-          switch (event.type) {
-            case HttpEventType.Sent:
-              console.log('Request has been made!');
-              break;
-            case HttpEventType.ResponseHeader:
-              console.log('Response header has been received!');
-              break;
-            case HttpEventType.UploadProgress:
-              this.progress = Math.round(event.loaded / event.total * 100);
-              console.log(`Uploaded! ${this.progress}%`);
-              break;
-            case HttpEventType.Response:
-              this.history = new UserHistory().deserialize(event.body);
-              this.modal.success({
-                nzTitle: 'Success!',
-                nzContent: `${this.history.construct.name} has been submitted: In a few moment you'll be redirected to results page. Please be patient.`
-              });
-              setTimeout(() => this.router.navigate(['/workspace', this.history.id]), 3000)
-          }
-        },
-        err => {
-          this.response = err;
-          console.log(err);
-        }
-      );
+    this.isUploading = true;
+    var pBar = document.getElementById('file-progress');
+    setTimeout(() => this.isUploading = false, 3000);
+    // this.http.post('http://127.0.0.1:8000/api/v1/optimize_seq/from-file', params, { reportProgress: true, observe: 'events' })
+    //   .pipe(finalize(() => this.isUploading = false))
+    //   .subscribe(
+    //     event => {
+    //       switch (event.type) {
+    //         case HttpEventType.Sent:
+    //           console.log('Request has been made!');
+    //           break;
+    //         case HttpEventType.ResponseHeader:
+    //           console.log('Response header has been received!');
+    //           break;
+    //         case HttpEventType.UploadProgress:
+    //           this.progress = Math.round(event.loaded / event.total * 100);
+    //           console.log(`Uploaded! ${this.progress}%`);
+    //           break;
+    //         case HttpEventType.Response:
+    //           this.history = new UserHistory().deserialize(event.body);
+    //           this.modal.success({
+    //             nzTitle: 'Success!',
+    //             nzContent: `${this.history.construct.name} has been submitted: In a few moment you'll be redirected to results page. Please be patient.`
+    //           });
+    //           setTimeout(() => this.router.navigate(['/workspace', this.history.id]), 3000);
+    //       }
+    //     },
+    //     err => {
+    //       this.response = err;
+    //       console.log(err);
+    //     }
+    //   );
+  }
+
+  loadExample(){
+    
   }
 
 }

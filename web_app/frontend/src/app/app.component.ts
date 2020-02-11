@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.metaTagSrvc.addTags([
       { name: 'keywords', content: 'Sequence Optimizator' },
+      { name: 'keywords', content: 'SQRUTINY' },
       { name: 'robots', content: 'index, follow' },
       { name: 'author', content: 'Anas Gharrab' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

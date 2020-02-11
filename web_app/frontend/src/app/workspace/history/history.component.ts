@@ -73,8 +73,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
               this.attempts = 0;
             }
             this.attempts++;
-            if (this.attempts >= MAX_ATTEMPTS)
-              clearInterval(this.interval);
+            if (this.attempts >= MAX_ATTEMPTS) { clearInterval(this.interval); }
           }
         },
         err => {

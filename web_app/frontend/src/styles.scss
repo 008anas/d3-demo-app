@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+$color-theme: #079ace;
+
 html {
   font-size: 70%;
   -webkit-font-smoothing: antialiased;
@@ -20,11 +22,11 @@ body {
 /* Main App color */
 .main {
   &.color {
-    color: #079ace !important;
+    color: $color-theme !important;
   }
 
   &.bg {
-    background-color: #079ace !important;
+    background-color: $color-theme !important;
     color: #fff !important;
   }
 }
@@ -128,7 +130,7 @@ span.ui.error {
 /* SEMANTIC OVERRIDE */
 /* Button */
 button.ui.button:not(.circular) {
-  padding: 0.8em 1em !important;
+  padding: 1em 1.2em !important;
 }
 
 .ui[class*="right labeled"].icon.button {

@@ -23,11 +23,13 @@ export class ProtvistaComponent implements AfterViewInit {
     this.options = [];
     for (const key in this._data.results) {
       const value = this._data.results[key];
-      this.options.push({
-        name: key,
-        display: true,
-        data: value
-      });
+      if (value) {
+        this.options.push({
+          name: key,
+          display: true,
+          data: value
+        });
+      }
     }
   }
 

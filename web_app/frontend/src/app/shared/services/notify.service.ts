@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
-import { NotifyType, Notify } from '../models/notify';
+import { NotifyType } from '../models/notify';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +39,7 @@ export class NotifyService {
 
   notify(type: NotifyType, message: string, pos = 'bottom-right', keepAfterNavigation = false) {
     this.keepAfterNavigation = keepAfterNavigation;
-    this.subject.next({ type: type, message: message, position: pos } as Notify);
+    this.subject.next({ type, message, pos });
   }
 
   getMessage(): Observable<any> {

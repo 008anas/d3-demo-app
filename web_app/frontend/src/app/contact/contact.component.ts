@@ -23,9 +23,6 @@ export class ContactComponent implements OnInit {
     this.email = main.email;
   }
 
-  /**
-  * Process the form. Send to email
-  */
   submitForm() {
     this.isLoading = true;
     this.http.post<any[]>(`${env.endpoints.api}/contact/`, this.contact)

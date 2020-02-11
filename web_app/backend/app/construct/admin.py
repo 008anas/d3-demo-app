@@ -13,7 +13,7 @@ class TrackInline(admin.TabularInline):
 @admin.register(Construct)
 class ConstructAdmin(ModelAdmin):
     fieldsets = (
-        ('Information', {'fields': ('name', 'from_file', 'dna_seq', 'specie', 'description')}),
+        ('Information', {'fields': ('name', 'from_file', 'dna_seq', 'protein_seq', 'specie', 'description')}),
         ('Actions', {'fields': ('deleted', 'example')})
     )
     add_fieldsets = (
@@ -23,7 +23,7 @@ class ConstructAdmin(ModelAdmin):
         }),
     )
     date_hierarchy = 'created_at'
-    readonly_fields = ('from_file',)
+    readonly_fields = ('from_file', 'protein_seq')
     list_display = ('uuid', 'name', 'dna_seq_length', 'protein_seq_length','tracks_count', 'circular', 'from_file', 'example', 'deleted', 'created_at')
     inlines = (TrackInline,)
     search_fields = ('name', 'sequence')

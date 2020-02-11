@@ -91,7 +91,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.sub) this.sub.unsubscribe();
+    if (this.sub) { this.sub.unsubscribe(); }
   }
 
   getSpecie() {
@@ -291,7 +291,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
   downloadAs(op: string) {
     if (this.construct.tracks.length) {
 
-      let data, ext: string;
+      let data: BlobPart;
+      let ext: string;
 
       switch (op.toUpperCase()) {
         case 'GENBANK':
