@@ -1,6 +1,6 @@
-import { Deserializable } from 'src/app/shared/models/deserializable.model';
+import { Deserializable } from 'app/shared/models/deserializable.model';
 import { Job } from './job';
-import { Construct } from 'src/app/construct/shared/construct';
+import { Construct } from 'app/construct/shared/construct';
 
 export class UserHistory extends Deserializable {
   id: string;

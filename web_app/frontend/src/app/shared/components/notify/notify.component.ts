@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-import { NotifyService } from '../services/notify.service';
-import { Notify, NotifyType } from '../models/notify';
+import { NotifyService } from '../../services/notify.service';
+import { Notify, NotifyType } from '../../models/notify';
 
 @Component({
   selector: 'notify',
@@ -14,10 +14,10 @@ export class NotifyComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   notifies: Notify[] = [];
 
-  constructor(private notifyService: NotifyService) { }
+  constructor(private notifySrvc: NotifyService) { }
 
   ngOnInit() {
-    this.subscription = this.notifyService.getMessage().subscribe(message => {
+    this.subscription = this.notifySrvc.getMessage().subscribe(message => {
       if (!message) {
         // clear notifies when an empty notify is received
         this.notifies = [];

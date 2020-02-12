@@ -11,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { HomeComponent } from './home/home.component';
-import { NotifyComponent } from './shared/notify/notify.component';
 import { ContactComponent } from './contact/contact.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { SharedModule } from './shared/shared.module';
@@ -19,6 +18,7 @@ import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
 import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
 import { VectorEditorComponent } from './vector-editor/vector-editor.component';
+import { NotifyComponent } from './shared/components/notify/notify.component';
 
 @NgModule({
   declarations: [

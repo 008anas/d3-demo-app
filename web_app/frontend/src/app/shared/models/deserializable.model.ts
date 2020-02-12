@@ -1,4 +1,4 @@
-import { DeserializableI } from 'src/app/shared/models/deserializable.interface';
+import { DeserializableI } from 'app/shared/models/deserializable.interface';
 
 export class Deserializable implements DeserializableI {
 

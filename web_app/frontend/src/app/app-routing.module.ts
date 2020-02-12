@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { routes as rts } from './config/routes';
+import { routes as rts } from '@config/routes';
 import { HomeComponent } from './home/home.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { ContactComponent } from './contact/contact.component';

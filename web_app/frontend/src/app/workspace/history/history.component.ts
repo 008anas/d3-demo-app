@@ -5,9 +5,9 @@ import { finalize } from 'rxjs/operators';
 import { UserHistory } from '../shared/user-history';
 import { HistoryService } from '../shared/history.service';
 import { JobService } from '../shared/job.service';
-import { NotifyService } from 'src/app/shared/services/notify.service';
+import { NotifyService } from '@services/notify.service';
 import { Job } from '../shared/job';
-import { Construct } from 'src/app/construct/shared/construct';
+import { Construct } from 'app/construct/shared/construct';
 
 const MAX_ATTEMPTS = 10;
 

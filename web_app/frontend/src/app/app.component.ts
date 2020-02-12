@@ -2,7 +2,7 @@ import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 
-import { TitleService } from './shared/services/title.service';
+import { TitleService } from '@services/title.service';
 
 @Component({
   selector: 'sqy-root',

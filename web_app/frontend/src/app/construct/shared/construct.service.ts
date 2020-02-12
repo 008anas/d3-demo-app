@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment as env } from 'src/environments/environment';
+import { environment as env } from '@env/environment';
 import { Construct } from './construct';
 
 const URL_ENV = '/constructs/';

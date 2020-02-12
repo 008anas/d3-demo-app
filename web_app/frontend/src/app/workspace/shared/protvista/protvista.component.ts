@@ -1,10 +1,10 @@
 import { Component, Input, AfterViewInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
-import { Construct } from 'src/app/construct/shared/construct';
-import { Track } from 'src/app/optimizer/shared/track';
-import { SqrutinyService } from 'src/app/shared/services/sqrutiny.service';
-import Utils from 'src/app/shared/utils';
+import { Construct } from 'app/construct/shared/construct';
+import { Track } from 'app/optimizer/shared/track';
+import { SqrutinyService } from '@services/sqrutiny.service';
+import Utils from 'app/shared/utils';
 
 class ResultData {
   construct: Construct;

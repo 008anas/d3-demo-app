@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { filter, map } from 'rxjs/operators';
-import { main } from 'src/app/config/main';
+import { main } from 'app/config/main';
 
 const SEPARATOR = ' | ';
 

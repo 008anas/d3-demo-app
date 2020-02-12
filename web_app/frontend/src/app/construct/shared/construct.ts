@@ -1,6 +1,6 @@
-import { Deserializable } from 'src/app/shared/models/deserializable.model';
-import { Track } from 'src/app/optimizer/shared/track';
-import { Specie } from 'src/app/shared/models/specie';
+import { Deserializable } from 'app/shared/models/deserializable.model';
+import { Track } from 'app/optimizer/shared/track';
+import { Specie } from 'app/shared/models/specie';
 
 export class Construct extends Deserializable {
   id?: string;

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { routes as rts } from '../config/routes';
+import { routes as rts } from '@config/routes';
 import { SketcherComponent } from './sketcher/sketcher.component';
 import { FromFileComponent } from './from-file/from-file.component';
 

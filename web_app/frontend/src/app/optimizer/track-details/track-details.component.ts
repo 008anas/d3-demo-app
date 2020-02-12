@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 
 import { Track } from '../shared/track';
 import { Base } from '../shared/base';
-import Utils from 'src/app/shared/utils';
-import { KEY_CODE } from 'src/app/shared/models/key-code';
+import Utils from 'app/shared/utils';
+import { KEY_CODE } from 'app/shared/models/key-code';
 
 @Component({
   selector: 'sqy-track-details',

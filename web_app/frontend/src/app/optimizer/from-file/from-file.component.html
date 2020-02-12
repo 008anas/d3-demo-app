@@ -50,7 +50,7 @@
               <sqy-errors-list [errors]="response"></sqy-errors-list>
             </div>
 
-            <div class="required field">
+            <div class="required six wide field">
               <label>Organism</label>
               <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
                 <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
@@ -65,7 +65,7 @@
               <input id="file-upload" type="file" name="fileUpload" (change)="onChange($event)" />
 
               <label for="file-upload" id="file-drag">
-                <img id="file-image" src="#" alt="Preview" class="hidden">
+                <i class="file icon" id="file-image" class="hidden"></i>
                 <div id="start">
                   <i class="download huge icon" aria-hidden="true"></i>
                   <div>Select a file or drag here</div>

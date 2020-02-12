@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment as env } from 'src/environments/environment';
-import { Construct } from 'src/app/construct/shared/construct';
-import { UserHistory } from 'src/app/workspace/shared/user-history';
+import { environment as env } from '@env/environment';
+import { Construct } from 'app/construct/shared/construct';
+import { UserHistory } from 'app/workspace/shared/user-history';
 
 @Injectable({ providedIn: 'root' })
 export class SqrutinyService {

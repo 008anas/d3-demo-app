@@ -4,8 +4,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-import { environment as env } from 'src/environments/environment';
-import { routes } from 'src/app/config/routes';
+import { environment as env } from '@env/environment';
+import { routes } from '@config/routes';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

@@ -2,7 +2,7 @@ import { Injectable, ErrorHandler } from '@angular/core';
 
 import * as Sentry from '@sentry/browser';
 
-import { environment as env } from 'src/environments/environment';
+import { environment as env } from '@env/environment';
 
 Sentry.init({
   enabled: env.production,

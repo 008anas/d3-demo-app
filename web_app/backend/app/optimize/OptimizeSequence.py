@@ -111,15 +111,23 @@ class OptimizeSequenceFileView(APIView):
                                     status=status.HTTP_400_BAD_REQUEST)
 
                 tracks = []
+                sqy_tracks = []
+
                 for feature in record.features:
                     if feature.type.lower() == 'cds':
-                        tracks.append(dict(
+                        tracks.append(Track(
+                            genetic_element=GeneticElement.objects.filter(name__iexact=feature.type).first(),
+                            sequence=str(feature.extract(record.seq)),
+                            start=feature.location.nofuzzy_start,
+                            end=feature.location.nofuzzy_end))
+                    elif feature.type.upper().startsWith(FEATURE_PREFIX):
+                        sqy_tracks.append(Track(
                             genetic_element=GeneticElement.objects.filter(name__iexact=feature.type).first(),
                             sequence=str(feature.extract(record.seq)),
                             start=feature.location.nofuzzy_start,
                             end=feature.location.nofuzzy_end))
 
-                construct = Construct.objects.create(
+                construct = Construct(
                     name=record.name,
                     dna_seq=record.seq,
                     protein_seq=seq_translator(str(record.seq)),
@@ -130,6 +138,7 @@ class OptimizeSequenceFileView(APIView):
                 )
 
                 if len(tracks):
+                    construct.update(tracks=tracks)
                     Track.objects.bulk_create([Track(genetic_element=t.get('genetic_element'),
                                                      construct=construct,
                                                      sequence=t.get('sequence'),
@@ -144,32 +153,6 @@ class OptimizeSequenceFileView(APIView):
             raise
 
         tmp_file.close()
-
-        matrix = Matrix.objects.filter(active=True, specie=specie)
-
-        if not matrix:
-            return Response({'msg': 'Sorry but it was not possible to perform action. Please try later'},
-                            status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-        job = django_rq.enqueue(checker, sequence=construct.dna_seq, matrix_dict=self.matrix_to_dict(matrix),
-                                circular=construct.circular, codon_table=specie.codon_table, result_ttl=-1)
-
-        if job.get_status() == 'failed':
-            return Response(dict(msg='Sorry There has been a problem. Please try later'),
-                            status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-        history = History.objects.create(
-            name=TOOL_NAME + construct.name,
-            construct=construct, job_id=job.id,
-            request_ip=get_request_ip(request) or None
-        )
-
-        # Save history in current session
-        self.request.session.setdefault('history', [])
-        self.request.session['history'].append(str(history.uuid))
-        self.request.session.modified = True
-
-        serializer = HistorySerializer(instance=history, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

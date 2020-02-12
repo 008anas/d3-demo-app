@@ -7,9 +7,9 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Specie } from 'src/app/shared/models/specie';
-import { SpecieService } from 'src/app/shared/services/specie.service';
-import { UserHistory } from 'src/app/workspace/shared/user-history';
+import { Specie } from '@models/specie';
+import { SpecieService } from '@services/specie.service';
+import { UserHistory } from 'app/workspace/shared/user-history';
 
 @Component({
   selector: 'sqy-from-file',
@@ -122,7 +122,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
   }
 
   loadExample(){
-    
+
   }
 
 }

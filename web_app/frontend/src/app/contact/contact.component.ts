@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { main } from '../config/main';
-import { environment as env } from 'src/environments/environment';
+import { environment as env } from '@env/environment';
 import { Contact } from '../shared/models/contact';
 import { HttpClient } from '@angular/common/http';
 

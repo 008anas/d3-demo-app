@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment as env } from 'src/environments/environment';
+import { environment as env } from '@env/environment';
 import { Job } from './job';
 
 const URL_ENV = '/workspace/job/';

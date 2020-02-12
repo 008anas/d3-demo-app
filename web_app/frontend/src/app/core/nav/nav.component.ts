@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
-import { HistoryService } from 'src/app/workspace/shared/history.service';
+import { HistoryService } from 'app/workspace/shared/history.service';
 
 @Component({
   selector: 'sqy-main-nav',
