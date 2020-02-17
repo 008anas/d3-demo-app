@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { Construct } from './construct';
-import { ConstructService } from './construct.service';
+import { Construct } from '@models/construct';
+import { ConstructService } from '@services/construct.service';
 
 @Injectable()
 export class ConstructResolver implements Resolve<Observable<Construct>> {

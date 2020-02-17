@@ -12,9 +12,7 @@ export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate>
   constructor() { }
 
   canDeactivate(
-    component: CanComponentDeactivate,
-    _route: ActivatedRouteSnapshot,
-    _state: RouterStateSnapshot
+    component: CanComponentDeactivate
   ): Observable<boolean> | Promise<boolean> | boolean {
 
     // Check with component to see if we're able to deactivate

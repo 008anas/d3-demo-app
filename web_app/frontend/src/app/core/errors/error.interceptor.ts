@@ -24,6 +24,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   private processError(error: any) {
     if (env.production) {
       switch (error) {
+        case 0:
         case 500:
           this.router.navigate([routes.error500]);
           break;

@@ -53,7 +53,7 @@ class ConstructCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('specie_tax_id')
         tracks = validated_data.pop('tracks')
-        seq = ''.join([track['sequence'] for track in tracks])
+        seq = ''.join([track.get('sequence', '') for track in tracks])
         construct = Construct.objects.create(**validated_data, dna_seq=seq, protein_seq=seq_translator(seq))
         i = 1
         for track in tracks:
@@ -90,7 +90,7 @@ class ConstructRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Construct
-        exclude = ['uuid', 'example', 'from_file','deleted', 'updated_at']
+        exclude = ['uuid', 'example', 'from_file', 'deleted', 'updated_at']
 
 
 class SearchMotifSerializer(serializers.Serializer):

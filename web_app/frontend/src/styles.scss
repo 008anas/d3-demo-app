@@ -137,6 +137,10 @@ button.ui.button:not(.circular) {
   padding-right: 4.7em!important;
   padding-left: 1.5em!important;
 }
+/* Progress */
+.ui.progress .bar {
+  height: 0.75em;
+}
 /* Header */
 .sub.header {
   display: block;

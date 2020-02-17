@@ -2,91 +2,217 @@
 
   <div class="ui vertical masthead center aligned">
 
-    <div class="ui one column very relaxed grid">
+    <div class="ui text container">
+      <h1 class="ui header">Upload your GenBank</h1>
+      <h2 class="ui header">Allowed extensions: .gb .gbk .genbank.</h2>
 
-      <div class="column">
-        <div class="ui text container">
-          <h1 class="ui header">Upload your GenBank</h1>
-          <h2 class="ui header">Allowed extensions: .gb .gbk .genbank.</h2>
+      <div class="field" *ngIf="response">
+        <sqy-errors-list [errors]="response"></sqy-errors-list>
+      </div>
+      <form class="ui form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
-          <!-- <form class="ui form" enctype="multipart/form-data" novalidate="" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="required seven wide field">
+          <label>Organism</label>
+          <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
+            <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
+          </select>
+        </div>
 
-            <div class="field" *ngIf="response">
-              <sqy-errors-list [errors]="response"></sqy-errors-list>
-            </div>
+        <div class="field">
+          <sqy-file-uploader></sqy-file-uploader>
+        </div>
+      </form>
 
-            <div class="required field">
-              <label>Organism</label>
-              <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
-                <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
-              </select>
-            </div>
-
-            <div class="field box has-advanced-upload">
-              <svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="43" viewBox="0 0 50 43">
-                <path
-                  d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z">
-                </path>
-              </svg>
-              <input type="file" style="visibility: hidden" name="files" id="file" class="box__file" (change)="onChange($event)" data-multiple-caption="{count} files selected">
-              <label class="txt-c" for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
-            </div>
-
-            <div class="field txt-r">
-              <button type="submit" class="ui primary right labeled icon button" name="upload">
-                Upload <i class="upload icon"></i>
-              </button>
-            </div>
-
-            <div class="field" *ngIf="isUploading">
-              <sqy-progress-bar [progress]="progress"></sqy-progress-bar>
-            </div>
-
-          </form> -->
-
-          <form class="ui form" id="file-upload-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-
-            <div class="field" *ngIf="response">
-              <sqy-errors-list [errors]="response"></sqy-errors-list>
-            </div>
-
-            <div class="required six wide field">
-              <label>Organism</label>
-              <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
-                <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
-              </select>
-            </div>
-
-            <div class="field txt-r">
-              <a (click)="loadExample()">Load example file</a>
-            </div>
-
-            <div class="field uploader">
-              <input id="file-upload" type="file" name="fileUpload" (change)="onChange($event)" />
-
-              <label for="file-upload" id="file-drag">
-                <i class="file icon" id="file-image" class="hidden"></i>
-                <div id="start">
-                  <i class="download huge icon" aria-hidden="true"></i>
-                  <div>Select a file or drag here</div>
-                  <div id="notimage" class="hidden">Please select an image</div>
-                  <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
-                </div>
-                <div id="response" class="hidden">
-                  <div id="messages"></div>
-                  <progress class="progress" id="file-progress" value="0">
-                    <span>0</span>%
-                  </progress>
-                </div>
-              </label>
-            </div>
-
-          </form>
-
+      <div class="ui basic segment" *ngIf="isUploading && !construct">
+        <div class="ui active inverted dimmer">
+          <div class="ui text loader">Gutting file...</div>
         </div>
       </div>
 
+      <div class="ui grid" *ngIf="construct && !isUploading">
+
+        <div class="row">
+
+          <div class="sixteen wide column">
+
+            <div class="ui two item secondary pointing menu">
+              <a class="item" (click)="view = 'general'" [ngClass]="{'active': view === 'general'}">
+                General
+              </a>
+              <a class="item" (click)="view = 'tracks'" [ngClass]="{'active': view === 'tracks'}">
+                Tracks
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="sixteen wide column" style="height: 80vh; overflow: auto">
+
+            <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()" *ngIf="view === 'general'">
+
+              <div class="required field">
+                <label class="required-msg">Required fields are shown with</label>
+              </div>
+
+              <div class="required field">
+                <label for="construct_specie">Select organism</label>
+                <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
+                  <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
+                </select>
+              </div>
+
+              <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
+                <label for="construct_name">Enter a label</label>
+                <input type="text" class="transparent" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
+              </div>
+
+              <div class="inline field">
+                <label for="">Circular</label>
+                <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+              </div>
+
+              <div class="inline field">
+                <label for="construct_description">Description</label>
+                <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
+              </div>
+
+              <div class="field">
+                <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
+                  Submit
+                  <i class="angle right icon"></i>
+                </button>
+              </div>
+
+            </form>
+
+            <div class="ui one column grid" *ngIf="view === 'tracks'">
+
+              <div class="column">
+                <div class="ui fluid icon input">
+                  <i class="search icon"></i>
+                  <input type="text" placeholder="Search by label / type / sequence..." [(ngModel)]="search">
+                </div>
+              </div>
+
+              <div class="column">
+                <table class="ui blue definition table">
+
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>
+                        Label
+                      </th>
+                      <th>
+                        Type
+                      </th>
+                      <th>
+                        Size
+                      </th>
+                      <th></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+
+                    <tr *ngIf="!construct.tracks?.length">
+                      <td class="txt-c" colspan="5">The construct is empty. Add new tracks to visualize them here.</td>
+                    </tr>
+
+                    <tr *ngFor="let tr of construct.tracks | filterTracks: search; let in = index">
+                      <td>
+                        <div class="ui circular label" [ngClass]="{'no-color': !tr.color}" [style.background-color]="tr.color">#{{in+1}}</div>
+                      </td>
+                      <td>
+                        <sqy-if-not-icon [value]="tr.label"></sqy-if-not-icon>
+                      </td>
+                      <td>
+                        <sqy-if-not-icon [value]="tr.type"></sqy-if-not-icon>
+                      </td>
+                      <td>
+                        <sqy-if-not-icon [value]="tr.sequence?.length"></sqy-if-not-icon>
+                      </td>
+                      <td class="center aligned">
+                        <a data-inverted="" data-tooltip="Open" data-position="top center" [ngClass]="{'disabled': locked}" (click)="openSidebar(tr, in)">
+                          <i class="edit icon"></i>
+                        </a>
+                        <a data-inverted="" data-tooltip="Move up" data-position="top center" [ngClass]="{'disabled': locked || in < 1}" (click)="moveTrack(in, -1)">
+                          <i class="arrow up icon"></i>
+                        </a>
+                        <a data-inverted="" data-tooltip="Move down" data-position="top center" [ngClass]="{'disabled': locked || in >= construct.tracks?.length-1}" (click)="moveTrack(in, +1)">
+                          <i class="arrow down icon"></i>
+                        </a>
+                        <a data-inverted="" data-tooltip="Delete" data-position="top center" [ngClass]="{'disabled': locked}" (click)="removeTrack(tr)">
+                          <i class="x red icon"></i>
+                        </a>
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()" *ngIf="construct">
+
+        <div class="field">
+          <div class="ui two item secondary pointing menu">
+            <a class="item" (click)="view = 'general'" [ngClass]="{'active': view === 'general'}">
+              General
+            </a>
+            <a class="item" (click)="view = 'tracks'" [ngClass]="{'active': view === 'tracks'}">
+              Tracks
+            </a>
+          </div>
+        </div>
+
+        <div class="required field">
+          <label class="required-msg">Required fields are shown with</label>
+        </div>
+
+        <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
+          <label for="construct_name">Enter a label</label>
+          <input type="text" class="transparent" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
+        </div>
+
+        <div class="inline required field">
+          <label for="">Circular</label>
+          <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+        </div>
+
+        <div class="inline field">
+          <label for="construct_description">Description</label>
+          <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
+        </div>
+
+        <div class="inline required field">
+          <label for="construct_dna_seq">Sequence</label>
+          <textarea [(ngModel)]="construct.dna_seq" id="construct_dna_seq" name="construct-dna-seq" rows="8" cols="80"></textarea>
+        </div>
+
+        <div class="field">
+          <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
+            Submit
+            <i class="angle right icon"></i>
+          </button>
+        </div>
+
+      </form> -->
+
     </div>
+
 
   </div>
 

@@ -5,8 +5,8 @@ import { finalize } from 'rxjs/operators';
 
 declare var createVectorEditor: any;
 
-import { Construct } from '../construct/shared/construct';
-import { ConstructService } from '../construct/shared/construct.service';
+import { Construct } from '@models/construct';
+import { ConstructService } from '@services/construct.service';
 
 @Component({
   selector: 'sqy-vector-editor',

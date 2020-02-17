@@ -9,9 +9,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.construct.models import Construct, Track
 from app.construct.serializers import ConstructCreateSerializer
-from app.genetic_element.models import GeneticElement
 from app.matrix.models import Matrix
 from app.serializers import GenBankSerializer
 from app.specie.models import Specie
@@ -21,7 +19,7 @@ from app.workspace.serializers import HistorySerializer
 from sqrutiny.settings import BASE_DIR
 
 sys.path.insert(0, BASE_DIR + '/../../dev')
-from tools import checker, is_dna_seq_valid, match_sequence, seq_translator
+from tools import checker, is_dna_seq_valid, match_sequence
 
 TOOL_NAME = 'SQrutiny - Optimize Sequence - '
 FEATURE_PREFIX = 'SQY_BOX_'
@@ -85,13 +83,6 @@ class OptimizeSequenceFileView(APIView):
 
         serializer.is_valid(raise_exception=True)
 
-        specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id')).first()
-
-        if specie is None:
-            return Response({'msg': 'Specie with ncbi tax id ' + str(
-                serializer.validated_data['specie_tax_id']) + ' was not found'},
-                            status=status.HTTP_404_NOT_FOUND)
-
         file = serializer.validated_data['file']
 
         tmp_file = tempfile.NamedTemporaryFile()
@@ -106,7 +97,7 @@ class OptimizeSequenceFileView(APIView):
             # try:
             for record in SeqIO.parse(handle, 'genbank'):
 
-                if not record.seq:
+                if not record.seq or not len(record.seq):
                     return Response({'msg': 'No sequence was found. Please specify a valid sequence and try again.'},
                                     status=status.HTTP_400_BAD_REQUEST)
 
@@ -115,35 +106,27 @@ class OptimizeSequenceFileView(APIView):
 
                 for feature in record.features:
                     if feature.type.lower() == 'cds':
-                        tracks.append(Track(
-                            genetic_element=GeneticElement.objects.filter(name__iexact=feature.type).first(),
+                        tracks.append(dict(
+                            type=feature.type,
                             sequence=str(feature.extract(record.seq)),
                             start=feature.location.nofuzzy_start,
                             end=feature.location.nofuzzy_end))
-                    elif feature.type.upper().startsWith(FEATURE_PREFIX):
-                        sqy_tracks.append(Track(
-                            genetic_element=GeneticElement.objects.filter(name__iexact=feature.type).first(),
+                    elif feature.type.upper().startswith(FEATURE_PREFIX):
+                        sqy_tracks.append(dict(
+                            type=feature.type,
                             sequence=str(feature.extract(record.seq)),
                             start=feature.location.nofuzzy_start,
                             end=feature.location.nofuzzy_end))
 
-                construct = Construct(
+                data = dict(
                     name=record.name,
-                    dna_seq=record.seq,
-                    protein_seq=seq_translator(str(record.seq)),
-                    specie=specie,
+                    dna_seq=str(record.seq),
                     description=record.annotations.get('description', None),
-                    circular=True if record.annotations.get('topology', '').lower() == 'circular' else False,
-                    from_file=True
+                    circular=True if record.annotations.get('topology', '').lower() == 'circular' else False
                 )
 
                 if len(tracks):
-                    construct.update(tracks=tracks)
-                    Track.objects.bulk_create([Track(genetic_element=t.get('genetic_element'),
-                                                     construct=construct,
-                                                     sequence=t.get('sequence'),
-                                                     start=t.get('start'),
-                                                     end=t.get('end')) for t in tracks])
+                    data['tracks'] = tracks
 
             # except:
             #     return Response({'msg': 'Invalid GenBank format file'},
@@ -154,7 +137,7 @@ class OptimizeSequenceFileView(APIView):
 
         tmp_file.close()
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data, status=status.HTTP_201_CREATED)
 
     @staticmethod
     def matrix_to_dict(matrix):

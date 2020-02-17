@@ -1,7 +1,7 @@
 import { Component, Input, AfterViewInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
-import { Construct } from 'app/construct/shared/construct';
+import { Construct } from '@models/construct';
 import { Track } from 'app/optimizer/shared/track';
 import { SqrutinyService } from '@services/sqrutiny.service';
 import Utils from 'app/shared/utils';

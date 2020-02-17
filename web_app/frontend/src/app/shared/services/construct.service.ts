@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment as env } from '@env/environment';
-import { Construct } from './construct';
+import { Construct } from '@models/construct';
 
 const URL_ENV = '/constructs/';
 

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment as env } from '@env/environment';
-import { Construct } from 'app/construct/shared/construct';
+import { Construct } from '@models/construct';
 import { UserHistory } from 'app/workspace/shared/user-history';
 
 @Injectable({ providedIn: 'root' })

@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, OnDestroy } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs/internal/Subscription";
 import { HttpClient } from "@angular/common/http";
+import { Observable } from 'rxjs';
 import { finalize } from "rxjs/operators";
 
 import { saveAs } from "file-saver";
@@ -13,10 +14,10 @@ import { Specie } from "@models/specie";
 import { Track } from "../shared/track";
 import { TrackService } from "../shared/track.service";
 import { NotifyService } from "@services/notify.service";
-import { ConstructService } from "app/construct/shared/construct.service";
+import { ConstructService } from "@services/construct.service";
 import { UserHistory } from "app/workspace/shared/user-history";
 import Utils from "app/shared/utils";
-import { Construct } from "app/construct/shared/construct";
+import { Construct } from "@models/construct";
 
 class Category {
   name: string;
@@ -358,9 +359,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   // TODO:
-  // canDeactivate(): Observable<boolean> | boolean {
-  // if (this.newExperimentForm.dirty && !this.newExperimentForm.submitted) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
-  //
-  //   return true;
-  // }
+  canDeactivate(): Observable<boolean> | boolean {
+    // if (this.newExperimentForm.dirty && !this.newExperimentForm.submitted) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
+
+    return true;
+  }
 }

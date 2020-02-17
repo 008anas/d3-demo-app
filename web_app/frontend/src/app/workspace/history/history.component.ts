@@ -7,7 +7,7 @@ import { HistoryService } from '../shared/history.service';
 import { JobService } from '../shared/job.service';
 import { NotifyService } from '@services/notify.service';
 import { Job } from '../shared/job';
-import { Construct } from 'app/construct/shared/construct';
+import { Construct } from '@models/construct';
 
 const MAX_ATTEMPTS = 10;
 

@@ -1,0 +1,305 @@
+// $theme: #079ace;
+// $dark-text: #5f6982;
+//
+// .uploader {
+//   display: block;
+//   clear: both;
+//   margin: 0 auto;
+//
+//   .example {
+//     text-align: right !important;
+//   }
+//
+//   label {
+//     float: left;
+//     clear: both;
+//     width: 100%;
+//     padding: 2rem 1.5rem;
+//     text-align: center;
+//     background: #fff;
+//     border-radius: 7px;
+//     border: 3px solid #eee;
+//     transition: all 0.2s ease;
+//     user-select: none;
+//     cursor: pointer !important;
+//
+//     &:hover {
+//       border-color: $theme;
+//     }
+//
+//     &.hover {
+//       border: 3px solid $theme;
+//       box-shadow: inset 0 0 0 6px #eee;
+//
+//       #start {
+//         i.icon {
+//           opacity: 0.3;
+//         }
+//       }
+//     }
+//   }
+//
+//   #start {
+//     float: left;
+//     clear: both;
+//     width: 100%;
+//
+//     &.hidden {
+//       display: none;
+//     }
+//
+//     i.icon {
+//       margin-bottom: 1rem !important;
+//       transition: all 0.2s ease-in-out;
+//     }
+//   }
+//
+//   #response {
+//     float: left;
+//     clear: both;
+//     width: 100%;
+//
+//     &.hidden {
+//       display: none;
+//     }
+//
+//     #messages {
+//       margin-bottom: 0.5rem;
+//     }
+//   }
+//
+//   #file-image {
+//     display: inline;
+//     margin: 0 auto 0.5rem;
+//     width: auto;
+//     height: auto;
+//     max-width: 180px;
+//
+//     &.hidden {
+//       display: none;
+//     }
+//   }
+//
+//   #notimage {
+//     display: block;
+//     float: left;
+//     clear: both;
+//     width: 100%;
+//
+//     &.hidden {
+//       display: none;
+//     }
+//   }
+//
+//   .progress,
+//   progress {
+//     // appearance: none;
+//     display: inline;
+//     clear: both;
+//     margin: 0 auto;
+//     width: 100%;
+//     max-width: 180px;
+//     height: 8px;
+//     border: 0;
+//     border-radius: 4px;
+//     background-color: #eee;
+//     overflow: hidden;
+//   }
+//
+//   .progress[value]::-webkit-progress-bar {
+//     border-radius: 4px;
+//     background-color: #eee;
+//   }
+//
+//   .progress[value]::-webkit-progress-value {
+//     background: linear-gradient(to right, darken($theme,8%) 0%, $theme 50%);
+//     border-radius: 4px;
+//   }
+//
+//   .progress[value]::-moz-progress-bar {
+//     background: linear-gradient(to right, darken($theme,8%) 0%, $theme 50%);
+//     border-radius: 4px;
+//   }
+//
+//   input[type="file"] {
+//     display: none;
+//   }
+//
+//   div {
+//     margin: 0 0 0.5rem;
+//     color: $dark-text;
+//   }
+//
+//   .btn {
+//     display: inline-block;
+//     margin: 0.5rem 0.5rem 1rem;
+//     clear: both;
+//     font-family: inherit;
+//     font-weight: 700;
+//     font-size: 14px;
+//     text-decoration: none;
+//     text-transform: initial;
+//     border: none;
+//     border-radius: 0.2rem;
+//     outline: none;
+//     padding: 0 1rem;
+//     height: 36px;
+//     line-height: 36px;
+//     color: #fff;
+//     transition: all 0.2s ease-in-out;
+//     box-sizing: border-box;
+//     background: $theme;
+//     border-color: $theme;
+//     cursor: pointer;
+//   }
+// }
+$theme: #079ace;
+$dark-text: #5f6982;
+
+.uploader {
+  float: left;
+  clear: both;
+  width: 100%;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 7px;
+  border: 3px solid #eee;
+  transition: all 0.2s ease;
+  user-select: none;
+  margin: 1.3em 0;
+
+  input {
+    opacity: 0;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover {
+    border-color: $theme;
+    border: 3px solid $theme;
+    box-shadow: inset 0 0 0 6px #eee;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: $dark-text;
+  }
+
+  .btn {
+    display: inline-block;
+    margin: 0.5rem 0.5rem 1rem;
+    clear: both;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: initial;
+    border: none;
+    border-radius: 0.2rem;
+    outline: none;
+    padding: 0 1rem;
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+    background: $theme;
+    border-color: $theme;
+    cursor: pointer;
+  }
+}
+
+.fileover {
+  animation: shake 1s;
+  animation-iteration-count: infinite;
+}
+
+.files-list {
+  margin-top: 1.5rem;
+
+  .single-file {
+    display: flex;
+    padding: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    border: dashed 1px #979797;
+    margin-bottom: 1rem;
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+
+    .delete {
+      position: absolute;
+      top: 0.7em;
+      right: 0.3em;
+    }
+
+    .name {
+      font-size: 14px;
+      font-weight: 500;
+      color: $dark-text;
+      margin: 0;
+    }
+
+    .size {
+      font-size: 12px;
+      font-weight: 500;
+      color: $dark-text;
+      margin: 0 0 0.25rem;
+    }
+
+    .info {
+      width: 100%;
+    }
+  }
+}
+/* Shake animation */
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
