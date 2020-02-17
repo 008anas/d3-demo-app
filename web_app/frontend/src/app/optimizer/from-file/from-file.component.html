@@ -6,22 +6,7 @@
       <h1 class="ui header">Upload your GenBank</h1>
       <h2 class="ui header">Allowed extensions: .gb .gbk .genbank.</h2>
 
-      <div class="field" *ngIf="response">
-        <sqy-errors-list [errors]="response"></sqy-errors-list>
-      </div>
-      <form class="ui form" [formGroup]="form" (ngSubmit)="onSubmit()">
-
-        <div class="required seven wide field">
-          <label>Organism</label>
-          <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
-            <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <sqy-file-uploader></sqy-file-uploader>
-        </div>
-      </form>
+      <sqy-file-uploader [endpoint]="endpoint" (onUpload)="handleUploaded($event)"></sqy-file-uploader>
 
       <div class="ui basic segment" *ngIf="isUploading && !construct">
         <div class="ui active inverted dimmer">
@@ -74,6 +59,11 @@
                 <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
               </div>
 
+              <div class="field">
+                <label>DNA sequence</label>
+                <p>{{construct.dna_seq}}</p>
+              </div>
+
               <div class="inline field">
                 <label for="construct_description">Description</label>
                 <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
@@ -112,7 +102,6 @@
                       <th>
                         Size
                       </th>
-                      <th></th>
                     </tr>
                   </thead>
 
@@ -134,20 +123,6 @@
                       </td>
                       <td>
                         <sqy-if-not-icon [value]="tr.sequence?.length"></sqy-if-not-icon>
-                      </td>
-                      <td class="center aligned">
-                        <a data-inverted="" data-tooltip="Open" data-position="top center" [ngClass]="{'disabled': locked}" (click)="openSidebar(tr, in)">
-                          <i class="edit icon"></i>
-                        </a>
-                        <a data-inverted="" data-tooltip="Move up" data-position="top center" [ngClass]="{'disabled': locked || in < 1}" (click)="moveTrack(in, -1)">
-                          <i class="arrow up icon"></i>
-                        </a>
-                        <a data-inverted="" data-tooltip="Move down" data-position="top center" [ngClass]="{'disabled': locked || in >= construct.tracks?.length-1}" (click)="moveTrack(in, +1)">
-                          <i class="arrow down icon"></i>
-                        </a>
-                        <a data-inverted="" data-tooltip="Delete" data-position="top center" [ngClass]="{'disabled': locked}" (click)="removeTrack(tr)">
-                          <i class="x red icon"></i>
-                        </a>
                       </td>
                     </tr>
 

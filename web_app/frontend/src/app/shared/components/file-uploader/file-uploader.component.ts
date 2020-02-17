@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 
 @Component({
@@ -9,7 +9,9 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 export class FileUploaderComponent {
 
   @Input() multiple = false;
-
+  @Input() endpoint: string;
+  @Output() onUpload: EventEmitter<any> = new EventEmitter<any>();
+  response: any = null;
   files: any[] = [];
 
   constructor(private http: HttpClient) { }
@@ -40,34 +42,30 @@ export class FileUploaderComponent {
    * Simulate the upload process
    */
   uploadFilesSimulator(index: number) {
-    if (index === this.files.length) {
-      return;
-    } else {
-      const params = new FormData();
-      params.append('file', this.files[index].value);
-      this.http.post('http://127.0.0.1:8000/api/v1/optimize_seq/from-file', params, { reportProgress: true, observe: 'events' })
-        .subscribe(
-          event => {
-            switch (event.type) {
-              case HttpEventType.Sent:
-                console.log('Request has been made!');
-                break;
-              case HttpEventType.ResponseHeader:
-                console.log('Response header has been received!');
-                break;
-              case HttpEventType.UploadProgress:
-                this.files[index].progress = Math.round(event.loaded / event.total * 100);
-                break;
-              case HttpEventType.Response:
-                break;
-            }
-          },
-          err => {
-            // this.response = err.msg;
-            console.log(err);
+    if (!this.files[index]) { return; }
+    const params = new FormData();
+    params.append('file', this.files[index]);
+    this.response = null;
+    this.http.post(this.endpoint, params, { reportProgress: true, observe: 'events' })
+      .subscribe(
+        event => {
+          switch (event.type) {
+            case HttpEventType.Sent:
+              console.log('Request has been made!');
+              break;
+            case HttpEventType.ResponseHeader:
+              console.log('Response header has been received!');
+              break;
+            case HttpEventType.UploadProgress:
+              this.files[index].progress = Math.round(event.loaded / event.total * 100);
+              break;
+            case HttpEventType.Response:
+              this.onUpload.emit(event.body);
+              break;
           }
-        );
-    }
+        },
+        err => this.response = err
+      );
   }
 
   /**
@@ -78,8 +76,8 @@ export class FileUploaderComponent {
     for (const item of files) {
       item.progress = 0;
       this.files.push(item);
+      this.uploadFilesSimulator(this.files.length - 1);
     }
-    this.uploadFilesSimulator(0);
   }
 
 }

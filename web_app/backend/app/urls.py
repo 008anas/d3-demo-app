@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .optimize.OptimizeSequence import OptimizeSequenceFileView, SearchMotifView, \
+from .optimize.OptimizeSequence import SearchMotifView, \
     OptimizeSequenceSkectherView
 
 urlpatterns = [
@@ -10,6 +10,5 @@ urlpatterns = [
     path('workspace/', include('app.workspace.urls')),
     path('constructs/', include('app.construct.urls')),
     path('optimize_seq/from-sketch', OptimizeSequenceSkectherView.as_view(), name='Optimize sequence'),
-    path('optimize_seq/from-file', OptimizeSequenceFileView.as_view(), name='Optimize sequence'),
     path('search-motif', SearchMotifView.as_view(), name='Search motif in sequence')
 ]
