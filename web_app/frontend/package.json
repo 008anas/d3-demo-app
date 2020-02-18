@@ -42,6 +42,7 @@
     "protvista-zoomable": "^2.3.5",
     "rxjs": "~6.5.4",
     "semantic-ui": "^2.4.2",
+    "seqviz": "^3.0.20",
     "tslib": "^1.10.0",
     "xlsx": "^0.15.5",
     "zone.js": "~0.10.2"

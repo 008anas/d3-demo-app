@@ -8,9 +8,6 @@ import { ErrorsListComponent } from './components/errors-list/errors-list.compon
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { ColorPickerComponent } from './components/color-picker/color-picker.component';
 import { IfNotIconComponent } from './components/if-not-icon/if-not-icon.component';
-import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
-import { FileUploaderComponent } from './components/file-uploader/file-uploader.component';
-import { DndDirective } from './directives/dnd.directive';
 import { BytesPipe } from './pipes/bytes.pipe';
 
 @NgModule({
@@ -21,10 +18,7 @@ import { BytesPipe } from './pipes/bytes.pipe';
     SafeDatePipe,
     CopyClipboardDirective,
     IfNotIconComponent,
-    ProgressBarComponent,
-    FileUploaderComponent,
-    DndDirective,
-    BytesPipe
+    BytesPipe,
   ],
   imports: [
     CommonModule,
@@ -37,9 +31,7 @@ import { BytesPipe } from './pipes/bytes.pipe';
     ColorPickerComponent,
     SafeDatePipe,
     CopyClipboardDirective,
-    IfNotIconComponent,
-    ProgressBarComponent,
-    FileUploaderComponent
+    IfNotIconComponent
   ]
 })
 export class SharedModule { }

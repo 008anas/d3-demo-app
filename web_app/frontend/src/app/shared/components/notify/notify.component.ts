@@ -6,7 +6,10 @@ import { Notify, NotifyType } from '../../models/notify';
 
 @Component({
   selector: 'notify',
-  templateUrl: './notify.component.html',
+  template: `<div *ngFor="let notify of notifies" class="notify {{notify.position}} do-show" [attr.data-notification-status]="cssClass(notify)">
+    {{notify.message}}
+    <i class="close link icon" (click)="remove(notify)"></i>
+  </div>`,
   styleUrls: ['./notify.component.scss']
 })
 export class NotifyComponent implements OnInit, OnDestroy {

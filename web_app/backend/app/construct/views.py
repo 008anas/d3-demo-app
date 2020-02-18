@@ -1,4 +1,5 @@
 import tempfile
+import time
 
 from Bio import SeqIO
 from rest_framework import viewsets, generics, status
@@ -48,13 +49,29 @@ class FromGenBankView(APIView):
             for record in SeqIO.parse(handle, 'genbank'):
 
                 if not record.seq or not len(record.seq):
-                    return Response({'msg': 'No sequence was found. Please specify a valid sequence and try again.'},
+                    return Response(dict(msg='No sequence was found. Please specify a valid sequence and try again.'),
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                if not record.features or not len(record.features):
+                    return Response(dict(msg='No feature was found. Please specify some CDS features and try again.'),
                                     status=status.HTTP_400_BAD_REQUEST)
 
                 tracks = []
                 sqy_tracks = []
 
+                if record.features[0].type.lower() == 'source':
+                    record.features.pop(0)
+
+                tracks.append(dict(
+                    type='CDS' if record.features[0].type.lower() == 'cds' else 'Dummy',
+                    sequence=str(record.features[0].extract(record.seq)),
+                    start=record.features[0].location.nofuzzy_start,
+                    end=record.features[0].location.nofuzzy_end))
+
+                record.features.pop(0)
+
                 for feature in record.features:
+                    last_item = tracks[-1]
                     if feature.type.lower() == 'cds':
                         tracks.append(dict(
                             type=feature.type,
@@ -67,6 +84,15 @@ class FromGenBankView(APIView):
                             sequence=str(feature.extract(record.seq)),
                             start=feature.location.nofuzzy_start,
                             end=feature.location.nofuzzy_end))
+                    else:
+                        if last_item.get('type', '').lower() != 'dummy':
+                            tracks.append(dict(
+                                type='Dummy',
+                                sequence=str(feature.extract(record.seq)),
+                                start=feature.location.nofuzzy_start,
+                                end=feature.location.nofuzzy_end))
+                        else:
+                            tracks[-1]['end'] = feature.location.nofuzzy_end
 
                 data = dict(
                     name=record.name,
@@ -79,12 +105,14 @@ class FromGenBankView(APIView):
                     data['tracks'] = tracks
 
             # except:
-            #     return Response({'msg': 'Invalid GenBank format file'},
+            #     return Response(dict(msg='Invalid GenBank format file'),
             #                     status=status.HTTP_400_BAD_REQUEST)
 
         except:
             raise
 
         tmp_file.close()
+
+        time.sleep(5)
 
         return Response(data, status=status.HTTP_201_CREATED)

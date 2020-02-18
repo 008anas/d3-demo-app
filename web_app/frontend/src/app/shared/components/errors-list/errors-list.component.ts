@@ -4,7 +4,13 @@ import { Errors } from '../../models/error';
 
 @Component({
   selector: 'sqy-errors-list',
-  templateUrl: './errors-list.component.html',
+  template: `<div class="m-2">
+    <ul class="error-messages" *ngIf="errorList">
+      <li *ngFor="let error of errorList">
+        {{ error }}
+      </li>
+    </ul>
+  </div>`,
   styleUrls: ['./errors-list.component.scss']
 })
 export class ErrorsListComponent {
