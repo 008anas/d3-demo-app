@@ -113,6 +113,4 @@ class FromGenBankView(APIView):
 
         tmp_file.close()
 
-        time.sleep(5)
-
         return Response(data, status=status.HTTP_201_CREATED)
