@@ -5,6 +5,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { environment as env } from '@env/environment';
 import { Specie } from '@models/specie';
@@ -12,6 +13,7 @@ import { Construct } from '@models/construct';
 import { SpecieService } from '@services/specie.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import { NotifyService } from '@services/notify.service';
+import { TextModalComponent } from '@components/text-modal/text-modal.component';
 
 @Component({
   selector: 'sqy-from-file',
@@ -32,7 +34,6 @@ export class FromFileComponent implements OnInit, OnDestroy {
   endpoint: string;
   view = true;
   search: string;
-  text: string = null;
 
   beforeUpload = (file: File) => {
     this.fileList = [file];
@@ -44,7 +45,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
     private specieSrvc: SpecieService,
     private router: Router,
     private notify: NotifyService,
-    private http: HttpClient
+    private http: HttpClient,
+    private modal: NzModalService
   ) {
     this.endpoint = env.endpoints.api + '/constructs/from-genbank';
   }
@@ -125,6 +127,17 @@ export class FromFileComponent implements OnInit, OnDestroy {
           this.notify.error(err, 'bottom-right');
         }
       );
+  }
+
+  textModal(str: string){
+    this.modal.create({
+      nzContent: TextModalComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        txt: str
+      },
+      nzFooter: null
+    });
   }
 
 }

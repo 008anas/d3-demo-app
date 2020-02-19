@@ -2,12 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
+import { NzModalService } from 'ng-zorro-antd/modal';
+
 import { UserHistory } from '../shared/user-history';
 import { HistoryService } from '../shared/history.service';
 import { JobService } from '../shared/job.service';
 import { NotifyService } from '@services/notify.service';
 import { Job } from '../shared/job';
 import { Construct } from '@models/construct';
+import { TextModalComponent } from '@components/text-modal/text-modal.component';
 
 const MAX_ATTEMPTS = 10;
 
@@ -33,7 +36,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private router: Router,
     private historySrvc: HistoryService,
     private jobSrvc: JobService,
-    private notify: NotifyService
+    private notify: NotifyService,
+    private modal: NzModalService
   ) { }
 
   ngOnInit() {
@@ -98,6 +102,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   notifySuccess(msg: string) {
     this.notify.success(msg, 'top-right');
+  }
+
+  textModal(str: string) {
+    this.modal.create({
+      nzContent: TextModalComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        txt: str
+      },
+      nzFooter: null
+    });
   }
 
 }

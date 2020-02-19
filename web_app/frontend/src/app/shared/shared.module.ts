@@ -22,7 +22,7 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
     CopyClipboardDirective,
     IfNotIconComponent,
     BytesPipe,
-    TextModalComponent,
+    TextModalComponent
   ],
   imports: [
     CommonModule,

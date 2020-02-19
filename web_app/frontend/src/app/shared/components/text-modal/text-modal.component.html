@@ -1,26 +1,22 @@
 <!-- Sequence modal-->
-<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="{{description | titlecase}} display" [nzClosable]="false" (nzAfterClose)="txt = null" [nzCancelText]="null" (nzOnOk)="txt = null" [(nzVisible)]="txt">
+<div class="ui padded grid">
 
-  <div class="ui grid">
-
-    <div class="two column row">
-      <div class="column">
-        <strong> {{description | titlecase}} Length:</strong>{{txt?.length}}
-      </div>
-      <div class="column txt-r">
-        <button class="ui compact right labeled icon primary button" [copy-clipboard]="txt" (copied)="notifySuccess('Copied!')">
-          <i class="copy icon"></i>
-          Copy
-        </button>
-      </div>
+  <div class="one column row">
+    <div class="column">
+      <strong> {{description | titlecase}} Length:</strong>{{txt?.length}}
     </div>
-
-    <div class="row">
-      <div class="column">
-        <p>{{txt}}</p>
-      </div>
+    <div class="column txt-r" *ngIf="copy">
+      <button class="ui compact right labeled icon primary button" [copy-clipboard]="txt">
+        <i class="copy icon"></i>
+        Copy
+      </button>
     </div>
-
   </div>
 
-</nz-modal>
+  <div class="row">
+    <div class="column">
+      <p>{{txt}}</p>
+    </div>
+  </div>
+
+</div>

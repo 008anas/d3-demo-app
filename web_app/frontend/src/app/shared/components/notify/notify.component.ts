@@ -1,15 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 
-import { NotifyService } from '../../services/notify.service';
-import { Notify, NotifyType } from '../../models/notify';
+import { Notify, NotifyType } from '@models/notify';
+import { NotifyService } from '@services/notify.service';
 
 @Component({
-  selector: 'notify',
-  template: `<div *ngFor="let notify of notifies" class="notify {{notify.position}} do-show" [attr.data-notification-status]="cssClass(notify)">
-    {{notify.message}}
-    <i class="close link icon" (click)="remove(notify)"></i>
-  </div>`,
+  selector: 'sqy-notify',
+  templateUrl: './notify.component.html',
   styleUrls: ['./notify.component.scss']
 })
 export class NotifyComponent implements OnInit, OnDestroy {

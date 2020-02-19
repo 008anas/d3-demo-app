@@ -174,7 +174,7 @@
               <tbody>
                 <tr>
                   <th>DNA</th>
-                  <td class="link" (click)="seq = history.construct.dna_seq">
+                  <td class="link" (click)="textModal(history.construct.dna_seq)">
                     {{history.construct.dna_seq}}
                   </td>
                   <td>
@@ -184,7 +184,7 @@
                 </tr>
                 <tr>
                   <th>Protein</th>
-                  <td class="link" (click)="seq = history.construct.protein_seq">
+                  <td class="link" (click)="textModal(history.construct.protein_seq)">
                     {{history.construct.protein_seq}}
                   </td>
                   <td>
@@ -279,30 +279,3 @@
   </div>
 
 </div>
-
-<!-- Sequence modal-->
-<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Full sequence display" [nzClosable]="false" (nzAfterClose)="seq = null" [nzCancelText]="null" (nzOnOk)="seq = null" [(nzVisible)]="seq">
-
-  <div class="ui grid">
-
-    <div class="two column row">
-      <div class="column">
-        <strong>Sequence length:</strong>{{seq?.length}}
-      </div>
-      <div class="column txt-r">
-        <button class="ui compact right labeled icon primary button" [copy-clipboard]="seq" (copied)="notifySuccess('Copied!')">
-          <i class="copy icon"></i>
-          Copy
-        </button>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="column">
-        <p>{{seq}}</p>
-      </div>
-    </div>
-
-  </div>
-
-</nz-modal>

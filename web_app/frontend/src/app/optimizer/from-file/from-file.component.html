@@ -85,7 +85,7 @@
                 <i class="icon" [ngClass]="{'green circular check': construct.circular, 'red ban': !construct.circular}"></i>
               </div>
 
-              <div class="field link" (click)="text = construct.dna_seq" style="max-height: 300px;">
+              <div class="field link" (click)="textModal(construct.dna_seq)" style="max-height: 300px;">
                 <label>DNA sequence</label>
                 <p class="wrap">{{construct.dna_seq}}</p>
               </div>
@@ -178,5 +178,3 @@
   </div>
 
 </div>
-
-<sqy-text-modal [txt]="text"></sqy-text-modal>
