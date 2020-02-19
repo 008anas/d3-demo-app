@@ -124,7 +124,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
         data.length
           ? (this.construct = new Construct().deserialize(data[0]))
           : this.notify.warn("Sorry but no example construct was found"),
-      err => this.notify.warn(err.msg || "Unable to load model construct"),
+      err => this.notify.warn(err || "Unable to load model construct"),
       () => (this.sketcherLoading = false)
     );
   }
@@ -265,7 +265,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
             }, 3000);
           },
           err => {
-            this.notify.error(err.msg, "bottom-right");
+            this.notify.error(err, "bottom-right");
           }
         );
     }

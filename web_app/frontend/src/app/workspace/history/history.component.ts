@@ -91,7 +91,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.notify.success('History deleted!', 'bottom-right', true);
           this.router.navigate(['/workspace']);
         },
-          err => this.notify.error(err.msg || 'Unable to delete history')
+          err => this.notify.error(err || 'Unable to delete history')
         );
     }
   }

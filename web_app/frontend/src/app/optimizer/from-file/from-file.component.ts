@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
 import { UploadChangeParam } from 'ng-zorro-antd/upload';
-import { UploadXHRArgs } from 'ng-zorro-antd/upload';
 
 import { environment as env } from '@env/environment';
 import { Specie } from '@models/specie';
 import { Construct } from '@models/construct';
 import { SpecieService } from '@services/specie.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
+import { NotifyService } from '@services/notify.service';
 
 @Component({
   selector: 'sqy-from-file',
@@ -25,49 +25,25 @@ export class FromFileComponent implements OnInit, OnDestroy {
   specie: Specie = null;
   species: Specie[] = [];
   isLoading = false;
-  history: UserHistory = null;
-  isUploading = false;
   construct: Construct = null;
+  history: UserHistory = null;
   exampleFile = 'assets/files/NC_044937.gbk';
+  fileList = [];
   endpoint: string;
   view = true;
   search: string;
-  isProcessing = false;
+  text: string = null;
 
-  customReq = (item: UploadXHRArgs) => {
-    const formData = new FormData();
-    // tslint:disable-next-line:no-any
-    formData.append('file', item.file as any);
-
-    const req = new HttpRequest('POST', item.action!, formData, {
-      reportProgress: true,
-      withCredentials: true
-    });
-    // Always returns a `Subscription` object. nz-upload would automatically unsubscribe it at correct time.
-    return this.http.request(req).subscribe(
-      (event: HttpEvent<any>) => {
-        switch (event.type) {
-          case HttpEventType.UploadProgress:
-            if (event.total! > 0) {
-              // tslint:disable-next-line:no-any
-              (event as any).percent = (event.loaded / event.total!) * 100;
-            }
-            item.onProgress!(event, item.file!);
-            break;
-          case HttpEventType.Response:
-            this.construct = new Construct().deserialize(event.body);
-            item.onSuccess!(event.body, item.file!, event);
-            break;
-        }
-      },
-      err => console.log(err)
-    );
+  beforeUpload = (file: File) => {
+    this.fileList = [file];
+    this.construct = null;
   };
 
   constructor(
     private route: ActivatedRoute,
     private specieSrvc: SpecieService,
     private router: Router,
+    private notify: NotifyService,
     private http: HttpClient
   ) {
     this.endpoint = env.endpoints.api + '/constructs/from-genbank';
@@ -110,29 +86,43 @@ export class FromFileComponent implements OnInit, OnDestroy {
   }
 
   handleChange({ file }: UploadChangeParam): void {
-    const status = file.status;
-    if (status !== 'uploading') {
-      this.isProcessing = true;
+    if (file.status === 'done') {
+      this.construct = new Construct().deserialize(file.response);
     }
-    if (status === 'done') {
-      this.isProcessing = false;
-    }
+  }
+
+
+  loadExample() {
+    this.http.get(this.exampleFile, { observe: 'response', responseType: 'blob' })
+      .subscribe((result: HttpResponse<Blob>) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(result.body);
+        reader.onloadend = (ev) => {
+          if (ev.target.readyState === window.FileReader.DONE) {
+            let data = new Blob([ev.target.result]);
+            let arrayOfBlob = new Array<Blob>();
+            arrayOfBlob.push(data);
+            this.fileList = [new File(arrayOfBlob, result.url.split('/').slice(-1)[0])];
+          }
+        };
+      },
+        () => this.notify.warn('Unable to load example file')
+      );
   }
 
   submit() {
     this.response = null;
-    this.construct["specie_tax_id"] = this.specie.tax_id;
+    this.construct['specie_tax_id'] = this.specie.tax_id;
     this.http
       .post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
       .subscribe(
         (data: UserHistory) => {
-          this.history = new UserHistory().deserialize(data);
           setTimeout(() => {
-            this.router.navigate(["/workspace", this.history.id]);
+            this.router.navigate(['/workspace', data.id]);
           }, 3000);
         },
         err => {
-          // this.notify.error(err.msg, "bottom-right");
+          this.notify.error(err, 'bottom-right');
         }
       );
   }

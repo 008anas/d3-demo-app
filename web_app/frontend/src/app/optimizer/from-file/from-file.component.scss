@@ -1,6 +1,6 @@
-.ui.fluid.container {
+.ui.container {
   min-height: 700px;
-  margin-bottom: 5em;
+  margin-bottom: 7em;
 }
 
 .masthead.segment {
@@ -13,11 +13,37 @@
 .masthead h1.ui.header {
   margin-top: 1.5em;
   margin-bottom: 0;
-  font-size: 4em;
+  font-size: 3em;
   font-weight: normal;
 }
 
 .masthead h2 {
-  font-size: 1.3em;
+  font-size: 1.2em;
   font-weight: normal;
+}
+
+.wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.required-msg {
+  font-weight: normal !important;
+}
+
+::ng-deep .vertical-center-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .ant-modal {
+    width: 1200px !important;
+    top: 0;
+
+    .ant-modal-body {
+      max-height: calc(90vh - 5em);
+      overflow: auto;
+    }
+  }
 }

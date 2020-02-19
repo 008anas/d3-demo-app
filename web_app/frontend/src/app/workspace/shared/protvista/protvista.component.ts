@@ -74,7 +74,7 @@ export class ProtvistaComponent implements AfterViewInit {
             }
           },
           err => {
-            this.msg = err.msg;
+            this.msg = err;
           }
         );
     }

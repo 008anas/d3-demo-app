@@ -19,6 +19,10 @@ body {
   text-rendering: optimizeLegibility;
   background-color: #fff !important;
 }
+
+a {
+  text-decoration: none !important;
+}
 /* Main App color */
 .main {
   &.color {
@@ -128,6 +132,19 @@ span.ui.error {
   }
 }
 /* SEMANTIC OVERRIDE */
+/* Form */
+form.ui.form{
+  &.padded{
+    .field{
+      margin-top: 2em;
+    }
+  }
+  &.very.padded{
+    .field{
+      margin-top: 3em;
+    }
+  }
+}
 /* Button */
 button.ui.button:not(.circular) {
   padding: 1em 1.2em !important;
