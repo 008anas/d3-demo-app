@@ -6,7 +6,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgProgressModule } from '@ngx-progressbar/core';
 import { NgProgressHttpModule } from '@ngx-progressbar/http';
 import { NZ_I18N, en_US } from 'ng-zorro-antd';
-import { Angulartics2Module } from 'angulartics2';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -38,7 +37,6 @@ import { NotifyComponent } from './shared/components/notify/notify.component';
     NgProgressModule.withConfig({
       color: '#fff'
     }),
-    Angulartics2Module.forRoot(),
     HttpClientModule,
     CoreModule,
     SharedModule

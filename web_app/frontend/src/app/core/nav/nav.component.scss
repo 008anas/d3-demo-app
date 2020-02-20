@@ -1,16 +1,9 @@
-// .item>.icon {
-//   margin-left: 0.8em !important;
-// }
-
-.ui.inverted.stackable.fixed.menu {
-  // box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+.ui.stackable.fixed.menu {
+  box-shadow: none !important;
   height: 45px;
+  border: 0 !important;
 
-  .ui.secondary.inverted.pointing.menu {
+  .ui.secondary.pointing.menu {
     border-color: transparent !important;
-
-    .item {
-      font-weight: bold !important;
-    }
   }
 }

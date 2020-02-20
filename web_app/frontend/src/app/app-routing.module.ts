@@ -19,8 +19,8 @@ const routes: Routes = [
   { path: 'editor/:construct', component: VectorEditorComponent, resolve: { construct: ConstructResolver }, data: { title: 'Vector editor' } },
   { path: rts.documentation, component: DocumentationComponent, data: { title: 'Documentation' } },
   { path: rts.contact, component: ContactComponent, data: { title: 'Contact us' } },
-  { path: rts.error404, component: Error404Component, data: { title: 'Request page not found 404' } },
-  { path: rts.error500, component: Error500Component, data: { title: 'Internal Server Error 500' } },
+  { path: rts.error404, component: Error404Component, data: { title: 'Page not found' } },
+  { path: rts.error500, component: Error500Component, data: { title: 'Internal Server Error' } },
 
   // Otherwise redirect to 404
   { path: '**', redirectTo: '/' + rts.error404 }
