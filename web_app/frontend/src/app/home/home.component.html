@@ -52,7 +52,8 @@
   </div>
 
   <div class="ui vertical stripe quote basic segment" [ngClass]="{'disabled': !specie || isLoading}">
-    <div class="ui equal width stackable internally celled grid">
+
+    <div class="ui equal width stackable grid container">
       <div class="center aligned row">
 
         <div class="column">
@@ -75,8 +76,19 @@
           </button>
         </div>
 
+        <div class="column">
+
+          <h3>Enter your history ID.</h3>
+          <div class="ui large icon input">
+            <input type="text" placeholder="Search...">
+            <i class="search icon"></i>
+          </div>
+
+        </div>
+
       </div>
     </div>
+
   </div>
 
   <div class="ui vertical stripe">

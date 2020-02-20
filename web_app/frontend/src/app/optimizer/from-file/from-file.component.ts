@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpEvent, HttpEventType, HttpRequest } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
-import { UploadChangeParam } from 'ng-zorro-antd/upload';
+import { UploadXHRArgs } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { environment as env } from '@env/environment';
@@ -35,10 +35,34 @@ export class FromFileComponent implements OnInit, OnDestroy {
   view = true;
   search: string;
 
-  beforeUpload = (file: File) => {
-    this.fileList = [file];
+  customReq = (item: UploadXHRArgs) => {
+    this.fileList = [item.file];
+    const formData = new FormData();
+    // tslint:disable-next-line:no-any
+    formData.append('file', item.file as any);
+    const req = new HttpRequest('POST', item.action!, formData, {
+      reportProgress: true,
+      withCredentials: true
+    });
     this.construct = null;
-  };
+    return this.http.request(req).subscribe(
+      // tslint:disable-next-line no-any
+      (event: HttpEvent<any>) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          if (event.total! > 0) {
+            // tslint:disable-next-line:no-any
+            (event as any).percent = (event.loaded / event.total!) * 100;
+          }
+          item.onProgress!(event, item.file!);
+        } else if (event instanceof HttpResponse) {
+          item.file.status = 'done';
+          item.onSuccess!(event.body, item.file!, event);
+          this.construct = new Construct().deserialize(event.body);
+        }
+      },
+      err => item.onError!({ statusText: err }, item.file!)
+    );
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -53,8 +77,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.route.queryParams.subscribe(params => {
-      if (params.specie) this.specie = new Specie();
-      this.specie.slug = params.specie || null
+      if (params.specie) { this.specie = new Specie(); }
+      this.specie.slug = params.specie || null;
     });
     if (this.specie) { this.getSpecie(); }
     this.getSpecies();
@@ -87,22 +111,16 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
-  handleChange({ file }: UploadChangeParam): void {
-    if (file.status === 'done') {
-      this.construct = new Construct().deserialize(file.response);
-    }
-  }
-
 
   loadExample() {
     this.http.get(this.exampleFile, { observe: 'response', responseType: 'blob' })
       .subscribe((result: HttpResponse<Blob>) => {
-        let reader = new FileReader();
+        const reader = new FileReader();
         reader.readAsDataURL(result.body);
         reader.onloadend = (ev) => {
           if (ev.target.readyState === window.FileReader.DONE) {
-            let data = new Blob([ev.target.result]);
-            let arrayOfBlob = new Array<Blob>();
+            const data = new Blob([ev.target.result]);
+            const arrayOfBlob = new Array<Blob>();
             arrayOfBlob.push(data);
             this.fileList = [new File(arrayOfBlob, result.url.split('/').slice(-1)[0])];
           }
@@ -114,7 +132,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   submit() {
     this.response = null;
-    this.construct['specie_tax_id'] = this.specie.tax_id;
+    this.construct.specie_tax_id = this.specie.tax_id;
     this.http
       .post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
       .subscribe(
@@ -129,7 +147,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
-  textModal(str: string){
+  textModal(str: string) {
     this.modal.create({
       nzContent: TextModalComponent,
       nzWrapClassName: 'center-modal',

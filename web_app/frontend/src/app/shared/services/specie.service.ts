@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment as env } from '@env/environment';
-import { Specie } from '../models/specie';
+import { Specie } from '@models/specie';
 
 const URL_ENV = '/species';
 

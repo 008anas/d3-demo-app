@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
-import { Specie } from '../shared/models/specie';
-import { SpecieService } from '../shared/services/specie.service';
+import { Specie } from '@models/specie';
+import { SpecieService } from '@services/specie.service';
 
 @Component({
   selector: 'sqy-home',

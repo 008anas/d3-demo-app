@@ -19,10 +19,6 @@ export class AppHttpInterceptor implements HttpInterceptor {
       request = request.clone({ headers: request.headers.set('X-CSRFToken', this.cookieSrvc.get('csrftoken')) });
     }
 
-    // if (!request.headers.has('Content-Type')) {
-    //   request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
-    // }
-
     return next.handle(request);
   }
 }

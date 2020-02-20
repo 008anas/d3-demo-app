@@ -1,4 +1,4 @@
-import { Deserializable } from 'app/shared/models/deserializable.model';
+import { Deserializable } from '@models/deserializable.model';
 
 export class Job extends Deserializable {
   uuid: string;

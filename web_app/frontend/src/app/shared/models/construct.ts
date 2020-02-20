@@ -1,6 +1,6 @@
-import { Deserializable } from 'app/shared/models/deserializable.model';
+import { Deserializable } from '@models/deserializable.model';
 import { Track } from 'app/optimizer/shared/track';
-import { Specie } from 'app/shared/models/specie';
+import { Specie } from '@models/specie';
 
 export class Construct extends Deserializable {
   id?: string;
@@ -11,6 +11,7 @@ export class Construct extends Deserializable {
   dna_seq: string;
   protein_seq: string;
   specie: Specie;
+  specie_tax_id: number;
   tracks: Track[];
   n_tracks: number;
 }

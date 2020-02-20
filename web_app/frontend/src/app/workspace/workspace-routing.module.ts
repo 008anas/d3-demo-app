@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { WorkspaceComponent } from './workspace.component';
 import { HistoryComponent } from './history/history.component';
 import { HistoryResolver } from './shared/history.resolver';
-import { routes as rts } from '../config/routes';
+import { routes as rts } from '@config/routes';
 
 const routes: Routes = [
   { path: '', component: WorkspaceComponent },

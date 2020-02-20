@@ -1,4 +1,4 @@
-import { Deserializable } from 'app/shared/models/deserializable.model';
+import { Deserializable } from '@models/deserializable.model';
 import { Job } from './job';
 import { Construct } from '@models/construct';
 

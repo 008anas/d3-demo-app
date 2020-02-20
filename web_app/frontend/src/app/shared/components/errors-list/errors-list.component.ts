@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { Errors } from '../../models/error';
+import { Errors } from '@models/error';
 
 @Component({
   selector: 'sqy-errors-list',

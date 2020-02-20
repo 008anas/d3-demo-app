@@ -3,9 +3,9 @@
   <div class="ui vertical masthead center aligned">
 
     <h1 class="ui header">Upload your GenBank</h1>
-    <h2 class="ui header">Allowed extensions: .gb .gbk .genbank.</h2>
+    <h2 class="ui header">Allowed extensions: <strong>.gb .gbk .genbank.</strong></h2>
 
-    <p>Upload a valid GenBank file. Note that such file must include at least one <strong>CDS feature</strong></p>
+    <p>Upload a valid GenBank file. Note that such file must include at least one <strong>CDS feature</strong>. All others features will be filled with <strong>Dummy feature</strong>.</p>
 
     <div class="ui two column centered padded grid">
 
@@ -14,7 +14,7 @@
           <a (click)="loadExample()">Load example file</a>
         </div>
         <div class="ui column">
-          <nz-upload nzType="drag" (nzChange)="handleChange($event)" [nzFileList]="fileList" [nzBeforeUpload]="beforeUpload" [nzWithCredentials]="true" [nzAction]="endpoint">
+          <nz-upload nzType="drag" [nzCustomRequest]="customReq" [nzFileList]="fileList" [nzAction]="endpoint">
             <div class="p-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="45" height="46" viewBox="0 0 63 64">
                 <g fill="#3B454F" fill-rule="nonzero">
@@ -82,7 +82,7 @@
 
               <div class="inline field">
                 <label for="">Circular</label>
-                <i class="icon" [ngClass]="{'green circular check': construct.circular, 'red ban': !construct.circular}"></i>
+                <i class="icon" [ngClass]="{'green circular check': construct.circular, 'circle times red': !construct.circular}"></i>
               </div>
 
               <div class="field link" (click)="textModal(construct.dna_seq)" style="max-height: 300px;">

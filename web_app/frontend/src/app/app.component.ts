@@ -3,6 +3,7 @@ import { Meta } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 
 import { TitleService } from '@services/title.service';
+import { main } from '@config/main';
 
 @Component({
   selector: 'sqy-root',
@@ -25,7 +26,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.metaTagSrvc.addTags([
       { name: 'keywords', content: 'Sequence Optimizator' },
-      { name: 'keywords', content: 'SQRUTINY' },
+      { name: 'keywords', content: main.appName },
       { name: 'robots', content: 'index, follow' },
       { name: 'author', content: 'Anas Gharrab' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

@@ -133,14 +133,15 @@ span.ui.error {
 }
 /* SEMANTIC OVERRIDE */
 /* Form */
-form.ui.form{
-  &.padded{
-    .field{
+form.ui.form {
+  &.padded {
+    .field {
       margin-top: 2em;
     }
   }
-  &.very.padded{
-    .field{
+
+  &.very.padded {
+    .field {
       margin-top: 3em;
     }
   }

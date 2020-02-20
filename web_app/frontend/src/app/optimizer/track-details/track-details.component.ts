@@ -2,9 +2,7 @@ import { Component, Input, Output, EventEmitter, HostListener, OnDestroy } from 
 import { FormGroup } from '@angular/forms';
 
 import { Track } from '../shared/track';
-import { Base } from '../shared/base';
 import Utils from 'app/shared/utils';
-import { KEY_CODE } from 'app/shared/models/key-code';
 
 @Component({
   selector: 'sqy-track-details',
@@ -27,7 +25,6 @@ export class TrackDetailsComponent implements OnDestroy {
   display = false;
   _track: Track = null;
   action = 'fix';
-  bases: Base[];
   trackForm: FormGroup;
 
   constructor() {
@@ -36,7 +33,9 @@ export class TrackDetailsComponent implements OnDestroy {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode === KEY_CODE.ESCAPE) { this.display = false; }
+    if (event.key.toUpperCase() === 'ESCAPE') {
+      this.display = false;
+    }
   }
 
   toggleSidebar = () => {
