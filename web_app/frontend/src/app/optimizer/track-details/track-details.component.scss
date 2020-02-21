@@ -3,3 +3,7 @@
   position: absolute;
   bottom: 1rem;
 }
+
+::ng-deep .ant-drawer-body {
+  height: 100%;
+}

@@ -1,6 +1,6 @@
-<sqy-sidebar [show]="display" [closeCallback]="toggleSidebar">
+<nz-drawer [nzVisible]="display" [nzWidth]="640" (nzOnClose)="toggleSidebar()">
 
-  <form class="ui form h-1-1" name="track-form" #trackForm="ngForm" (ngSubmit)="submit()">
+  <form class="ui form h-1-1" [formGroup]="trackForm" (ngSubmit)="onSubmit()">
 
     <div class="field">
       <img src="{{_track.glyph_thumbnail}}" class="ui medium circular centered image">
@@ -78,5 +78,4 @@
     </div>
 
   </form>
-
-</sqy-sidebar>
+</nz-drawer>

@@ -1,7 +1,7 @@
 .sketcher {
   max-height: 100vh;
   max-width: 100vw;
-  overflow-y: auto;
+  margin-top: var(--top-margin) !important;
 
   .slider-wraper {
     position: relative;

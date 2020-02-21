@@ -51,6 +51,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
   locked = false;
   search: string;
   sketcherLoading = false;
+  isSketcherLoading = false;
+  onClose = () => {
+    this.track = null;
+  }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -117,14 +121,14 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   getExampleConstruct() {
-    this.isLoading = true;
+    this.isSketcherLoading = true;
     this.constructSrvc.getExample().subscribe(
       data =>
         data.length
           ? (this.construct = new Construct().deserialize(data[0]))
           : this.notify.warn('Sorry but no example construct was found'),
       err => this.notify.warn(err || 'Unable to load model construct'),
-      () => (this.sketcherLoading = false)
+      () => (this.isSketcherLoading = false)
     );
   }
 

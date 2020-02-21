@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 import { Track } from '../shared/track';
 import Utils from 'app/shared/utils';
@@ -24,8 +24,11 @@ export class TrackDetailsComponent implements OnDestroy {
   dnaRegex: RegExp;
   display = false;
   _track: Track = null;
-  action = 'fix';
-  trackForm: FormGroup;
+  trackForm = new FormGroup ({
+    label: new FormControl(),
+    color: new FormControl(),
+    sequence: new FormControl()
+  });
 
   constructor() {
     this.dnaRegex = Utils.dnaSeqRegex;
@@ -53,16 +56,22 @@ export class TrackDetailsComponent implements OnDestroy {
     this._track.color = color;
   }
 
-  submit() {
+  onSubmit() {
+    console.log(this._track)
     this.onSave.emit(this._track);
     this.toggleSidebar();
   }
 
   change(pos: number) {
-    if (this.trackForm.valid) { this.submit(); }
-    if (pos > -1 && pos < this.max + 1) {
-      this.changePos.emit(pos);
-    }
+    console.log(this.trackForm)
+    this.trackForm.reset();
+    // if (form.valid) {
+    //   this.onSave.emit(this._track);
+    // }
+    // if (pos > -1 && pos < this.max + 1) {
+    //   this.changePos.emit(pos);
+    //   form.reset();
+    // }
   }
 
 }

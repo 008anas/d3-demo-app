@@ -6,6 +6,7 @@ import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 
 import { OptimizerRoutingModule } from './optimizer-routing.module';
 import { OptimizerComponent } from './optimizer.component';
@@ -15,6 +16,7 @@ import { TrackDetailsComponent } from './track-details/track-details.component';
 import { FilterTracksPipe } from './shared/filter-tracks.pipe';
 import { FromFileComponent } from './from-file/from-file.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TracksPickerComponent } from './shared/tracks-picker/tracks-picker.component';
 
 
 @NgModule({
@@ -23,7 +25,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     SketcherComponent,
     TrackDetailsComponent,
     FilterTracksPipe,
-    FromFileComponent
+    FromFileComponent,
+    TracksPickerComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +37,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     NzDropDownModule,
     ReactiveFormsModule,
     NzUploadModule,
-    NzAlertModule
+    NzAlertModule,
+    NzDrawerModule
   ]
 })
 export class OptimizerModule { }
