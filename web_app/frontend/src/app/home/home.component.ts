@@ -1,29 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
 import { finalize } from 'rxjs/operators';
 
 import { Specie } from '@models/specie';
 import { SpecieService } from '@services/specie.service';
+import { HistoryService } from 'app/workspace/shared/history.service';
+import { UserHistory } from 'app/workspace/shared/user-history';
 
 @Component({
   selector: 'sqy-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
+  sub: Subscription;
   specie: Specie = null;
   species: Specie[] = [];
   history_id: string = null;
   isLoading = false;
+  response: any = null;
+  isRetriving = false;
+  option = 1;
+  uuidRegex = '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+  carousel = [
+    'https://www.earlham.ac.uk/sites/default/files/images/articles/Synthetic%20Biology%20Spotlight%20Yaomin%20Cai/synthetic-biology-spotlight-yaomin-cai-hero.jpg',
+    'https://www.genengnews.com/wp-content/uploads/2019/09/Sep3_2019_Getty_157647511_DNASequence-1-1068x712.jpg',
+    'https://sitechecker.pro/wp-content/uploads/2017/12/search-engines.png'
+  ];
 
   constructor(
     private specieSrvc: SpecieService,
-    private router: Router
+    private route: ActivatedRoute,
+    private router: Router,
+    private historySrvc: HistoryService
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
+    this.sub = this.route.queryParams.subscribe(params => {
+      if (params.option && params.option <= this.carousel.length) {
+        this.option = Number.parseInt(params.option);
+      }
+    });
     this.getSpecies();
+  }
+
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   getSpecies() {
@@ -39,6 +66,21 @@ export class HomeComponent implements OnInit {
           });
         }
       );
+  }
+
+  getHistory() {
+    if (this.history_id) {
+      this.isRetriving = true;
+      this.response = null;
+      this.historySrvc.getByIdNot404(this.history_id)
+        .pipe(finalize(() => this.isRetriving = false))
+        .subscribe(
+          (data: UserHistory) => {
+            this.router.navigate(['/workspace', data.id]);
+          },
+          err => this.response = err
+        );
+    }
   }
 
   goTo(path: string) {

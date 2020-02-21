@@ -24,6 +24,10 @@ export class HistoryService {
     return this.http.get<UserHistory>(`${this.url}/${id}`).pipe();
   }
 
+  getByIdNot404(id: string): Observable<UserHistory> {
+    return this.http.get<UserHistory>(`${this.url}/history/${id}`).pipe();
+  }
+
   getCount(): Observable<any> {
     return this.http.get<any>(`${this.url}/count`).pipe();
   }

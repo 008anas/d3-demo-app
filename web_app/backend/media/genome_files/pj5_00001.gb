@@ -1,0 +1,32 @@
+LOCUS       pj5_00001     450 bp    DNA             circular       29-JAN-2020
+FEATURES             Location/Qualifiers
+    source          1..5028
+                    /organism="Saccharomyces cerevisiae"
+                    /db_xref="taxon:2104"
+                    /chromosome="IX"
+                    /map="9"
+     CDS             2..76
+                     /label="First track"
+                     /color="#f46600"
+     Start Codon     77..176
+                     /label="Second"
+                     /color="#cf0500"
+     Insulator       177..276
+                     /label="Third"
+                     /color="#ee3e6d"
+     CDS             277..376
+                     /label="Third"
+                     /color="#b7d5c4"
+     Origin Of Replication377..450
+                     /label="Sixth"
+                     /color="#4e0a77"
+ORIGIN
+        1 CAGACCACAG TCGACTTCAG CATCACAGAC CACAGTCGAC TTCAGCATCA CAGACCACAG
+       61 TCGACTTCAG CATCACAGAC CACAGTCGAC TTCAGCATCA CAGACCACAG TCGACTTCAG
+      121 CATCACAGAC CACAGTCGAC TTCAGCATCA CAGACCACAG TCGACTTCAG CATCACAGAC
+      181 CACAGTCGAC TTCAGCATCA CAGACCACAG TCGACTTCAG CATCACAGAC CACAGTCGAC
+      241 TTCAGCATCA CAGACCACAG TCGACTTCAG CATCACAGAC CACAGTCGAC TTCAGCATCA
+      301 CAGACCACAG TCGACTTCAG CATCACAGAC CACAGTCGAC TTCAGCATCA CAGACCACAG
+      361 TCGACTTCAG CATCACAGAC CACAGTCGAC TTCAGCATCA CAGACCACAG TCGACTTCAG
+      421 CATCACAGAC CACAGTCGAC TTCAGCATCA
+//

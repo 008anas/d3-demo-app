@@ -13,12 +13,25 @@ class HistoryCountView(APIView):
         return Response(dict(count=len(self.request.session.get('history', []))))
 
 
+class HistoryRetrieveView(APIView):
+
+    def get(self, request, history_id):
+
+        if str(history_id) not in request.session.get('history', []):
+            return Response(dict(msg='History with such not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+        history = History.objects.filter(uuid=str(history_id), deleted=False).first()
+
+        serializer = HistorySerializer(instance=history, context={'request': request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class HistoryViewSet(viewsets.ModelViewSet):
     serializer_class = HistorySerializer
     lookup_field = 'uuid'
 
     def destroy(self, request, *args, **kwargs):
-
         history = self.get_object()
         history.deleted = True
         history.save()
@@ -28,13 +41,13 @@ class HistoryViewSet(viewsets.ModelViewSet):
         return Response(dict(msg='History deleted successfully!'), status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
-        return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by('-created_at')
+        return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by(
+            '-created_at')
 
 
 class ClearHistoryView(APIView):
 
     def delete(self, request):
-
         self.get_queryset().update(deleted=True)
 
         self.request.session.clear()

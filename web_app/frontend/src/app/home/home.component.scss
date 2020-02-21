@@ -1,121 +1,78 @@
 .ui.container {
-  padding: 2.5em 0em;
+  padding: 2.5em 0;
 }
 
 .ui.segment.masthead {
-  min-height: 300px;
-  margin-bottom: 4em;
+  min-height: 350px;
+  margin-bottom: 5em;
   border-radius: 40px !important;
+
+  .ui.menu.secondary {
+    .item {
+      font-weight: bold;
+
+      &:hover {
+        background-color: var(--hover-color);
+      }
+
+      &.active {
+        background-color: var(--main-color);
+        color: var(--text-color);
+      }
+    }
+  }
 
   .ui.text {
     text-align: center;
     padding: 2em;
 
+    .column:not(.row) {
+      padding-top: 0.8rem !important;
+      padding-bottom: 0.8rem !important;
+    }
+
     h1.ui.header {
-      font-size: 3.5em;
+      font-size: 4.5em;
       font-weight: normal;
     }
 
     h3 {
       font-size: 1em;
       font-weight: normal;
-      margin-top: 2em;
     }
 
-    button {
-      margin-top: 1em;
+    p:not(.comment) {
+      font-size: 1.3em;
+    }
+
+    a.action {
+      font-size: 1.7em;
+    }
+  }
+
+  .column.background {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    border-radius: 10px;
+
+    &.carousel {
+      background-size: cover !important;
+    }
+  }
+
+  .dots {
+    text-align: center;
+
+    a.ui.label.active {
+      background-color: var(--main-color);
     }
   }
 }
-// .masthead.segment {
-//   min-height: 350px;
-//   padding: 1em 0;
-//   border-radius: 0 !important;
-//   border: 0 !important;
-// }
-//
-// .masthead .logo.item img {
-//   margin-right: 1em;
-// }
-//
-// .masthead .ui.menu .ui.button {
-//   margin-left: 0.5em;
-// }
-//
-// .masthead h1.ui.header {
-//   margin-top: 2em;
-//   margin-bottom: 0;
-//   font-size: 4em;
-//   font-weight: normal;
-// }
-//
-// .masthead h2 {
-//   font-size: 1.7em;
-//   font-weight: normal;
-// }
-//
-// .ui.vertical.stripe {
-//   padding: 8em 0;
-// }
-//
-// .ui.vertical.stripe h3 {
-//   font-size: 2em;
-// }
-//
-// .ui.vertical.stripe .button + h3,
-// .ui.vertical.stripe p + h3 {
-//   margin-top: 3em;
-// }
-//
-// .ui.vertical.stripe .floated.image {
-//   clear: both;
-// }
-//
-// .ui.vertical.stripe p {
-//   font-size: 1.33em;
-// }
-//
-// .ui.vertical.stripe .horizontal.divider {
-//   margin: 3em 0;
-// }
-//
-// .quote.stripe.segment {
-//   padding: 0;
-// }
-//
-// .quote.stripe.segment .grid .column {
-//   padding-top: 5em;
-//   padding-bottom: 5em;
-// }
-//
-// .secondary.pointing.menu .toc.item {
-//   display: none;
-// }
-// @media only screen and (max-width: 700px) {
-//   .ui.fixed.menu {
-//     display: none !important;
-//   }
-//
-//   .secondary.pointing.menu .item,
-//   .secondary.pointing.menu .menu {
-//     display: none;
-//   }
-//
-//   .secondary.pointing.menu .toc.item {
-//     display: block;
-//   }
-//
-//   .masthead.segment {
-//     min-height: 350px;
-//   }
-//
-//   .masthead h1.ui.header {
-//     font-size: 2em;
-//     margin-top: 1.5em;
-//   }
-//
-//   .masthead h2 {
-//     margin-top: 0.5em;
-//     font-size: 1.5em;
-//   }
-// }
+
+::ng-deep {
+  .ant-select,
+  .ant-select-selection-selected-value {
+    width: 100% !important;
+  }
+}

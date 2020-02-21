@@ -1,10 +1,10 @@
 div.footer {
   margin-top: 2em;
-  background-color: #079ace !important;
+  background-color: var(--main-color) !important;
   border-radius: 0 !important;
 
   * {
-    color: #fff !important;
+    color: var(--text-color) !important;
   }
 
   a {

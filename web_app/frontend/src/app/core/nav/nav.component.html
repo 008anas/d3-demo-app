@@ -1,7 +1,7 @@
 <nav class="ui stackable fixed menu">
 
   <div class="ui container">
-    <div class="ui large secondary pointing menu">
+    <div class="ui large secondary pointing inverted menu">
       <a class="item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         Home
       </a>
@@ -14,9 +14,6 @@
       <a class="item" routerLink="/workspace" routerLinkActive="active">
         Workspace
         <div class="ui red label" [hidden]="count < 1">{{count}}</div>
-      </a>
-      <a class="item" routerLink="/documentation" routerLinkActive="active">
-        Documentation
       </a>
       <a class="item" routerLink="/contact" routerLinkActive="active">
         Contact

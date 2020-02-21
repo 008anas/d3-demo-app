@@ -1,38 +1,167 @@
 <div class="ui container">
 
-  <div class="ui inverted very padded masthead segment">
+  <div class="ui very padded masthead segment">
 
     <div class="ui grid">
 
       <div class="row">
         <div class="column">
           <div class="ui secondary huge menu">
-            <a class="item active">
+            <a class="item" (click)="option = 1" [ngClass]="{'active': option === 1}">
               Skecther
             </a>
-            <a class="item">
+            <a class="item" (click)="option = 2" [ngClass]="{'active': option === 2}">
               From file
             </a>
-            <a class="item">
+            <a class="item" (click)="option = 3" [ngClass]="{'active': option === 3}">
               Retrieve history
             </a>
           </div>
         </div>
       </div>
 
-      <div class="two column row">
+      <div class="row">
 
-        <div class="ui text column">
+        <div class="nine wide column">
 
-          <h1 class="ui header">SQRUTINY sketcher</h1>
-          <h3 class="ui header">Use our skecther to design a whole construct</h3>
-          <h3><a href="#">Use the sketcher <i class="right arrow icon"></i> </a></h3>
+          <div class="ui one column text grid" *ngIf="option === 1">
+
+            <div class="column">
+              <h1 class="ui header">Sqrutiny sketcher</h1>
+            </div>
+
+            <div class="column">
+              <p>Select an <strong>organisme</strong> to start using the sketcher.</p>
+            </div>
+
+            <div class="column">
+              <nz-select [(ngModel)]="specie" [nzLoading]="isLoading" [nzDisabled]="isLoading" nzSize="large" nzShowSearch>
+                <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s"></nz-option>
+              </nz-select>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" [ngClass]="{'disabled': !specie}" (click)="goTo('sketcher')">Use the sketcher <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+            <div class="column comment">
+              <nz-alert nzType="warning" [hidden]="!specie?.comment" [nzMessage]="specie.comment" nzShowIcon></nz-alert>
+            </div>
+
+          </div>
+
+          <div class="ui one column text grid" *ngIf="option === 2">
+
+            <div class="column">
+              <h1 class="ui header">Upload your file</h1>
+            </div>
+
+            <div class="column">
+              <p>Upload a <strong>GenBank</strong> file.</p>
+            </div>
+
+            <div class="column">
+              <nz-select [(ngModel)]="specie" [nzLoading]="isLoading" [nzDisabled]="isLoading" nzSize="large" nzShowSearch>
+                <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s"></nz-option>
+              </nz-select>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" [ngClass]="{'disabled': !specie}" (click)="goTo('upload')">Upload a file <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+            <div class="column comment">
+              <nz-alert nzType="warning" [hidden]="!specie?.comment" [nzMessage]="specie.comment" nzShowIcon></nz-alert>
+            </div>
+
+          </div>
+
+          <div class="ui one column text grid" *ngIf="option === 3">
+
+            <div class="column">
+              <h1 class="ui header">Retrieve an history</h1>
+            </div>
+
+            <div class="column">
+              <p>Enter the <strong>history ID</strong> below .Once you have entered a valid id you will be redirected to the corresponding history.
+                If you do not know the id of the history you can find all your history in <a [routerLink]="['/workspace']">Workspace</a> section.</p>
+            </div>
+
+            <div class="column">
+              <form class="ui form" #retrieveHistory="ngForm" (ngSubmit)="getHistory()">
+
+                <div class="field" [ngClass]="{'error': historyId.errors?.pattern && (historyId.dirty || historyId.touched)}">
+                  <div class="ui big action fluid input" [ngClass]="{'loading': isRetriving}">
+                    <input type="text" name="id" [(ngModel)]="history_id" required [pattern]="uuidRegex" #historyId="ngModel" placeholder="history id...">
+                    <button type="submit" [disabled]="retrieveHistory.invalid || !history_id" class="ui secondary right labeled icon button">
+                      Retrieve <i class="right arrow icon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="field" *ngIf="historyId.errors?.pattern && (historyId.dirty || historyId.touched)">
+                  <span class="error">This is a not valid id</span>
+                </div>
+
+                <div class="field" *ngIf="response">
+                  <span class="error">{{response}}</span>
+                </div>
+
+              </form>
+            </div>
+
+          </div>
 
         </div>
 
-        <div class="column">
+        <div class="seven wide column carousel background" [ngStyle]="{'background-image': 'url('+ carousel[option-1] +')'}"></div>
 
-          <img class="ui big bordered rounded centered image" style="border: none !important" src="assets/img/sketcher.png" />
+      </div>
+
+      <div class="row">
+
+        <div class="column dots">
+          <a class="ui empty circular label" (click)="option = 1" [ngClass]="{'active': option === 1}"></a>
+          <a class="ui empty circular label" (click)="option = 2" [ngClass]="{'active': option === 2}"></a>
+          <a class="ui empty circular label" (click)="option = 3" [ngClass]="{'active': option === 3}"></a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="ui very padded masthead segment">
+
+    <div class="ui grid">
+
+      <div class="row">
+
+        <div class="seven wide column background" style="background-image: url(assets/img/bioroboost.png)"></div>
+
+        <div class="nine wide column">
+
+          <div class="ui one column text grid">
+
+            <div class="column">
+              <h1 class="ui header">A BioRoboost project</h1>
+            </div>
+
+            <div class="column">
+              <p>Standards in Synbio is a joint effort in the frame of the project “BioRoboost: Fostering
+                Synthetic Biology standardisation through international collaboration”. Through this
+                website, we aim at generating the most comprehensive collection of information
+                available up to date on Standards in the biological and non-biological realm. This
+                project receives funding from the European Commission H2020 Research & Innovation
+                Programme.</p>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" href="https://sbolstandard.org/" target="_blank">See it in more details <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+          </div>
 
         </div>
 
@@ -42,43 +171,34 @@
 
   </div>
 
-  <div class="ui secondary very padded masthead segment">
+  <div class="ui very padded masthead segment">
 
     <div class="ui grid">
 
-      <div class="row">
-        <div class="column">
-          <div class="ui secondary huge menu">
-            <a class="item">
-              Skecther
-            </a>
-            <a class="item active">
-              From file
-            </a>
-            <a class="item">
-              Retrieve history
-            </a>
-          </div>
-        </div>
-      </div>
-
       <div class="two column row">
 
-        <div class="column">
+        <div class="nine wide column">
 
-          <div class="ui text container">
-            <h1 class="ui header">SQRUTINY sketcher</h1>
-            <h3 class="ui header">Use our skecther to design a whole construct</h3>
-            <button class="ui secondary big button" name="button">Use the sketcher</button>
+          <div class="ui one column text grid">
+
+            <div class="column">
+              <h1 class="ui header">Powered by CRG</h1>
+            </div>
+
+            <div class="column">
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" href="https://www.crg.eu" target="_blank">Visit CRG site <i class="right arrow icon"></i> </a></h3>
+            </div>
+
           </div>
 
         </div>
 
-        <div class="column">
-
-          <img class="ui big bordered rounded centered image" style="border: none !important" src="assets/img/sketcher.png" />
-
-        </div>
+        <div class="seven wide column background" style="background-image: url(assets/img/CNAG_logo.jpg)"></div>
 
       </div>
 
@@ -87,164 +207,3 @@
   </div>
 
 </div>
-<!-- <div class="ui fluid container">
-
-  <div class="ui inverted vertical masthead center aligned segment main bg">
-
-    <div class="ui one column very relaxed grid">
-      <div class="column">
-        <div class="ui text container">
-          <h1 class="ui inverted header">Welcome to SQRUTINY</h1>
-          <h2 class="ui inverted header">Select a specie to proceed.</h2>
-
-          <form class="ui form">
-
-            <div class="field p-4">
-              <select class="ui dropdown" name="specie" [(ngModel)]="specie" [ngClass]="{'disabled loading': isLoading}">
-                <option *ngFor="let s of species" [ngValue]="s">
-                  {{s.name}}
-                </option>
-              </select>
-            </div>
-
-            <div class="field" *ngIf="specie?.comment">
-              <p class="comment">{{specie.comment}}</p>
-            </div>
-
-          </form>
-
-        </div>
-      </div>
-      <div class="column">
-        <div class="ui text container">
-          <h1 class="ui inverted header">Enter history ID</h1>
-          <h2 class="ui inverted header">Retrieve your history.</h2>
-
-          <form class="ui form">
-
-            <div class=" fields">
-              <div class="fourteen wide field">
-                <div class="ui action input">
-                  <input type="text" name="history-id" [(ngModel)]="history_id" placeholder="ID...">
-                  <button [routerLink]="['/workspace', history_id]" [disabled]="!history_id" class="ui button">Retrieve</button>
-                </div>
-              </div>
-
-            </div>
-
-          </form>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="ui vertical stripe quote basic segment" [ngClass]="{'disabled': !specie || isLoading}">
-
-    <div class="ui equal width stackable grid container">
-      <div class="center aligned row">
-
-        <div class="column">
-          <img class="ui big bordered rounded centered image" style="border: none !important" src="assets/img/sketcher.png" />
-          <h3>Use our skecther</h3>
-          <p>Use our skecther to design a whole construct.</p>
-          <button type="button" class="ui primary button right labeled icon" (click)="goTo('sketcher')" [ngClass]="{'disabled loading': isLoading}" [disabled]="!specie || isLoading">
-            Start from skecther <i class="right chevron icon"></i>
-          </button>
-        </div>
-
-        <div class="column">
-          <img class="ui medium bordered rounded centered image" style="border: none !important" src="https://www.genengnews.com/wp-content/uploads/2019/09/Sep3_2019_Getty_157647511_DNASequence-1-1068x712.jpg" />
-          <h3>"I shouldn't have gone with their competitor."</h3>
-          <p>
-            <b>Nan</b> Chief Fun Officer Acme Toys
-          </p>
-          <button type="button" class="ui secondary button right labeled icon" (click)="goTo('upload')" [ngClass]="{'disabled loading': isLoading}" [disabled]="!specie || isLoading">
-            Upload my own file <i class="right chevron icon"></i>
-          </button>
-        </div>
-
-        <div class="column">
-
-          <h3>Enter your history ID.</h3>
-          <div class="ui large icon input">
-            <input type="text" placeholder="Search...">
-            <i class="search icon"></i>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-  <div class="ui vertical stripe">
-    <div class="ui middle aligned stackable grid container">
-      <div class="row">
-        <div class="eight wide column">
-          <h3 class="ui header">How it works?</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-          <h3 class="ui header">We Make Bananas That Can Dance</h3>
-          <p>
-            Yes that's right, you thought it was the stuff of dreams, but
-            even bananas can be bioengineered.
-          </p>
-        </div>
-        <div class="six wide right floated column">
-          <img class="ui large bordered rounded image" style="border: none !important" src="assets/img/crg_logo.png" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="center aligned column">
-          <a class="ui huge button">Check Them Out</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ui vertical stripe quote">
-    <div class="ui equal width stackable internally celled grid">
-      <div class="center aligned row">
-        <div class="column">
-          <h3>"What a Company"</h3>
-          <p>That is what they all say about us</p>
-        </div>
-        <div class="column">
-          <h3>"I shouldn't have gone with their competitor."</h3>
-          <p>
-            <img class="ui image" src="assets/img/bioroboost.png" />
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ui vertical stripe">
-    <div class="ui text container">
-      <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
-      <p>
-        Instead of focusing on content creation and hard work, we have
-        learned how to master the art of doing nothing by providing massive
-        amounts of whitespace and generic content that can seem massive,
-        monolithic and worth your attention.
-      </p>
-      <a class="ui large button">Read More</a>
-      <h4 class="ui horizontal header divider">
-        <a href="#root"> Case Studies</a>
-      </h4>
-      <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
-      <p>
-        Yes I know you probably disregarded the earlier boasts as
-        non-sequitur filler content, but its really true. It took years of
-        gene splicing and combinatory DNA research, but our bananas can
-        really dance.
-      </p>
-      <a class="ui large button">I'm Still Quite Interested</a>
-    </div>
-  </div>
-
-</div> -->
