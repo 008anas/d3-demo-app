@@ -1,4 +1,4 @@
-<div class="ui basic segment internally celled grid sketcher" *ngIf="!isLoading" [ngClass]="{'loading': isSubmitting}">
+<div class="ui basic segment internally celled grid sketcher" *ngIf="!isLoading" [ngClass]="{'loading disabled': sketcherLoading}">
 
   <div class="row">
     <div class="column">
@@ -218,9 +218,9 @@
 
               <div class="required field">
                 <label for="construct_specie">Select organism</label>
-                <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
-                  <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
-                </select>
+                <nz-select [(ngModel)]="specie.tax_id" name="construct-specie" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
+                  <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
+                </nz-select>
               </div>
 
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
@@ -392,7 +392,7 @@
 <!-- Construct submit modal-->
 <nz-modal [nzFooter]="null" [nzWidth]="800" [(nzVisible)]="submitted" (nzOnCancel)="submitted = false">
 
-  <div class="ui very padded one column grid" *ngIf="history.id">
+  <div class="ui very padded one column grid" *ngIf="history">
 
     <div class="column">
       <h2 class="ui icon center aligned header">

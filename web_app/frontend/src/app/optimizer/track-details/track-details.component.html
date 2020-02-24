@@ -1,9 +1,9 @@
-<nz-drawer [nzVisible]="display" [nzWidth]="640" (nzOnClose)="toggleSidebar()">
+<nz-drawer [nzVisible]="display" [nzWidth]="640" (nzOnClose)="display = false">
 
-  <form class="ui form h-1-1" [formGroup]="trackForm" (ngSubmit)="onSubmit()">
+  <form class="ui form" [formGroup]="trackForm" (ngSubmit)="updateTrack()">
 
     <div class="field">
-      <img src="{{_track.glyph_thumbnail}}" class="ui medium circular centered image">
+      <img [src]="_track.glyph_thumbnail" class="ui medium circular centered image">
     </div>
 
     <div class="field">
@@ -36,7 +36,7 @@
 
       <div class="nine wide field">
         <label>Label</label>
-        <input type="text" name="track-label" [(ngModel)]="_track.label">
+        <input type="text" name="track-label" formControlName="label">
       </div>
 
       <div class="seven wide field">
@@ -48,7 +48,7 @@
 
     <div class="required field" [ngClass]="{'error': sequence.invalid && (sequence.dirty || sequence.touched)}">
       <label>Sequence</label>
-      <textarea name="track-seq" rows="8" cols="80" required #sequence="ngModel" [(ngModel)]="_track.sequence" [pattern]="dnaRegex"></textarea>
+      <textarea name="track-seq" rows="8" cols="80" required formControlName="sequence"></textarea>
       <span class="ui error" *ngIf="sequence.errors?.pattern && (sequence.dirty || sequence.touched)">Not a valid DNA sequence</span>
     </div>
 
@@ -78,4 +78,5 @@
     </div>
 
   </form>
+
 </nz-drawer>

@@ -1,4 +1,4 @@
-<div class="ui container">
+<div class="ui main container">
 
   <div class="ui very padded masthead segment">
 
@@ -93,7 +93,7 @@
                 <div class="field" [ngClass]="{'error': historyId.errors?.pattern && (historyId.dirty || historyId.touched)}">
                   <div class="ui big action fluid input" [ngClass]="{'loading': isRetriving}">
                     <input type="text" name="id" [(ngModel)]="history_id" required [pattern]="uuidRegex" #historyId="ngModel" placeholder="history id...">
-                    <button type="submit" [disabled]="retrieveHistory.invalid || !history_id" class="ui secondary right labeled icon button">
+                    <button type="submit" [disabled]="retrieveHistory.invalid || !history_id" class="ui primary right labeled icon button">
                       Retrieve <i class="right arrow icon"></i>
                     </button>
                   </div>

@@ -1,4 +1,4 @@
-<div class="ui container">
+<div class="ui main container">
 
   <div class="ui vertical masthead center aligned">
 
@@ -11,7 +11,7 @@
 
       <div class="one column row">
         <div class="column right aligned">
-          <a (click)="loadExample()">Load example file</a>
+          <a class="disabled" (click)="loadExample()">Load example file</a>
         </div>
         <div class="ui column">
           <nz-upload nzType="drag" [nzCustomRequest]="customReq" [nzFileList]="fileList" [nzAction]="endpoint">
@@ -105,7 +105,7 @@
                 </div>
               </div>
 
-              <div class="field" style="height: 80vh; overflow: auto">
+              <div class="field" style="height: 70vh; overflow: auto">
                 <table class="ui blue definition table">
 
                   <thead>

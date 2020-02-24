@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, HostListener, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, OnDestroy, OnChanges } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { Track } from '../shared/track';
 import Utils from 'app/shared/utils';
@@ -9,7 +9,7 @@ import Utils from 'app/shared/utils';
   templateUrl: './track-details.component.html',
   styleUrls: ['./track-details.component.scss']
 })
-export class TrackDetailsComponent implements OnDestroy {
+export class TrackDetailsComponent implements OnChanges, OnDestroy {
 
   @Output() onSave = new EventEmitter<Track>();
   @Output() changePos = new EventEmitter<number>();
@@ -18,60 +18,77 @@ export class TrackDetailsComponent implements OnDestroy {
     if (x) {
       this._track = x;
       this.max = this.max || this._track['pos'];
+      this.updateTrackForm(x);
       this.display = true;
     }
   }
-  dnaRegex: RegExp;
   display = false;
   _track: Track = null;
-  trackForm = new FormGroup ({
-    label: new FormControl(),
-    color: new FormControl(),
-    sequence: new FormControl()
-  });
+  trackForm: FormGroup;
 
-  constructor() {
-    this.dnaRegex = Utils.dnaSeqRegex;
+  constructor(private builder: FormBuilder) {
+    this.trackForm = this.builder.group({
+      label: [''],
+      color: [''],
+      sequence: ['', Validators.pattern(Utils.dnaSeqRegex)]
+    });
   }
 
-  @HostListener('window:keyup', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    if (event.key.toUpperCase() === 'ESCAPE') {
-      this.display = false;
-    }
-  }
-
-  toggleSidebar = () => {
-    this.display = !this.display;
+  ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
+    this.updateTrackForm(changes.track.currentValue);
   }
 
   ngOnDestroy() {
     this._track = null;
   }
 
+  get label() {
+    return this.trackForm.get('label');
+  }
+
+  get color() {
+    return this.trackForm.get('color');
+  }
+
+  get sequence() {
+    return this.trackForm.get('sequence');
+  }
+
+  updateTrackForm(track: Track) {
+    this.trackForm.patchValue({
+      label: track.label,
+      color: track.color,
+      sequence: track.sequence
+    });
+  }
+
   /*
   * Set color from color picker
   */
-  public setColor(color: string) {
-    this._track.color = color;
+  setColor(color: string) {
+    this.trackForm.value.color = color;
   }
 
   onSubmit() {
-    console.log(this._track)
     this.onSave.emit(this._track);
-    this.toggleSidebar();
+    this.display = false;
+  }
+
+  updateTrack() {
+    this._track.label = this.trackForm.value.label;
+    this._track.color = this.trackForm.value.color;
+    this._track.sequence = this.trackForm.value.sequence;
+    this.onSave.emit(this._track);
   }
 
   change(pos: number) {
-    console.log(this.trackForm)
-    this.trackForm.reset();
-    // if (form.valid) {
-    //   this.onSave.emit(this._track);
-    // }
-    // if (pos > -1 && pos < this.max + 1) {
-    //   this.changePos.emit(pos);
-    //   form.reset();
-    // }
+    if (this.trackForm.touched && this.trackForm.valid) {
+      this.updateTrack();
+    }
+    if (pos > -1 && pos < this.max + 1) {
+      this.changePos.emit(pos);
+      this.trackForm.reset();
+    }
   }
 
 }

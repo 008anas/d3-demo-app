@@ -128,73 +128,85 @@
   }
 }
 
-::ng-deep .vertical-center-modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .ant-modal {
-    width: 1000px !important;
-    top: 0;
-
-    .ant-modal-body {
-      max-height: calc(90vh - 5em);
-      overflow: auto;
-
-      .track-picker {
-        min-height: 500px;
-
-        .column.track {
-          z-index: 100 !important;
-          height: 4.5em !important;
-          margin: 0.4em !important;
-          border: 0.3px solid #eee !important;
-          box-shadow: 1px 1px 1px #eee !important;
-          background-size: auto 100% !important;
-          background-repeat: no-repeat !important;
-          background-position: 50% 100% !important;
-          cursor: pointer !important;
-
-          &.selected {
-            border: 2px solid #079ace !important;
-            border-radius: 2px;
-            box-shadow: 1px 1px 1px #eee !important;
-          }
-        }
-
-        .hov-track {
-          height: 1em;
-          text-align: center;
-          color: grey;
-          font-weight: bold;
-
-          .option {
-            position: absolute;
-            right: 0;
-            top: 50%;
-          }
-        }
-
-        .ui.horizontal.divider {
-          font-weight: normal;
-          color: grey;
-        }
-      }
-    }
-  }
-}
-
 .show {
   visibility: visible !important;
 }
 
 ::ng-deep {
+  // .ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+  //   border-color: #7da4db;
+  // }
+
+  .ant-slider-track {
+    background-color: var(--main-color);
+  }
+
+  .ant-slider-handle {
+    border-color: var(--main-color);
+  }
+
   .ant-dropdown.nz-dropdown {
     margin-top: 17px !important;
   }
 
   .ui.settings.dropdown .menu {
     position: relative !important;
+  }
+
+  .vertical-center-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .ant-modal {
+      width: 1000px !important;
+      top: 0;
+
+      .ant-modal-body {
+        max-height: calc(90vh - 5em);
+        overflow: auto;
+
+        .track-picker {
+          min-height: 500px;
+
+          .column.track {
+            z-index: 100 !important;
+            height: 4.5em !important;
+            margin: 0.4em !important;
+            border: 0.3px solid #eee !important;
+            box-shadow: 1px 1px 1px #eee !important;
+            background-size: auto 100% !important;
+            background-repeat: no-repeat !important;
+            background-position: 50% 100% !important;
+            cursor: pointer !important;
+
+            &.selected {
+              border: 2px solid #079ace !important;
+              border-radius: 2px;
+              box-shadow: 1px 1px 1px #eee !important;
+            }
+          }
+
+          .hov-track {
+            height: 1em;
+            text-align: center;
+            color: grey;
+            font-weight: bold;
+
+            .option {
+              position: absolute;
+              right: 0;
+              top: 50%;
+            }
+          }
+
+          .ui.horizontal.divider {
+            font-weight: normal;
+            color: grey;
+          }
+        }
+      }
+    }
   }
 }
 

@@ -13,6 +13,7 @@ import { Construct } from '@models/construct';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 
 const MAX_ATTEMPTS = 10;
+const RETRY_IN = 5000;
 
 @Component({
   selector: 'sqy-history',
@@ -73,7 +74,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             };
           } else if (this.history.isActive()) {
             if (!this.interval) {
-              this.interval = setInterval(() => this.getJob(), 5000);
+              this.interval = setInterval(() => this.getJob(), RETRY_IN);
               this.attempts = 0;
             }
             this.attempts++;

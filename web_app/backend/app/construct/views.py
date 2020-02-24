@@ -77,6 +77,7 @@ class FromGenBankView(APIView):
                             tracks.append(dict(
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
+                                color='#4e0a77',
                                 start=feature.location.nofuzzy_start,
                                 end=feature.location.nofuzzy_end))
                         elif feature.type.upper().startswith(FEATURE_PREFIX):

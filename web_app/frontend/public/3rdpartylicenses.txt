@@ -374,16 +374,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 ng-zorro-antd
 MIT
 
-ng-zorro-antd/button
-
-ng-zorro-antd/dropdown
-
-ng-zorro-antd/modal
-
-ng-zorro-antd/slider
-
-ng-zorro-antd/tooltip
-
 ngx-cookie-service
 MIT
 MIT License
@@ -408,8 +398,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
-undefined
 
 open-vector-editor
 MIT
@@ -777,7 +765,7 @@ zone.js
 MIT
 The MIT License
 
-Copyright (c) 2016-2018 Google, Inc.
+Copyright (c) 2010-2019 Google LLC. http://angular.io/license
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

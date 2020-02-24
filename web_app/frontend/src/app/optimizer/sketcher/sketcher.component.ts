@@ -29,10 +29,11 @@ class Category {
   styleUrls: ['./sketcher.component.scss']
 })
 export class SketcherComponent implements OnInit, OnDestroy {
+
   sub: Subscription;
   tracks: Track[] = [];
   track: Track = null;
-  history: UserHistory = new UserHistory();
+  history: UserHistory = null;
   trackHovered: Track = null;
   hoveredName: string = null;
   isLoading = false;
@@ -40,7 +41,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   specie: Specie = new Specie();
   species: Specie[] = [];
-  isSubmitting = false;
   submitted = false;
   showPicker = false;
   zoom = 75;
@@ -51,10 +51,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
   locked = false;
   search: string;
   sketcherLoading = false;
-  isSketcherLoading = false;
-  onClose = () => {
-    this.track = null;
-  }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -110,10 +106,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   getConstruct() {
     if (this.construct.id) {
-      this.isLoading = true;
+      this.sketcherLoading = true;
       this.constructSrvc
         .getById(this.construct.id)
-        .pipe(finalize(() => (this.isLoading = false)))
+        .pipe(finalize(() => (this.sketcherLoading = false)))
         .subscribe(
           data => (this.construct = new Construct().deserialize(data))
         );
@@ -121,14 +117,14 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   getExampleConstruct() {
-    this.isSketcherLoading = true;
+    this.sketcherLoading = true;
     this.constructSrvc.getExample().subscribe(
       data =>
         data.length
           ? (this.construct = new Construct().deserialize(data[0]))
           : this.notify.warn('Sorry but no example construct was found'),
       err => this.notify.warn(err || 'Unable to load model construct'),
-      () => (this.isSketcherLoading = false)
+      () => (this.sketcherLoading = false)
     );
   }
 
@@ -224,24 +220,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
         )
       ) {
         flag = false;
-        // this.construct.name = 'Example construct';
-        // this.construct.tracks = Object.assign([], this.tracks.slice(0, 4));
-        // this.construct.tracks[0].label = 'First track';
-        // this.construct.tracks[0].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-        // this.construct.tracks[0].color = '#96c582';
-        // this.construct.sequence += this.construct.tracks[0].sequence;
-        // this.construct.tracks[1].label = 'Second track';
-        // this.construct.tracks[1].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-        // this.construct.tracks[1].color = '#cf0500';
-        // this.construct.sequence += this.construct.tracks[1].sequence;
-        // this.construct.tracks[2].label = 'Third track';
-        // this.construct.tracks[2].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-        // this.construct.tracks[2].color = '#4b4fce';
-        // this.construct.sequence += this.construct.tracks[2].sequence;
-        // this.construct.tracks[3].label = 'Fourth track';
-        // this.construct.tracks[3].sequence = 'CGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCGCGGCGAGCGGCGAGTAACGGCGAGCGGCGAGTAAAATATATAAAATGAGCGGAGAGCGCG';
-        // this.construct.tracks[3].color = '#f0ca68';
-        // this.construct.sequence += this.construct.tracks[3].sequence;
       }
     }
 
@@ -253,11 +231,11 @@ export class SketcherComponent implements OnInit, OnDestroy {
   submit() {
     if (this.checkTracks()) {
       this.response = null;
-      this.isSubmitting = true;
+      this.sketcherLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
       this.http
         .post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
-        .pipe(finalize(() => (this.isSubmitting = false)))
+        .pipe(finalize(() => (this.sketcherLoading = false)))
         .subscribe(
           (data: UserHistory) => {
             this.history = new UserHistory().deserialize(data);
