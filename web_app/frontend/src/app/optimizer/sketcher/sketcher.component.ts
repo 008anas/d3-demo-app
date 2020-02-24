@@ -246,7 +246,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
             }, 3000);
           },
           err => {
-            this.notify.error(err, 'bottom-right');
+            this.notify.error(err, 'bottom right');
           }
         );
     }

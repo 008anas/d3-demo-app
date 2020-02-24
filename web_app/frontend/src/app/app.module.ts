@@ -9,6 +9,7 @@ import { NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,7 +44,8 @@ import { NotifyComponent } from './shared/components/notify/notify.component';
     SharedModule,
     NzSelectModule,
     NzAlertModule,
-    NzCarouselModule
+    NzCarouselModule,
+    NzNotificationModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

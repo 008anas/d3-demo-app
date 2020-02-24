@@ -21,23 +21,23 @@ export class NotifyService {
     });
   }
 
-  success(message: string, pos = 'bottom-right', keepAfterNavigation = false) {
+  success(message: string, pos = 'bottom right', keepAfterNavigation = false) {
     this.notify(NotifyType.Success, message, pos, keepAfterNavigation);
   }
 
-  error(message: string, pos = 'bottom-right', keepAfterNavigation = false) {
+  error(message: string, pos = 'bottom right', keepAfterNavigation = false) {
     this.notify(NotifyType.Error, message, pos, keepAfterNavigation);
   }
 
-  info(message: string, pos = 'bottom-right', keepAfterNavigation = false) {
+  info(message: string, pos = 'bottom right', keepAfterNavigation = false) {
     this.notify(NotifyType.Info, message, pos, keepAfterNavigation);
   }
 
-  warn(message: string, pos = 'bottom-right', keepAfterNavigation = false) {
+  warn(message: string, pos = 'bottom right', keepAfterNavigation = false) {
     this.notify(NotifyType.Warning, message, pos, keepAfterNavigation);
   }
 
-  notify(type: NotifyType, message: string, pos = 'bottom-right', keepAfterNavigation = false) {
+  notify(type: NotifyType, message: string, pos = 'bottom right', keepAfterNavigation = false) {
     this.keepAfterNavigation = keepAfterNavigation;
     this.subject.next({ type, message, pos });
   }

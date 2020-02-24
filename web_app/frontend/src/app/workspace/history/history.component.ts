@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 import { UserHistory } from '../shared/user-history';
 import { HistoryService } from '../shared/history.service';
@@ -37,8 +38,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private router: Router,
     private historySrvc: HistoryService,
     private jobSrvc: JobService,
-    private notify: NotifyService,
-    private modal: NzModalService
+    // private notify: NotifyService,
+    private modal: NzModalService,
+    private notify: NzNotificationService
   ) { }
 
   ngOnInit() {
@@ -89,20 +91,26 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   deleteHistory() {
     if (confirm('Are you sure?')) {
-      this.isLoading = true;
-      this.historySrvc.delete(this.history.id)
-        .pipe(finalize(() => this.isLoading = false))
-        .subscribe(() => {
-          this.notify.success('History deleted!', 'bottom-right', true);
-          this.router.navigate(['/workspace']);
-        },
-          err => this.notify.error(err || 'Unable to delete history')
-        );
+      this.notify.blank(
+      'Notification Title',
+      'This is the content of the notification. This is the content of the notification. This is the content of the notification.'
+    );
+      // this.notify.success('History deleted!', 'bottom-right',true);
+
+      // this.isLoading = true;
+      // this.historySrvc.delete(this.history.id)
+      //   .pipe(finalize(() => this.isLoading = false))
+      //   .subscribe(() => {
+      //     this.notify.success('History deleted!', 'bottom right', true);
+      //     this.router.navigate(['/workspace']);
+      //   },
+      //     err => this.notify.error(err || 'Unable to delete history')
+      //   );
     }
   }
 
   notifySuccess(msg: string) {
-    this.notify.success(msg, 'top-right');
+    this.notify.success(msg, 'top right');
   }
 
   textModal(str: string) {

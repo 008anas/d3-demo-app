@@ -33,18 +33,19 @@ export class WorkspaceComponent implements OnInit {
     this.isLoading = true;
     this.historySrvc.getAll()
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => this.histories = data.map((h: any) => new UserHistory().deserialize(h)));
+      .subscribe(data => this.histories = data.map((h: any) => new UserHistory().deserialize(h)) || []);
   }
 
   clearHistory() {
     if (confirm('Are you sure that you want to clear history?. This action cannot be reverted.')) {
-      this.isLoading = true;
-      this.historySrvc.deleteAll()
-        .pipe(finalize(() => this.isLoading = false))
-        .subscribe(data => {
-          this.notify.success(data.msg);
-          this.getUserHistory();
-        });
+      this.notify.success('DONE')
+      // this.isLoading = true;
+      // this.historySrvc.deleteAll()
+      //   .pipe(finalize(() => this.isLoading = false))
+      //   .subscribe(data => {
+      //     this.notify.success(data.msg);
+      //     this.getUserHistory();
+      //   });
     }
   }
 
