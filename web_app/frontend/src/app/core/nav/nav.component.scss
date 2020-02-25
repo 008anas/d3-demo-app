@@ -6,5 +6,9 @@
 
   .ui.secondary.pointing.menu {
     border-color: transparent !important;
+
+    .item {
+      font-weight: bold !important;
+    }
   }
 }

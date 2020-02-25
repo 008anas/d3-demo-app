@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
-import { NotifyService } from '../shared/services/notify.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
 import { HistoryService } from './shared/history.service';
 import { UserHistory } from './shared/user-history';
 
@@ -19,7 +20,7 @@ export class WorkspaceComponent implements OnInit {
   constructor(
     private router: Router,
     private historySrvc: HistoryService,
-    private notify: NotifyService
+    private notify: NzMessageService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -38,14 +39,13 @@ export class WorkspaceComponent implements OnInit {
 
   clearHistory() {
     if (confirm('Are you sure that you want to clear history?. This action cannot be reverted.')) {
-      this.notify.success('DONE')
-      // this.isLoading = true;
-      // this.historySrvc.deleteAll()
-      //   .pipe(finalize(() => this.isLoading = false))
-      //   .subscribe(data => {
-      //     this.notify.success(data.msg);
-      //     this.getUserHistory();
-      //   });
+      this.isLoading = true;
+      this.historySrvc.deleteAll()
+        .pipe(finalize(() => this.isLoading = false))
+        .subscribe(data => {
+          this.notify.success(data.msg);
+          this.getUserHistory();
+        });
     }
   }
 

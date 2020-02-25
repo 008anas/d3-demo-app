@@ -6,13 +6,13 @@ import { finalize } from 'rxjs/operators';
 
 import { UploadXHRArgs } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { environment as env } from '@env/environment';
 import { Specie } from '@models/specie';
 import { Construct } from '@models/construct';
 import { SpecieService } from '@services/specie.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
-import { NotifyService } from '@services/notify.service';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 
 @Component({
@@ -68,7 +68,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private specieSrvc: SpecieService,
     private router: Router,
-    private notify: NotifyService,
+    private notify: NzMessageService,
     private http: HttpClient,
     private modal: NzModalService
   ) {
@@ -126,7 +126,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
           }
         };
       },
-        () => this.notify.warn('Unable to load example file')
+        () => this.notify.warning('Unable to load example file')
       );
   }
 
@@ -142,7 +142,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
           }, 3000);
         },
         err => {
-          this.notify.error(err, 'bottom-right');
+          this.notify.error(err)
         }
       );
   }

@@ -37,6 +37,8 @@ export class ProtvistaComponent implements AfterViewInit {
   isSearching = false;
   msg: string = null;
   options: any[] = [];
+  enzimes = ['GAATTC', 'CTTAAG', 'CCWGG', 'GGWCC', 'GGATCC', 'CCTAGG', 'AAGCTT', 'TTCGAA'];
+  enzime: string;
 
   constructor(private sqSrvc: SqrutinyService) { }
 
@@ -97,6 +99,7 @@ export class ProtvistaComponent implements AfterViewInit {
 
   clearHighlight() {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
+    this.msg = null;
   }
 
   static getTrackView(tracks: Track[]) {

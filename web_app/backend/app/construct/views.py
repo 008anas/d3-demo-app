@@ -106,6 +106,9 @@ class FromGenBankView(APIView):
                     if len(tracks):
                         data['tracks'] = tracks
 
+                    if len(sqy_tracks):
+                        data['sqy_tracks'] = sqy_tracks
+
             except:
                 return Response(dict(msg='Invalid GenBank format file'),
                                 status=status.HTTP_400_BAD_REQUEST)

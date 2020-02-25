@@ -44,8 +44,8 @@
               <h3 class="ui header"><a class="action" [ngClass]="{'disabled': !specie}" (click)="goTo('sketcher')">Use the sketcher <i class="right arrow icon"></i> </a></h3>
             </div>
 
-            <div class="column comment">
-              <nz-alert nzType="warning" [hidden]="!specie?.comment" [nzMessage]="specie.comment" nzShowIcon></nz-alert>
+            <div class="column comment" *ngIf="specie?.comment">
+              <nz-alert nzType="warning" [nzMessage]="specie.comment" nzShowIcon></nz-alert>
             </div>
 
           </div>
@@ -149,7 +149,7 @@
             </div>
 
             <div class="column">
-              <p>Standards in Synbio is a joint effort in the frame of the project “BioRoboost: Fostering
+              <p>Standards in Synbio is a joint effort in the frame of the project “ <strong>BioRoboost</strong> : Fostering
                 Synthetic Biology standardisation through international collaboration”. Through this
                 website, we aim at generating the most comprehensive collection of information
                 available up to date on Standards in the biological and non-biological realm. This

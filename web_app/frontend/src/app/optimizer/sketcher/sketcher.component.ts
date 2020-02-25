@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { saveAs } from 'file-saver';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { environment as env } from 'environments/environment';
 import { SpecieService } from '@services/specie.service';
 import { Specie } from '@models/specie';
 import { Track } from '../shared/track';
 import { TrackService } from '../shared/track.service';
-import { NotifyService } from '@services/notify.service';
 import { ConstructService } from '@services/construct.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import Utils from 'app/shared/utils';
@@ -54,7 +54,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.key.toUpperCase() === 'ESCAPE') {
+    if (event.key && event.key.toUpperCase() === 'ESCAPE') {
       this.showPicker = false;
     }
   }
@@ -66,7 +66,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private constructSrvc: ConstructService,
     private http: HttpClient,
     private router: Router,
-    private notify: NotifyService
+    private notify: NzMessageService
   ) {
     this.construct.tracks = [];
     this.construct.sequence = '';
@@ -122,8 +122,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
       data =>
         data.length
           ? (this.construct = new Construct().deserialize(data[0]))
-          : this.notify.warn('Sorry but no example construct was found'),
-      err => this.notify.warn(err || 'Unable to load model construct'),
+          : this.notify.warning('Sorry but no example construct was found'),
+      err => this.notify.warning(err || 'Unable to load model construct'),
       () => (this.sketcherLoading = false)
     );
   }
@@ -246,7 +246,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
             }, 3000);
           },
           err => {
-            this.notify.error(err, 'bottom right');
+            this.notify.error(err);
           }
         );
     }

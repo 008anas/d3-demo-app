@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageModule } from 'ng-zorro-antd/message';
 
 import { SafeDatePipe } from './pipes/date.pipe';
 import { CopyClipboardDirective } from './directives/copy-clipboard.directive';
@@ -25,7 +26,8 @@ import { TextModalComponent } from './components/text-modal/text-modal.component
   imports: [
     CommonModule,
     FormsModule,
-    NzModalModule
+    NzModalModule,
+    NzMessageModule
   ],
   exports: [
     FormsModule,
