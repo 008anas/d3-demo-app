@@ -34,6 +34,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
   endpoint: string;
   view = true;
   search: string;
+  isSubmitting = false;
 
   customReq = (item: UploadXHRArgs) => {
     this.fileList = [item.file];
@@ -58,6 +59,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
           item.file.status = 'done';
           item.onSuccess!(event.body, item.file!, event);
           this.construct = new Construct().deserialize(event.body);
+          this.notify.success('GenBank file parsed successfully!');
         }
       },
       err => item.onError!({ statusText: err }, item.file!)
@@ -132,17 +134,21 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   submit() {
     this.response = null;
+    this.isSubmitting = true;
     this.construct.specie_tax_id = this.specie.tax_id;
     this.http
       .post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
       .subscribe(
         (data: UserHistory) => {
+          this.notify.loading('Your job has been submitted! In a moment you will be redirected. Please be patient');
           setTimeout(() => {
             this.router.navigate(['/workspace', data.id]);
+            this.isSubmitting = false;
           }, 3000);
         },
         err => {
-          this.notify.error(err)
+          this.isSubmitting = false;
+          this.notify.error(err);
         }
       );
   }

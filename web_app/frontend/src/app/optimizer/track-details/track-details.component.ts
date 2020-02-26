@@ -35,7 +35,7 @@ export class TrackDetailsComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    this.updateTrackForm(changes.track.currentValue);
+    if (changes.track.currentValue) { this.updateTrackForm(changes.track.currentValue); }
   }
 
   ngOnDestroy() {

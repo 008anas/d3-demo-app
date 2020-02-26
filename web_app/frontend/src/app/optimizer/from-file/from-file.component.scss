@@ -47,3 +47,16 @@
     }
   }
 }
+
+.ui.circular.label {
+  font-weight: bold;
+
+  &:not(.no-color) {
+    color: #fff !important;
+  }
+
+  &.no-color {
+    background-color: #fff !important;
+    color: black !important;
+  }
+}

@@ -8,6 +8,7 @@ import { NgProgressHttpModule } from '@ngx-progressbar/http';
 import { NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -39,7 +40,8 @@ import { VectorEditorComponent } from './vector-editor/vector-editor.component';
     CoreModule,
     SharedModule,
     NzSelectModule,
-    NzMessageModule
+    NzMessageModule,
+    NzAlertModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

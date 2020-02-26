@@ -7,7 +7,6 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
 
 import { OptimizerRoutingModule } from './optimizer-routing.module';
 import { OptimizerComponent } from './optimizer.component';
@@ -36,8 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     NzUploadModule,
     NzDrawerModule,
-    NzSelectModule,
-    NzAlertModule
+    NzSelectModule
   ]
 })
 export class OptimizerModule { }

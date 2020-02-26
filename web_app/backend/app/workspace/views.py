@@ -16,7 +16,6 @@ class HistoryCountView(APIView):
 class HistoryRetrieveView(APIView):
 
     def get(self, request, history_id):
-
         if str(history_id) not in request.session.get('history', []):
             return Response(dict(msg='History with such not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
@@ -66,6 +65,28 @@ class PollJobView(APIView):
         if rq_job is None:
             return Response(dict(msg='Unable to find job'), status=status.HTTP_404_NOT_FOUND)
 
-        job = dict(status=rq_job.get_status(), result=rq_job.result, progress=rq_job.meta.get('progress', None))
+        return Response(dict(
+            status=rq_job.get_status(),
+            result=rq_job.result
+        ), status=status.HTTP_200_OK)
 
-        return Response(job, status=status.HTTP_200_OK)
+
+class ExportResultsView(APIView):
+
+    def get(self, request, job_id):
+        rq_job = django_rq.get_queue('default').fetch_job(str(job_id))
+
+        if rq_job is None:
+            return Response(dict(msg='Unable to find job'), status=status.HTTP_404_NOT_FOUND)
+
+        rq_job.result
+
+        # Add annotation
+        # feature = SeqFeature(FeatureLocation(start=3, end=12), type='misc_feature')
+        # record.features.append(feature)
+
+        # Save as GenBank file
+        # output_file = open('example.gb', 'w')
+        # SeqIO.write(record, output_file, 'genbank')
+
+        # return Response(job, status=status.HTTP_200_OK)

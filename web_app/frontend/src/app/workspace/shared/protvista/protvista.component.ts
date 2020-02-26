@@ -1,5 +1,7 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { finalize } from 'rxjs/operators';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { Construct } from '@models/construct';
 import { Track } from 'app/optimizer/shared/track';
@@ -35,12 +37,16 @@ export class ProtvistaComponent implements AfterViewInit {
 
   _data: ResultData = null;
   isSearching = false;
-  msg: string = null;
   options: any[] = [];
   enzimes = ['GAATTC', 'CTTAAG', 'CCWGG', 'GGWCC', 'GGATCC', 'CCTAGG', 'AAGCTT', 'TTCGAA'];
   enzime: string;
 
-  constructor(private sqSrvc: SqrutinyService) { }
+  @ViewChild('dnaSeq') manager: ElementRef<HTMLElement>;
+
+  constructor(
+    private sqSrvc: SqrutinyService,
+    private notify: NzMessageService
+  ) { }
 
   ngAfterViewInit() {
     this.init();
@@ -53,14 +59,14 @@ export class ProtvistaComponent implements AfterViewInit {
       document.querySelector('#protein_sequence')['data'] = ProtvistaComponent.proteinSeqProtvista(this._data.construct.protein_seq);
       document.querySelector('#interpro-track-residues')['data'] = ProtvistaComponent.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.var-graph').forEach((x: any, i: number) => x.data = JSON.parse(this.options[i].data));
+      this.manager.nativeElement.click();
     }
   }
 
-  searchMotif(event: any) {
-    if (event.target.value) {
+  searchMotif(motif: any) {
+    if (motif) {
       this.isSearching = true;
-      this.msg = null;
-      this.sqSrvc.motifInSeq(this._data.construct.dna_seq, event.target.value)
+      this.sqSrvc.motifInSeq(this._data.construct.dna_seq, motif)
         .pipe(finalize(() => this.isSearching = false))
         .subscribe(
           (data: any) => {
@@ -72,12 +78,10 @@ export class ProtvistaComponent implements AfterViewInit {
               }
               document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = positions);
             } else {
-              this.msg = 'No match was found';
+              this.notify.error('No match was found');
             }
           },
-          err => {
-            this.msg = err;
-          }
+          err => this.notify.error(err)
         );
     }
   }
@@ -99,7 +103,6 @@ export class ProtvistaComponent implements AfterViewInit {
 
   clearHighlight() {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
-    this.msg = null;
   }
 
   static getTrackView(tracks: Track[]) {

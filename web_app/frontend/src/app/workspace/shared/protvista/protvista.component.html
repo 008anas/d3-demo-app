@@ -17,15 +17,14 @@
     <div class="column">
       <div class="ui icon fluid input" [ngClass]="{'loading disabled': isSearching}">
         <i class="search icon"></i>
-        <input type="text" placeholder="Search for motif" (keyup.enter)="searchMotif($event)">
+        <input type="text" placeholder="Search for motif" (keyup.enter)="searchMotif($event.target.value)">
       </div>
-      <span class="ui error">{{msg}}</span>
     </div>
 
     <div class="column">
-      <select class="ui select" placeholder="Enzime restriction" name="enzimes">
-        <option *ngFor="let e of enzimes" [value]="e">{{e}}</option>
-      </select>
+      <nz-select class="w-1-1" nzPlaceHolder="Restriction enzyme" (ngModelChange)="searchMotif($event)" [(ngModel)]="enzime" ngDefaultControl nzAllowClear>
+        <nz-option *ngFor="let e of enzimes" [nzLabel]="e" [nzValue]="e"></nz-option>
+      </nz-select>
     </div>
 
     <div class="column">
@@ -63,8 +62,8 @@
 
     <div class="column">
 
-      <protvista-manager attributes="length displaystart displayend highlight">
-        <div class="ui grid">
+      <protvista-manager #protManager attributes="length displaystart displayend highlight">
+        <div class="ui very padded grid">
 
           <div class="one column row">
             <div class="column">
@@ -72,7 +71,7 @@
             </div>
 
             <div class="column">
-              <protvista-sequence class="protvista" highlight-event="onmouseover" id="dna_sequence"></protvista-sequence>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" id="dna_sequence" #dnaSeq></protvista-sequence>
             </div>
 
             <div class="column">
@@ -109,13 +108,26 @@
             </div>
 
             <div class="column" [hidden]="!op.display" *ngFor="let op of options; let i = index">
-              <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
-              <div class="float-r">
-                <span data-inverted="" data-position="top center" data-tooltip="Move up" [hidden]="i < 1 || options.length < 2" (click)="move(i, -1)"><i class="arrow up link icon"></i></span>
-                <span data-inverted="" data-position="top center" data-tooltip="Move down" [hidden]=" i === options.length - 1 || options.length < 2" (click)="move(i, 1)"><i class="arrow down link icon"></i></span>
-                <span data-inverted="" data-position="top center" data-tooltip="Hide"><i class="eye slash link icon" (click)="op.display = false"></i></span>
+              <div class="ui form">
+                <div class="field">
+                  <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
+                </div>
+                <div class="two fields">
+
+                  <div class="inline field">
+                    <label>Cutoff:</label>
+                    <input type="text" name="" value="">
+                  </div>
+
+                  <div class="field txt-r">
+                    <span data-inverted="" data-position="top center" data-tooltip="Move up" [hidden]="i < 1 || options.length < 2" (click)="move(i, -1)"><i class="arrow up link icon"></i></span>
+                    <span data-inverted="" data-position="top center" data-tooltip="Move down" [hidden]=" i === options.length - 1 || options.length < 2" (click)="move(i, 1)"><i class="arrow down link icon"></i></span>
+                    <span data-inverted="" data-position="top center" data-tooltip="Hide"><i class="eye slash link icon" (click)="op.display = false"></i></span>
+                  </div>
+
+                </div>
               </div>
-              <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters"></protvista-variation-graph>
+              <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters{{i}}"></protvista-variation-graph>
             </div>
           </div>
 

@@ -42,10 +42,6 @@
 
       <div class="one column row mt-7 p-4" *ngIf="construct">
 
-        <div class="column">
-          <nz-alert nzType="success" nzCloseable nzMessage="Construct loaded successfully!" nzShowIcon></nz-alert>
-        </div>
-
         <div class="column mt-4">
 
           <div class="ui two item secondary pointing menu">
@@ -60,7 +56,7 @@
 
         <div class="column">
 
-          <form class="ui padded form" #constructForm="ngForm" (ngSubmit)="submit()">
+          <form class="ui padded form" [ngClass]="{'loading disabled': isSubmitting}" #constructForm="ngForm" (ngSubmit)="submit()">
 
             <ng-container *ngIf="view">
 
@@ -81,7 +77,7 @@
               </div>
 
               <div class="inline field">
-                <label for="">Circular</label>
+                <label>Circular</label>
                 <i class="icon" [ngClass]="{'green circular check': construct.circular, 'circle times red': !construct.circular}"></i>
               </div>
 
@@ -92,18 +88,11 @@
 
               <div class="inline field">
                 <label for="construct_description">Description</label>
-                <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
+                <textarea [(ngModel)]="construct.description" #description="ngModel" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
               </div>
             </ng-container>
 
             <ng-container *ngIf="!view">
-
-              <div class="field">
-                <div class="ui fluid icon input">
-                  <i class="search icon"></i>
-                  <input type="text" placeholder="Search by label / type / sequence..." [(ngModel)]="search">
-                </div>
-              </div>
 
               <div class="field" style="height: 70vh; overflow: auto">
                 <table class="ui blue definition table">
@@ -131,9 +120,9 @@
 
                   <tbody>
 
-                    <tr *ngFor="let tr of construct.tracks | filterTracks: search; let in = index">
+                    <tr *ngFor="let tr of construct.tracks | filterTracks: search; let i = index">
                       <td>
-                        <div class="ui circular label" [ngClass]="{'no-color': !tr.color}" [style.background-color]="tr.color">#{{in+1}}</div>
+                        <div class="ui circular label" [ngClass]="{'no-color': !tr.color}" [style.background-color]="tr.color">#{{i+1}}</div>
                       </td>
                       <td>
                         {{tr.label}}

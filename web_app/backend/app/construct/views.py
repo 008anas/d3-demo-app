@@ -50,12 +50,14 @@ class FromGenBankView(APIView):
                     if not record.seq or not len(record.seq):
                         return Response(
                             dict(msg='No sequence was found. Please specify a valid sequence and try again.'),
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
 
                     if not record.features or not len(record.features):
                         return Response(
                             dict(msg='No feature was found. Please specify some CDS features and try again.'),
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
 
                     tracks = []
                     sqy_tracks = []
@@ -64,17 +66,21 @@ class FromGenBankView(APIView):
                         record.features.pop(0)
 
                     tracks.append(dict(
+                        label=record.features[0].qualifiers.get('locus_tag', 'Track 1'),
                         type='CDS' if record.features[0].type.lower() == 'cds' else 'Dummy',
                         sequence=str(record.features[0].extract(record.seq)),
                         start=record.features[0].location.nofuzzy_start,
-                        end=record.features[0].location.nofuzzy_end))
+                        end=record.features[0].location.nofuzzy_end
+                    ))
 
                     record.features.pop(0)
 
+                    i = 1
                     for feature in record.features:
                         last_item = tracks[-1]
                         if feature.type.lower() == 'cds':
                             tracks.append(dict(
+                                label=record.features[0].qualifiers.get('locus_tag', 'Track ' + str(i)),
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color='#4e0a77',
@@ -82,6 +88,7 @@ class FromGenBankView(APIView):
                                 end=feature.location.nofuzzy_end))
                         elif feature.type.upper().startswith(FEATURE_PREFIX):
                             sqy_tracks.append(dict(
+                                label=record.features[0].qualifiers.get('locus_tag', 'Track ' + str(i)),
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 start=feature.location.nofuzzy_start,
@@ -89,12 +96,14 @@ class FromGenBankView(APIView):
                         else:
                             if last_item.get('type', '').lower() != 'dummy':
                                 tracks.append(dict(
+                                    label=record.features[0].qualifiers.get('locus_tag', 'Track ' + str(i)),
                                     type='Dummy',
                                     sequence=str(feature.extract(record.seq)),
                                     start=feature.location.nofuzzy_start,
                                     end=feature.location.nofuzzy_end))
                             else:
                                 tracks[-1]['end'] = feature.location.nofuzzy_end
+                        i += 1
 
                     data = dict(
                         name=record.name,
