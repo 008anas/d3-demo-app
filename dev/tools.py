@@ -68,10 +68,10 @@ def check_sequence_iterator(sequence, n, circular=False):
         return [sequence, limit]
 
 
-def check_outhandle(d, outhandle='json'):
+def check_outhandle(d, outhandle='json', window_len=0):
     """ Converts <d> in shape {<position>:<score>} to [{"start":"<position>", "score":"<score>"}] """
     if outhandle == 'json':
-        return json.dumps([{'start': k, 'score': v} for k, v in d.items()])
+        return json.dumps([{'start':k, 'score': v, 'end':k+window_len} for k, v in d.items()])
     else:
         return d
 
@@ -158,7 +158,7 @@ def matrix_scoring(sequence, matrix, circular=False, residue_type='DNA',
     rs = {i + 1: sum([matrix.at[sequence[i:i + n][subindex], str(subindex + 1)] for subindex in range(n)]) for i in
           range(0, limit)}
     print('\tMatrix scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    return check_outhandle(rs, outhandle)
+    return check_outhandle(rs, outhandle, n)
 
 
 def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', outhandle='json', standardize=True):
@@ -173,7 +173,7 @@ def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', out
     print('\tRNA structure scoring: Scoring sequence...')
     rs = {i + 1: fold(sequence[i:i + n])[1] for i in range(0, limit)}
     print('\tRNA structure scoring: Returning results...\n--> RNA structure scoring finished.\n\n')
-    return check_outhandle(rs, outhandle)
+    return check_outhandle(rs, outhandle, n)
 
 def GC_scoring(sequence, n=20, circular=False, residue_type='DNA', outhandle='json', standardize=True):
     """
@@ -187,7 +187,7 @@ def GC_scoring(sequence, n=20, circular=False, residue_type='DNA', outhandle='js
     print('\tGC scoring: Scoring sequence...')
     rs = {i + 1: GC(sequence[i:i + n]) for i in range(0, limit)}
     print('\tGC scoring: Returning results...\n--> GC scoring finished.\n\n')
-    return check_outhandle(rs, outhandle)
+    return check_outhandle(rs, outhandle, n)
 
 
 def extract_codons_list(seq, frame=0, checkLengthMultipleOf3=False, frameFromEnd=False):
@@ -238,7 +238,7 @@ def codon_adaptation_scoring(sequence, matrix, circular=False, residue_type='DNA
     rs.index = rs.index + 1
     rs = rs.to_dict()
     if verbose >= 1: print('\tCodon adaptation scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    return check_outhandle(rs, outhandle)
+    return check_outhandle(rs, outhandle, n)
 
 
 def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA', start_codons=['ATG', 'GTG', 'TTG'],
@@ -266,7 +266,7 @@ def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA
             RBSs.append((rbs_start, energy))
 
     print('\RBS_scoring: finished.\n\n')
-    return check_outhandle(rs, outhandle)
+    return check_outhandle(rs, outhandle, 0)   # window len not defined
 
 
 def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', fixed_sequences = ['ATG', 'GTG', 'TTG'], mode=1,
@@ -315,7 +315,7 @@ def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', f
                 rs[i+1]=0
 
     print('\tMatrix scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    return check_outhandle(rs, outhandle)
+    return check_outhandle(rs, outhandle, n)
 
 def logger(job, msg):
     if 'progress' not in job.meta:
