@@ -385,7 +385,7 @@
 </nz-modal>
 
 <!-- Construct submit modal-->
-<nz-modal [nzFooter]="null" [nzWidth]="800" [(nzVisible)]="submitted" (nzOnCancel)="submitted = false">
+<nz-modal [nzFooter]="null" [nzWidth]="800" [nzKeyboard]="false" [nzMaskClosable]="false" [(nzVisible)]="submitted" [nzClosable]="false" (nzOnCancel)="submitted = false">
 
   <div class="ui very padded one column grid" *ngIf="history">
 

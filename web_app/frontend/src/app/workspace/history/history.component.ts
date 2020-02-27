@@ -12,7 +12,7 @@ import { Job } from '../shared/job';
 import { Construct } from '@models/construct';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 
-const MAX_ATTEMPTS = 10;
+const MAX_ATTEMPTS = 15;
 const RETRY_IN = 5000;
 
 @Component({
