@@ -21,7 +21,6 @@ from Bio.Alphabet import IUPAC, _verify_alphabet, generic_dna
 from Bio.Seq import Seq
 from RNA import fold
 from Bio.SeqUtils import GC
-from rq import get_current_job
 
 from ribosome_binding_site import RBS_CANONICAL
 from ribosome_binding_site import compute_RBS_affinity
@@ -317,13 +316,6 @@ def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', f
     print('\tMatrix scoring: Returning results...\n--> Matrix scoring finished.\n\n')
     return check_outhandle(rs, outhandle, n)
 
-def logger(job, msg):
-    if 'progress' not in job.meta:
-        job.meta['progress'] = []
-
-    job.meta['progress'].append(msg)
-    job.save_meta()
-
 ###
 # Main checker
 ###
@@ -350,13 +342,9 @@ def checker(sequence,
             list(elements.difference(default_elements))[0]))
         elements = elements.intersection(default_elements)
 
-    # RQ job
-    job = get_current_job()
-
     # Generate all results
     rs = {}
     for element in elements:
-        logger(job, "Starting "+element+" scoring...")
         if element in matrix_dict:
             if element == 'codon_adaptation':
                 rs[element] = codon_adaptation_scoring(sequence, matrix_dict[element], n=1,
@@ -380,5 +368,4 @@ def checker(sequence,
         elif element == 'GC20':
             rs[element] = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
                                      outhandle=outhandle, standardize=standardize)
-        logger(job, "Finishing "+element+" scoring...")
     return rs
