@@ -368,4 +368,4 @@ def checker(sequence,
         elif element == 'GC20':
             rs[element] = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
                                      outhandle=outhandle, standardize=standardize)
-    return rs
+    return [rs, rs]   # TODO second dictionary is expected to be the normalized dictionary
