@@ -171,7 +171,7 @@ var ProtvistaVariationGraph = function(t) {
       }, {
         key: "connectedCallback",
         value: function() {
-          p()(f()(e.prototype), "connectedCallback", this).call(this), this._data = void 0, this._height = parseInt(this.getAttribute("height")) || 40, this._yScale = Object(_.scaleLinear)(), this._xExtent, this._yExtent, this.init()
+          p()(f()(e.prototype), "connectedCallback", this).call(this), this._data = void 0, this._height = parseInt(this.getAttribute("height")) || 40, this.strokeColor = this.getAttribute("color") || 'darkgrey',this._yScale = Object(_.scaleLinear)(), this._xExtent, this._yExtent, this.init()
         }
       }, {
         key: "_createTrack",
@@ -190,7 +190,7 @@ var ProtvistaVariationGraph = function(t) {
       }, {
         key: "refresh",
         value: function() {
-          this.svg && (this.svg.selectAll("path").remove(), this._totals_feature = this.svg.append("path").attr("d", this._line(this._totals_dataset)).attr("fill", "none").attr("stroke", "darkgrey").attr("stroke-width", "1.7px").attr("stroke-dasharray", ".5").attr("transform", "translate(0,0)"), this._updateHighlight())
+          this.svg && (this.svg.selectAll("path").remove(), this._totals_feature = this.svg.append("path").attr("d", this._line(this._totals_dataset)).attr("fill", "none").attr("stroke", this.strokeColor).attr("stroke-width", "1.7px").attr("stroke-dasharray", ".5").attr("transform", "translate(0,0)"), this._updateHighlight())
         }
       }, {
         key: "data",
@@ -209,6 +209,12 @@ var ProtvistaVariationGraph = function(t) {
               }
             }), this._createTrack()
           }
+        }
+      },
+      {
+        key: "color",
+        set: function(c) {
+          this.strokeColor = c;
         }
       }]), e
     }(b.a),

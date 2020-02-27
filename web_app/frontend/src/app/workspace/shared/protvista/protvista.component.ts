@@ -38,8 +38,25 @@ export class ProtvistaComponent implements AfterViewInit {
   _data: ResultData = null;
   isSearching = false;
   options: any[] = [];
-  enzimes = ['GAATTC', 'CTTAAG', 'CCWGG', 'GGWCC', 'GGATCC', 'CCTAGG', 'AAGCTT', 'TTCGAA'];
   enzime: string;
+  colors = [
+    'red',
+    'blue',
+    'black',
+    'green',
+    'orange',
+    'purple'
+  ];
+  enzimes = [
+    'GAATTC',
+    'CTTAAG',
+    'CCWGG',
+    'GGWCC',
+    'GGATCC',
+    'CCTAGG',
+    'AAGCTT',
+    'TTCGAA'
+  ];
 
   @ViewChild('dnaSeq') manager: ElementRef<HTMLElement>;
 

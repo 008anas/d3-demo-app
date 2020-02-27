@@ -27,6 +27,7 @@ class ProtvistaVariationGraph extends ProtvistaTrack {
     this._data = undefined;
 
     this._height = parseInt(this.getAttribute("height")) || 40;
+    this.strokeColor = this.getAttribute("color") || "darkgrey";
     this._yScale = scaleLinear();
     this._xExtent;
     this._yExtent;
@@ -100,7 +101,7 @@ class ProtvistaVariationGraph extends ProtvistaTrack {
       .append("path")
       .attr("d", this._line(this._totals_dataset))
       .attr("fill", "none")
-      .attr("stroke", "darkgrey")
+      .attr("stroke", this.strokeColor)
       .attr("stroke-width", "1px")
       .attr("stroke-dasharray", ".5")
       .attr("transform", "translate(0,0)");

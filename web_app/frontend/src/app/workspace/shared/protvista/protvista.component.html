@@ -108,26 +108,57 @@
             </div>
 
             <div class="column" [hidden]="!op.display" *ngFor="let op of options; let i = index">
-              <div class="ui form">
-                <div class="field">
-                  <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
-                </div>
-                <div class="two fields">
 
-                  <div class="inline field">
-                    <label>Cutoff:</label>
-                    <input type="text" name="" value="">
+              <div class="ui padded grid">
+
+                <div class="row">
+                  <div class="column">
+                    <h3 class="ui horizontal divider header">{{op.name | titlecase}}</h3>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div class="two wide column">
+                    <nz-select nzAllowClear nzPlaceHolder="Type" nzSize="small" style="width: 160px">
+                      <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
+                      <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
+                    </nz-select>
                   </div>
 
-                  <div class="field txt-r">
-                    <span data-inverted="" data-position="top center" data-tooltip="Move up" [hidden]="i < 1 || options.length < 2" (click)="move(i, -1)"><i class="arrow up link icon"></i></span>
-                    <span data-inverted="" data-position="top center" data-tooltip="Move down" [hidden]=" i === options.length - 1 || options.length < 2" (click)="move(i, 1)"><i class="arrow down link icon"></i></span>
-                    <span data-inverted="" data-position="top center" data-tooltip="Hide"><i class="eye slash link icon" (click)="op.display = false"></i></span>
+                  <div class="two wide column">
+                    <nz-select nzAllowClear nzPlaceHolder="Operator" nzSize="small" style="width: 100px">
+                      <nz-option nzValue="<" nzLabel="<"></nz-option>
+                      <nz-option nzValue="<=" nzLabel="<="></nz-option>
+                      <nz-option nzValue=">" nzLabel=">"></nz-option>
+                      <nz-option nzValue=">=" nzLabel=">="></nz-option>
+                      <nz-option nzValue="=" nzLabel="="></nz-option>
+                    </nz-select>
+                  </div>
+
+                  <div class="two wide column">
+                    <div class="ui small action input" style="width: 80px">
+                      <input type="number" placeholder="Score">
+                      <button type="button" class="ui primary button">Apply</button>
+                    </div>
+                  </div>
+
+                  <div class="right floated three wide column right aligned">
+                    <a [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
+                      Move up <i class="up arrow icon"></i>
+                    </a>
+                    <a [ngClass]="{'disabled': i === options.length - 1 || options.length < 2}" (click)="move(i, 1)">
+                      Move down <i class="down arrow icon"></i>
+                    </a>
+                    <a (click)="op.display = false">
+                      Hide <i class="eye slash icon"></i>
+                    </a>
                   </div>
 
                 </div>
+
               </div>
-              <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters{{i}}"></protvista-variation-graph>
+              <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters{{i}}" color="{{colors[i]}}"></protvista-variation-graph>
             </div>
           </div>
 
