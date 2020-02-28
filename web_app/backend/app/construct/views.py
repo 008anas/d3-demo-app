@@ -66,7 +66,7 @@ class FromGenBankView(APIView):
                         record.features.pop(0)
 
                     tracks.append(dict(
-                        label=record.features[0].qualifiers.get('locus_tag', 'Track 1'),
+                        label=record.features[0].qualifiers.get('locus_tag', ['Track 1'])[0],
                         type='CDS' if record.features[0].type.lower() == 'cds' else 'Dummy',
                         sequence=str(record.features[0].extract(record.seq)),
                         start=record.features[0].location.nofuzzy_start,
@@ -80,7 +80,7 @@ class FromGenBankView(APIView):
                         last_item = tracks[-1]
                         if feature.type.lower() == 'cds':
                             tracks.append(dict(
-                                label=record.features[0].qualifiers.get('locus_tag', 'Track ' + str(i)),
+                                label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color='#4e0a77',
@@ -88,7 +88,7 @@ class FromGenBankView(APIView):
                                 end=feature.location.nofuzzy_end))
                         elif feature.type.upper().startswith(FEATURE_PREFIX):
                             sqy_tracks.append(dict(
-                                label=record.features[0].qualifiers.get('locus_tag', 'Track ' + str(i)),
+                                label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 start=feature.location.nofuzzy_start,
@@ -96,7 +96,7 @@ class FromGenBankView(APIView):
                         else:
                             if last_item.get('type', '').lower() != 'dummy':
                                 tracks.append(dict(
-                                    label=record.features[0].qualifiers.get('locus_tag', 'Track ' + str(i)),
+                                    label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                     type='Dummy',
                                     sequence=str(feature.extract(record.seq)),
                                     start=feature.location.nofuzzy_start,

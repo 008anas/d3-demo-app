@@ -86,19 +86,19 @@
               <div class="ui equal width padded center aligned grid">
 
                 <div class="column">
-                  <a class="ui label" (click)="displayAll()">
+                  <a (click)="displayAll()">
                     <i class="eye icon"></i>
                     Display all
                   </a>
                 </div>
                 <div class="column">
-                  <a class="ui label" (click)="hideAll()">
+                  <a (click)="hideAll()">
                     <i class="eye slash icon"></i>
                     Hide all
                   </a>
                 </div>
                 <div class="column" *ngFor="let o of options">
-                  <a class="ui label" [ngClass]="{'teal': o.display}" (click)="o.display = !o.display">
+                  <a [style.background-color]="o.color" (click)="o.display = !o.display">
                     <i class="eye icon" [ngClass]="{'slash': o.display}"></i>
                     {{o.name | titlecase}}
                   </a>
@@ -117,16 +117,13 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="four column row">
 
-                  <div class="two wide column">
+                  <div class="left floated column">
                     <nz-select nzAllowClear nzPlaceHolder="Type" nzSize="small" style="width: 160px">
                       <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
                       <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
                     </nz-select>
-                  </div>
-
-                  <div class="two wide column">
                     <nz-select nzAllowClear nzPlaceHolder="Operator" nzSize="small" style="width: 100px">
                       <nz-option nzValue="<" nzLabel="<"></nz-option>
                       <nz-option nzValue="<=" nzLabel="<="></nz-option>
@@ -134,16 +131,13 @@
                       <nz-option nzValue=">=" nzLabel=">="></nz-option>
                       <nz-option nzValue="=" nzLabel="="></nz-option>
                     </nz-select>
-                  </div>
-
-                  <div class="two wide column">
                     <div class="ui small action input" style="width: 80px">
                       <input type="number" placeholder="Score">
                       <button type="button" class="ui primary button">Apply</button>
                     </div>
                   </div>
 
-                  <div class="right floated three wide column right aligned">
+                  <div class="right floated column right aligned">
                     <a [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
                       Move up <i class="up arrow icon"></i>
                     </a>
@@ -158,7 +152,7 @@
                 </div>
 
               </div>
-              <protvista-variation-graph class="protvista var-graph" id="var-graph-promoters{{i}}" color="{{colors[i]}}"></protvista-variation-graph>
+              <sqrutiny-matrix class="protvista matrix-graph" id="matrix-graph{{i}}" height="60"></sqrutiny-matrix>
             </div>
           </div>
 

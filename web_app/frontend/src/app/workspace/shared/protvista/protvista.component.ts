@@ -23,16 +23,24 @@ export class ProtvistaComponent implements AfterViewInit {
   @Input() set data(data: ResultData) {
     this._data = data;
     this.options = [];
-    for (const key in this._data.results) {
-      const value = this._data.results[key];
-      if (value) {
-        this.options.push({
-          name: key,
-          display: true,
-          data: value
-        });
-      }
+    if (!this._data.results || this._data.results.length) {
+      return;
     }
+    Object.keys(this._data.results).forEach((key, index) => {
+      let value = JSON.parse(this._data.results[key]);
+      value = value.map((v: { start: any; raw_score: any; }) => {
+        return {
+          start: v.start,
+          score: v.raw_score
+        }
+      });
+      this.options.push({
+        name: key,
+        display: true,
+        data: value,
+        color: this.colors[index]
+      });
+    });
   }
 
   _data: ResultData = null;
@@ -75,7 +83,10 @@ export class ProtvistaComponent implements AfterViewInit {
       document.querySelector('#dna_sequence')['data'] = this._data.construct.dna_seq;
       document.querySelector('#protein_sequence')['data'] = ProtvistaComponent.proteinSeqProtvista(this._data.construct.protein_seq);
       document.querySelector('#interpro-track-residues')['data'] = ProtvistaComponent.getTrackView(this._data.construct.tracks);
-      document.querySelectorAll('.var-graph').forEach((x: any, i: number) => x.data = JSON.parse(this.options[i].data));
+      document.querySelectorAll('.matrix-graph').forEach((x: any, i: number) => {
+        x.data = this.options[i].data;
+        x.setAttribute('color', this.options[i].color);
+      });
       this.manager.nativeElement.click();
     }
   }

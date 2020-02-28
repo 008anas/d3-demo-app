@@ -11,6 +11,7 @@ import { JobService } from '../shared/job.service';
 import { Job } from '../shared/job';
 import { Construct } from '@models/construct';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
+import { TitleService } from '@services/title.service';
 
 const MAX_ATTEMPTS = 15;
 const RETRY_IN = 5000;
@@ -38,12 +39,14 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private historySrvc: HistoryService,
     private jobSrvc: JobService,
     private modal: NzModalService,
-    private notify: NzMessageService
+    private notify: NzMessageService,
+    private titleSrvc: TitleService
   ) { }
 
   ngOnInit() {
     this.isLoading = true;
     this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
+    this.titleSrvc.setTitle(this.history.name);
     this.getJob();
   }
 

@@ -70,7 +70,7 @@ def check_sequence_iterator(sequence, n, circular=False):
 def check_outhandle(d, outhandle='json', window_len=0):
     """ Converts <d> in shape {<position>:<score>} to [{"start":"<position>", "score":"<score>"}] """
     if outhandle == 'json':
-        return json.dumps([{'start':k, 'score': v, 'end':k+window_len} for k, v in d.items()])
+        return json.dumps([{'start':k, 'end':k+window_len, 'raw_score': v, 'norm_score': v} for k, v in d.items()])
     else:
         return d
 
@@ -368,4 +368,4 @@ def checker(sequence,
         elif element == 'GC20':
             rs[element] = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
                                      outhandle=outhandle, standardize=standardize)
-    return [rs, rs]   # TODO second dictionary is expected to be the normalized dictionary
+    return rs   # TODO second dictionary is expected to be the normalized dictionary
