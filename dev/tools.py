@@ -68,9 +68,9 @@ def check_sequence_iterator(sequence, n, circular=False):
 
 
 def check_outhandle(d, outhandle='json', window_len=0):
-    """ Converts <d> in shape {<position>:<score>} to [{"start":"<position>", "score":"<score>"}] """
+    """ Converts <d> in shape {<position>:<score>} to [{"pos":"<position>", "score":"<score>"}] """
     if outhandle == 'json':
-        return json.dumps([{'start':k, 'end':k+window_len, 'raw_score': v, 'norm_score': v} for k, v in d.items()])
+        return json.dumps([{'pos':k, 'end':k+window_len, 'raw_score': v, 'norm_score': v} for k, v in d.items()])
     else:
         return d
 

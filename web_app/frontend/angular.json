@@ -42,7 +42,7 @@
               "src/vendor/sqrutiny-matrix/dist/sqrutiny-matrix.js",
               "node_modules/protvista-navigation/dist/protvista-navigation.js",
               "node_modules/protvista-sequence/dist/protvista-sequence.js",
-              "node_modules/protvista-manager/dist/protvista-manager.js",
+              "src/vendor/protvista-manager/dist/protvista-manager.js",
               "node_modules/protvista-interpro-track/dist/protvista-interpro-track.js",
               "node_modules/open-vector-editor/umd/open-vector-editor.js"
             ]

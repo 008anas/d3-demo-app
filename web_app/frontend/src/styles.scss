@@ -28,6 +28,15 @@ a {
   text-decoration: none !important;
 }
 
+.icon.disabled,
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: currentColor;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
 .ui.main.container {
   margin-top: var(--top-margin);
   min-height: 100%;
@@ -54,16 +63,6 @@ a {
 .error {
   font-weight: bold;
   color: var(--error);
-}
-
-.icon.disabled,
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-  color: currentColor;
-  cursor: not-allowed;
-  opacity: 0.5;
-  text-decoration: none;
 }
 
 .meta {

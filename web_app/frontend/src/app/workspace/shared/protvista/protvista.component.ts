@@ -13,6 +13,16 @@ class ResultData {
   results: any;
 }
 
+class GraphsOptions {
+  name: string;
+  display: boolean;
+  data: any;
+  values: string;
+  operator: string;
+  cutoff?: number;
+  color: string;
+}
+
 @Component({
   selector: 'sqy-protvista',
   templateUrl: './protvista.component.html',
@@ -28,24 +38,20 @@ export class ProtvistaComponent implements AfterViewInit {
     }
     Object.keys(this._data.results).forEach((key, index) => {
       let value = JSON.parse(this._data.results[key]);
-      value = value.map((v: { start: any; raw_score: any; }) => {
-        return {
-          start: v.start,
-          score: v.raw_score
-        }
-      });
       this.options.push({
         name: key,
         display: true,
         data: value,
-        color: this.colors[index]
+        color: this.colors[index],
+        values: 'raw',
+        operator: this.operators[0].op
       });
     });
   }
 
   _data: ResultData = null;
   isSearching = false;
-  options: any[] = [];
+  options: GraphsOptions[] = [];
   enzime: string;
   colors = [
     'red',
@@ -65,6 +71,20 @@ export class ProtvistaComponent implements AfterViewInit {
     'AAGCTT',
     'TTCGAA'
   ];
+  operators = [
+    { desc: 'Greater than', op: '<' },
+    { desc: 'Greater or equal than', op: '<=' },
+    { desc: 'Equal', op: '=' },
+    { desc: 'Lower than', op: '>' },
+    { desc: 'Lower or equal than', op: '>=' }
+  ];
+  operatorsFn = {
+    '<': (a: number, b: number) => a < b,
+    '<=': (a: number, b: number) => a <= b,
+    '=': (a: number, b: number) => a == b,
+    '>': (a: number, b: number) => a > b,
+    '>=': (a: number, b: number) => a >= b,
+  };
 
   @ViewChild('dnaSeq') manager: ElementRef<HTMLElement>;
 
@@ -84,7 +104,14 @@ export class ProtvistaComponent implements AfterViewInit {
       document.querySelector('#protein_sequence')['data'] = ProtvistaComponent.proteinSeqProtvista(this._data.construct.protein_seq);
       document.querySelector('#interpro-track-residues')['data'] = ProtvistaComponent.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.matrix-graph').forEach((x: any, i: number) => {
-        x.data = this.options[i].data;
+        let data: any;
+        data = this.options[i].data.map((v: any) => {
+          return {
+            pos: v.pos,
+            score: this.options[i].values === 'raw' ? v.raw_score : v.norm_score
+          }
+        });
+        x.data = data;
         x.setAttribute('color', this.options[i].color);
       });
       this.manager.nativeElement.click();
@@ -131,6 +158,36 @@ export class ProtvistaComponent implements AfterViewInit {
 
   clearHighlight() {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
+  }
+
+  setThreshold(value: number, graph_i: number) {
+    if (this.options[graph_i] && this.options[graph_i].values && this.options[graph_i].operator && value) {
+      let values = this.options[graph_i].data.filter((d: any) => this.operatorsFn[this.options[graph_i].operator](value, this.options[graph_i].values == 'raw' ? d.raw_score : d.norm_score));
+      if (values.length) {
+        document.getElementById('matrix-graph' + graph_i)['cutoffs'] = values.map((v: { pos: number; }) => v.pos)
+      } else {
+        this.notify.info('No match was found');
+        this.clearThreshold(graph_i);
+      }
+    }
+  }
+
+  changeValues(graph_i: number) {
+    const data = this.options[graph_i].data.map((v: any) => {
+      return {
+        pos: v.pos,
+        score: this.options[graph_i].values == 'raw' ? v.raw_score : v.norm_score
+      }
+    });
+    // document.getElementById('matrix-graph' + graph_i)['data'] = data;
+  }
+
+  clearThreshold(graph_i: number) {
+    document.getElementById('matrix-graph' + graph_i)['cutoffs'] = undefined;
+  }
+
+  clearAllThreshold() {
+    document.querySelectorAll('.matrix-graph').forEach((x: any) => x.cutoffs = undefined);
   }
 
   static getTrackView(tracks: Track[]) {

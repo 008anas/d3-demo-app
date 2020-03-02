@@ -36,7 +36,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
     }
     this._data = data.map(d => {
       return {
-        x: d.start,
+        x: d.pos,
         y: d.score
       };
     });
@@ -49,20 +49,18 @@ class SqrutinyMatrix extends ProtvistaTrack {
 
   set cutoffs(cutoffs) {
     if (!Array.isArray(cutoffs) || cutoffs.length < 1) {
-      return;
+      this._cutoffs = [];
     }
     this._cutoffs = cutoffs;
+    this.refresh();
   }
 
   updateYScale() {
     this._xExtent = extent(this._data, d => parseInt(d.x));
     this._yExtent = extent(this._data, d => d.y);
 
-    // just a bit of padding on the top
-    this._yExtent[1] += 2;
-
     this.xScale.domain(this._xExtent).range([0, this._width]);
-    this._yScale.domain(this._yExtent).range([this._height, 0]);
+    this._yScale.domain(this._yExtent).range([this._height - this.margin.bottom, this.margin.top]);
   }
 
   _createTrack() {
@@ -75,6 +73,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
     this.cutoff_g = this.svg.append('g').attr('class', 'cutoff');
 
     this.trackHighlighter.appendHighlightTo(this.svg);
+
     // Create the visualisation here
     this.updateYScale();
     this.refresh();
@@ -90,7 +89,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
       .attr('fill', 'none')
       .attr('stroke', this._color)
       .attr('stroke-width', `1.2px`);
-    if (this._cutoffs.length) {
+    if (this._cutoffs && this._cutoffs.length) {
       this.cutoff_g
         .selectAll('g')
         .data(this._cutoffs)
@@ -98,7 +97,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
         .append('line')
         .style('stroke', 'rgb(0, 0, 255)')
         .style('stroke-dasharray', '5px')
-        .style('stroke-width', '2px')
+        .style('stroke-width', '1.5px')
         .attr('x1', d => this.getXFromSeqPosition(d))
         .attr('x2', d => this.getXFromSeqPosition(d))
         .attr('y1', 0)
