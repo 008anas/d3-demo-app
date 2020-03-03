@@ -1,0 +1,48 @@
+<!-- Values viewer modal-->
+<div class="ui padded grid">
+
+  <div class="one column row">
+    <div class="column">
+      <strong> Total score:</strong>{{values?.length}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <table class="ui selectable small table">
+
+        <thead>
+          <tr>
+            <th>
+              Start
+            </th>
+            <th>
+              End
+            </th>
+            <th>
+              Value
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let v of values">
+            <td>
+              {{v.start}}
+            </td>
+            <td>
+              {{v.end}}
+            </td>
+            <td>
+              {{v.score}}
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</div>

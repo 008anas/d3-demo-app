@@ -12,6 +12,7 @@ import { Job } from '../shared/job';
 import { Construct } from '@models/construct';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 import { TitleService } from '@services/title.service';
+import { Track } from 'app/optimizer/shared/track';
 
 const MAX_ATTEMPTS = 15;
 const RETRY_IN = 5000;
@@ -30,6 +31,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   msg: string = null;
   seq: string = null;
   resultData: { construct: Construct; results: any };
+  trackHovered: Track = null;
   interval: any;
   attempts = 0;
 

@@ -122,7 +122,7 @@
 
                   <div class="field">
                     <label>Circular:</label>
-                    <i class="check circle green icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
+                    <i class="circle icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
                   </div>
 
                   <div class="field">
@@ -214,8 +214,24 @@
                 </h4>
               </div>
 
-              <div class="column txt-r">
-                <p class="meta">{{history.construct.n_tracks}} tracks</p>
+              <div class="column" style="min-height: 18px">
+                <div class="ui grid">
+                  <div class="four wide column">
+                    <p> <i class="info icon"></i> Hover a track to display information</p>
+                  </div>
+                  <div class="three wide column center aligned" [hidden]="!trackHovered">
+                    <strong>Start:</strong> {{trackHovered?.start}}
+                  </div>
+                  <div class="three wide column center aligned" [hidden]="!trackHovered">
+                    <strong>End:</strong> {{trackHovered?.end}}
+                  </div>
+                  <div class="three wide column center aligned" [hidden]="!trackHovered">
+                    <strong>Length:</strong> {{trackHovered?.sequence.length}} bps
+                  </div>
+                  <div class="right floated two wide column right aligned">
+                    <p class="meta">{{history.construct.n_tracks}} tracks</p>
+                  </div>
+                </div>
               </div>
 
               <div class="column">
@@ -223,7 +239,7 @@
                 <div class="construct">
                   <div class="strand">
 
-                    <div class="track" *ngFor="let t of history.construct.tracks; let i = index">
+                    <div class="track" (mouseover)="trackHovered = t" (mouseout)="trackHovered = null" *ngFor="let t of history.construct.tracks; let i = index">
 
                       <div class="header">
                         <h4>{{t.label}}</h4>
@@ -275,7 +291,7 @@
                 </button>
               </div>
 
-              <sqy-protvista [data]="resultData" *ngIf="history.isDone()"></sqy-protvista>
+              <sqy-results-viewer [data]="resultData" *ngIf="history.isDone()"></sqy-results-viewer>
 
             </div>
 

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProtvistaComponent } from './protvista.component';
+import { DisplayValuesComponent } from './display-values.component';
 
-describe('ProtvistaComponent', () => {
-  let component: ProtvistaComponent;
-  let fixture: ComponentFixture<ProtvistaComponent>;
+describe('DisplayValuesComponent', () => {
+  let component: DisplayValuesComponent;
+  let fixture: ComponentFixture<DisplayValuesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProtvistaComponent ]
+      declarations: [ DisplayValuesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProtvistaComponent);
+    fixture = TestBed.createComponent(DisplayValuesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

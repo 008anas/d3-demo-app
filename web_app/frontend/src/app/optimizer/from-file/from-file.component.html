@@ -78,11 +78,12 @@
 
               <div class="inline field">
                 <label>Circular</label>
-                <i class="icon" [ngClass]="{'green circular check': construct.circular, 'circle times red': !construct.circular}"></i>
+                <i class="circle icon" [ngClass]="{'check green': construct.circular, 'times red': !construct.circular}"></i>
               </div>
 
               <div class="field link" (click)="textModal(construct.dna_seq)" style="max-height: 300px;">
                 <label>DNA sequence</label>
+                <span class="meta">{{construct.dna_seq.length}} bps</span>
                 <p class="wrap">{{construct.dna_seq}}</p>
               </div>
 

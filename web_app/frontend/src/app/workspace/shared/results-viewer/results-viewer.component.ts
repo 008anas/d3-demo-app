@@ -2,11 +2,13 @@ import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular
 import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
-import { Construct } from '@models/construct';
-import { Track } from 'app/optimizer/shared/track';
 import { SqrutinyService } from '@services/sqrutiny.service';
+import { Construct } from '@models/construct';
 import Utils from 'app/shared/utils';
+import { Track } from 'app/optimizer/shared/track';
+import { DisplayValuesComponent } from '../display-values/display-values.component';
 
 class ResultData {
   construct: Construct;
@@ -24,11 +26,11 @@ class GraphsOptions {
 }
 
 @Component({
-  selector: 'sqy-protvista',
-  templateUrl: './protvista.component.html',
-  styleUrls: ['./protvista.component.scss']
+  selector: 'sqy-results-viewer',
+  templateUrl: './results-viewer.component.html',
+  styleUrls: ['./results-viewer.component.scss']
 })
-export class ProtvistaComponent implements AfterViewInit {
+export class ResultsViewerComponent implements AfterViewInit {
 
   @Input() set data(data: ResultData) {
     this._data = data;
@@ -37,11 +39,10 @@ export class ProtvistaComponent implements AfterViewInit {
       return;
     }
     Object.keys(this._data.results).forEach((key, index) => {
-      let value = JSON.parse(this._data.results[key]);
       this.options.push({
         name: key,
         display: true,
-        data: value,
+        data: JSON.parse(this._data.results[key]),
         color: this.colors[index],
         values: 'raw',
         operator: this.operators[0].op
@@ -72,11 +73,11 @@ export class ProtvistaComponent implements AfterViewInit {
     'TTCGAA'
   ];
   operators = [
-    { desc: 'Greater than', op: '<' },
     { desc: 'Greater or equal than', op: '<=' },
+    { desc: 'Greater than', op: '<' },
     { desc: 'Equal', op: '=' },
-    { desc: 'Lower than', op: '>' },
-    { desc: 'Lower or equal than', op: '>=' }
+    { desc: 'Lower or equal than', op: '>=' },
+    { desc: 'Lower than', op: '>' }
   ];
   operatorsFn = {
     '<': (a: number, b: number) => a < b,
@@ -86,11 +87,14 @@ export class ProtvistaComponent implements AfterViewInit {
     '>=': (a: number, b: number) => a >= b,
   };
 
-  @ViewChild('dnaSeq') manager: ElementRef<HTMLElement>;
+  @ViewChild('dnaSeq') dnaSeq: ElementRef<HTMLElement>;
+  @ViewChild('proteinSeq') proteinSeq: ElementRef<HTMLElement>;
+  @ViewChild('tracksView') tracksComponent: ElementRef<HTMLElement>;
 
   constructor(
     private sqSrvc: SqrutinyService,
-    private notify: NzMessageService
+    private notify: NzMessageService,
+    private modal: NzModalService
   ) { }
 
   ngAfterViewInit() {
@@ -100,21 +104,21 @@ export class ProtvistaComponent implements AfterViewInit {
   init() {
     if (this._data) {
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
-      document.querySelector('#dna_sequence')['data'] = this._data.construct.dna_seq;
-      document.querySelector('#protein_sequence')['data'] = ProtvistaComponent.proteinSeqProtvista(this._data.construct.protein_seq);
-      document.querySelector('#interpro-track-residues')['data'] = ProtvistaComponent.getTrackView(this._data.construct.tracks);
+      this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
+      this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
+      this.tracksComponent.nativeElement['data'] = ResultsViewerComponent.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.matrix-graph').forEach((x: any, i: number) => {
         let data: any;
         data = this.options[i].data.map((v: any) => {
           return {
-            pos: v.pos,
+            pos: v.start,
             score: this.options[i].values === 'raw' ? v.raw_score : v.norm_score
-          }
+          };
         });
         x.data = data;
         x.setAttribute('color', this.options[i].color);
       });
-      this.manager.nativeElement.click();
+      this.dnaSeq.nativeElement.click(); // Fix init issue. Simulate click to show data.
     }
   }
 
@@ -162,9 +166,9 @@ export class ProtvistaComponent implements AfterViewInit {
 
   setThreshold(value: number, graph_i: number) {
     if (this.options[graph_i] && this.options[graph_i].values && this.options[graph_i].operator && value) {
-      let values = this.options[graph_i].data.filter((d: any) => this.operatorsFn[this.options[graph_i].operator](value, this.options[graph_i].values == 'raw' ? d.raw_score : d.norm_score));
+      const values = this.options[graph_i].data.filter((d: any) => this.operatorsFn[this.options[graph_i].operator](value, this.options[graph_i].values === 'raw' ? d.raw_score : d.norm_score));
       if (values.length) {
-        document.getElementById('matrix-graph' + graph_i)['cutoffs'] = values.map((v: { pos: number; }) => v.pos)
+        document.getElementById('matrix-graph' + graph_i)['cutoffs'] = values.map((v: any) => v.start);
       } else {
         this.notify.info('No match was found');
         this.clearThreshold(graph_i);
@@ -175,9 +179,9 @@ export class ProtvistaComponent implements AfterViewInit {
   changeValues(graph_i: number) {
     const data = this.options[graph_i].data.map((v: any) => {
       return {
-        pos: v.pos,
-        score: this.options[graph_i].values == 'raw' ? v.raw_score : v.norm_score
-      }
+        pos: v.start,
+        score: this.options[graph_i].values === 'raw' ? v.raw_score : v.norm_score
+      };
     });
     // document.getElementById('matrix-graph' + graph_i)['data'] = data;
   }
@@ -205,6 +209,17 @@ export class ProtvistaComponent implements AfterViewInit {
 
   static proteinSeqProtvista(val: string) {
     return ` ${val.split('').join('  ')} `;
+  }
+
+  valuesModal(graph_i: number) {
+    this.modal.create({
+      nzContent: DisplayValuesComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        values: this.options[graph_i].data
+      },
+      nzFooter: null
+    });
   }
 
 }

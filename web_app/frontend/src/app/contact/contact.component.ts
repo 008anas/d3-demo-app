@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { main } from '@config/main';
-import { environment as env } from '@env/environment';
 import { Contact } from '@models/contact';
-import { HttpClient } from '@angular/common/http';
+import { SqrutinyService } from '@services/sqrutiny.service';
 
 @Component({
   selector: 'sqy-contact',
@@ -17,7 +16,7 @@ export class ContactComponent implements OnInit {
   contact: Contact = new Contact();
   email: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private sqrutinySrvc: SqrutinyService) { }
 
   ngOnInit() {
     this.email = main.email;
@@ -25,7 +24,7 @@ export class ContactComponent implements OnInit {
 
   submitForm() {
     this.isLoading = true;
-    this.http.post<any[]>(`${env.endpoints.api}/contact/`, this.contact)
+    this.sqrutinySrvc.contact(this.contact)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         () => {

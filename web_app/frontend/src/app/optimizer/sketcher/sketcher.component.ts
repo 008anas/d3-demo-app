@@ -1,14 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 import { saveAs } from 'file-saver';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { environment as env } from 'environments/environment';
 import { SpecieService } from '@services/specie.service';
 import { Specie } from '@models/specie';
 import { Track } from '../shared/track';
@@ -17,6 +15,7 @@ import { ConstructService } from '@services/construct.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import Utils from 'app/shared/utils';
 import { Construct } from '@models/construct';
+import { SqrutinyService } from '@services/sqrutiny.service';
 
 class Category {
   name: string;
@@ -57,7 +56,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private specieSrvc: SpecieService,
     private trackSrvc: TrackService,
     private constructSrvc: ConstructService,
-    private http: HttpClient,
+    private sqrutinySrvc: SqrutinyService,
     private router: Router,
     private notify: NzMessageService
   ) {
@@ -111,14 +110,15 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   getExampleConstruct() {
     this.sketcherLoading = true;
-    this.constructSrvc.getExample().subscribe(
-      data =>
-        data.length
-          ? (this.construct = new Construct().deserialize(data[0]))
-          : this.notify.warning('Sorry but no example construct was found'),
-      err => this.notify.warning(err || 'Unable to load model construct'),
-      () => (this.sketcherLoading = false)
-    );
+    this.constructSrvc.getExample()
+      .subscribe(
+        data =>
+          data.length
+            ? (this.construct = new Construct().deserialize(data[0]))
+            : this.notify.warning('Unable to load model construct'),
+        err => this.notify.warning(err || 'Unable to load model construct'),
+        () => (this.sketcherLoading = false)
+      );
   }
 
   getSpecies() {
@@ -226,9 +226,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.response = null;
       this.sketcherLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
-      this.http
-        .post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
-        .pipe(finalize(() => (this.sketcherLoading = false)))
+      this.sqrutinySrvc.fromSketch(this.construct)
         .subscribe(
           (data: UserHistory) => {
             this.history = new UserHistory().deserialize(data);
@@ -238,9 +236,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
               this.router.navigate(['/workspace', this.history.id]);
             }, 3000);
           },
-          err => {
-            this.notify.error(err);
-          }
+          err => this.notify.error(err),
+          () => this.sketcherLoading = false
         );
     }
   }

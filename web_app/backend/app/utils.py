@@ -9,6 +9,7 @@ def get_request_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+
 def get_session_id(request):
     if not request.session.session_key:
         request.session.save()

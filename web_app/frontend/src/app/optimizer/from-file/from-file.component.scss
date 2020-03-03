@@ -32,21 +32,21 @@
   font-weight: normal !important;
 }
 
-::ng-deep .center-modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .ant-modal {
-    width: 1200px !important;
-    top: 0;
-
-    .ant-modal-body {
-      max-height: calc(90vh - 5em);
-      overflow: auto;
-    }
-  }
-}
+// ::ng-deep .center-modal {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//
+//   .ant-modal {
+//     width: 1200px !important;
+//     top: 0;
+//
+//     .ant-modal-body {
+//       max-height: calc(90vh - 5em);
+//       overflow: auto;
+//     }
+//   }
+// }
 
 .ui.circular.label {
   font-weight: bold;

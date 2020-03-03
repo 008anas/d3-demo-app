@@ -14,6 +14,7 @@ import { Construct } from '@models/construct';
 import { SpecieService } from '@services/specie.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
+import { SqrutinyService } from '@services/sqrutiny.service';
 
 @Component({
   selector: 'sqy-from-file',
@@ -69,6 +70,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private specieSrvc: SpecieService,
+    private sqrutinySrvc: SqrutinyService,
     private router: Router,
     private notify: NzMessageService,
     private http: HttpClient,
@@ -136,8 +138,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
     this.response = null;
     this.isSubmitting = true;
     this.construct.specie_tax_id = this.specie.tax_id;
-    this.http
-      .post(`${env.endpoints.api}/optimize_seq/from-sketch`, this.construct)
+    this.sqrutinySrvc.fromSketch(this.construct)
       .subscribe(
         (data: UserHistory) => {
           this.notify.loading('Your job has been submitted! In a moment you will be redirected. Please be patient');

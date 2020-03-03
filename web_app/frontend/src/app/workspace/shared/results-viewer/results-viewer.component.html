@@ -1,6 +1,6 @@
 <div class="ui vertically divided grid">
 
-  <div class="equal width center aligned middle aligned row">
+  <div class="equal width center aligned middle aligned row" style="padding: 0em">
 
     <div class="column">
       <button class="ui primary circular icon button" data-inverted="" data-tooltip="Reset charts" data-position="top center" (click)="clearHighlight()">
@@ -62,8 +62,8 @@
 
     <div class="column mt-0">
 
-      <protvista-manager #protManager attributes="length displaystart displayend highlight">
-        <div class="ui very padded grid">
+      <protvista-manager attributes="length displaystart displayend highlight">
+        <div class="ui very padded grid graphs">
 
           <div class="one column row">
             <div class="column">
@@ -71,21 +71,21 @@
             </div>
 
             <div class="column">
-              <protvista-sequence class="protvista" highlight-event="onmouseover" id="dna_sequence" #dnaSeq></protvista-sequence>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" #dnaSeq></protvista-sequence>
             </div>
 
             <div class="column">
-              <protvista-sequence class="protvista" highlight-event="onmouseover" id="protein_sequence"></protvista-sequence>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" #proteinSeq></protvista-sequence>
             </div>
 
             <div class="column">
-              <protvista-interpro-track class="protvista" id="interpro-track-residues" shape="roundRectangle" highlight-event="onmouseover"></protvista-interpro-track>
+              <protvista-interpro-track class="protvista" shape="roundRectangle" highlight-event="onmouseover" #tracksView></protvista-interpro-track>
             </div>
 
             <div class="column">
               <div class="ui equal width padded center aligned grid">
 
-                <div class="column">
+                <div class="column txt-l">
                   <a class="action-m" (click)="displayAll()">
                     <i class="eye icon"></i>
                     Display all
@@ -95,6 +95,7 @@
                     Hide all
                   </a>
                 </div>
+
                 <div class="column" *ngFor="let o of options">
                   <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
                     <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
@@ -115,25 +116,34 @@
                   </div>
                 </div>
 
-                <div class="four column row">
+                <div class="row">
 
-                  <div class="left floated column">
-                    <nz-input-group nzCompact>
-                      <nz-select class="action-m" [(ngModel)]="op.operator" nzPlaceHolder="Operator">
-                        <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
-                      </nz-select>
-                      <input type="number" nz-input placeholder="Score" (keyup.enter)="setThreshold($event.target.value, i)" style="width:30%" />
-                    </nz-input-group>
-                  </div>
-
-                  <div class="column">
+                  <div class="column" style="width: fit-content;">
                     <nz-select class="action-m" nzAllowClear [(ngModel)]="op.values" (ngModelChange)="changeValues(i)" nzPlaceHolder="Type" nzSize="small" style="width: 160px">
                       <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
                       <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
                     </nz-select>
                   </div>
 
-                  <div class="right floated column right aligned">
+                  <div class="column p-2" style="width: fit-content;">
+                    <a (click)="valuesModal(i)">See {{op.values === 'raw' ? 'raw' : 'normalized'}} values</a>
+                  </div>
+
+                  <div class="column p-2" style="width: fit-content;">
+                    <a (click)="clearThreshold(i)">Clear threshold</a>
+                  </div>
+
+                  <div class="column" style="width: fit-content;">
+                    <nz-select class="action-m" nzSize="small" [(ngModel)]="op.operator" nzPlaceHolder="Operator">
+                      <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
+                    </nz-select>
+                  </div>
+
+                  <div class="column" style="width: fit-content;">
+                    <input type="number" placeholder="Score" (keyup.enter)="setThreshold($event.target.value, i)" style="width: 100px" />
+                  </div>
+
+                  <div class="column right aligned" style="width: fit-content; margin-left: auto">
                     <a [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
                       Move up <i class="up arrow icon"></i>
                     </a>
@@ -148,7 +158,9 @@
                 </div>
 
               </div>
+
               <sqrutiny-matrix class="protvista matrix-graph" id="matrix-graph{{i}}" height="60"></sqrutiny-matrix>
+
             </div>
           </div>
 
