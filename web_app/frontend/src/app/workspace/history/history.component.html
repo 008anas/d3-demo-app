@@ -22,7 +22,7 @@
             <div class="two column row">
 
               <div class="column">
-                <span class="date r">
+                <span class="date">
                   <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
                 </span>
                 <div class="ant-badge ant-badge-status ant-badge-not-a-wrapper">
@@ -52,7 +52,7 @@
                 consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
 
-            <div class="column">
+            <div class="eleven wide column">
               <div class="ui very relaxed horizontal selection large list">
                 <div class="item">
                   <i class="barcode large icon"></i>
@@ -68,13 +68,15 @@
                     <p>Go to results visualizator area</p>
                   </div>
                 </div>
-                <div class="item">
-                  <i class="barcode large icon"></i>
-                  <div class="content">
-                    <a class="header">History identifier</a>
-                    <p>{{history.id}}</p>
-                  </div>
-                </div>
+              </div>
+            </div>
+
+            <div class="five wide column right aligned">
+              <div class="ui action fluid input">
+                <input type="text" [value]="history.id" name="history-id">
+                <button type="button" class="ui right labeled icon primary button" name="copy" [clipboard]="history.id">
+                  Copy <i class="copy icon"></i>
+                </button>
               </div>
             </div>
 

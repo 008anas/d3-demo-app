@@ -1,18 +1,19 @@
-import { Directive, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Directive, Input, HostListener } from '@angular/core';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Directive({
-  selector: '[copy-clipboard]'
+  selector: '[clipboard]'
 })
 export class CopyClipboardDirective {
 
-  @Input('copy-clipboard')
+  @Input('clipboard')
   public payload: string;
 
   @Input()
   public context: string;
 
-  @Output()
-  public copied: EventEmitter<string> = new EventEmitter<string>();
+  constructor(private notify: NzMessageService) { }
 
   @HostListener('click', ['$event'])
   public onClick(event: MouseEvent): void {
@@ -23,7 +24,7 @@ export class CopyClipboardDirective {
       const clipboard = e.clipboardData || window['clipboardData'];
       clipboard.setData('text', this.payload.toString());
       e.preventDefault();
-      this.copied.emit(this.payload);
+      this.notify.success('Copied!');
     };
 
     document.addEventListener('copy', listener, false);

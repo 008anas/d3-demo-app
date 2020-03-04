@@ -1,5 +1,9 @@
 import uuid
 
+from Bio.Alphabet import IUPAC
+from Bio.Seq import Seq
+from Bio.SeqFeature import SeqFeature, FeatureLocation
+from Bio.SeqRecord import SeqRecord
 from django.db import models
 
 from app.genetic_element.models import GeneticElement
@@ -34,6 +38,24 @@ class Construct(models.Model):
             except Construct.DoesNotExist:
                 pass
         super(Construct, self).save(*args, **kwargs)
+
+    def from_record(self, record):
+        return
+
+    def to_record(self):
+        # Create a sequence
+        sequence_object = Seq(self.dna_seq, IUPAC.unambiguous_dna)
+
+        # Create a record
+        record = SeqRecord(sequence_object,
+                           name='Example',
+                           description=self.description or '')
+
+        for t in self.track_set.all():
+            feature = SeqFeature(FeatureLocation(start=t.start, end=t.end), type='SQY_BOX')
+            record.features.append(feature)
+
+        return record
 
 
 class Track(models.Model):

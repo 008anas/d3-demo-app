@@ -81,8 +81,9 @@ class ConstructRetrieveSerializer(serializers.ModelSerializer):
         return construct.uuid
 
     def get_tracks(self, construct):
-        tracks = Track.objects.filter(construct=construct)
-        track_ser = TrackRetrieveSerializer(tracks, context={'request': self.context['request']}, many=True)
+        track_ser = TrackRetrieveSerializer(construct.track_set.all(),
+                                            context={'request': self.context['request']},
+                                            many=True)
         return track_ser.data
 
     def get_n_tracks(self, construct):

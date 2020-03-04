@@ -6,7 +6,7 @@
       <strong> {{description | titlecase}} Length:</strong>{{txt?.length}}
     </div>
     <div class="column txt-r" *ngIf="copy">
-      <button class="ui compact right labeled icon primary button" [copy-clipboard]="txt">
+      <button class="ui compact right labeled icon primary button" [clipboard]="txt">
         <i class="copy icon"></i>
         Copy
       </button>

@@ -1,5 +1,6 @@
 import django_rq
-from rest_framework import viewsets, status
+from Bio import SeqIO
+from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -17,7 +18,7 @@ class HistoryRetrieveView(APIView):
 
     def get(self, request, history_id):
         if str(history_id) not in request.session.get('history', []):
-            return Response(dict(msg='History with such not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+            return Response(dict(msg='History with such id not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
         history = History.objects.filter(uuid=str(history_id), deleted=False).first()
 
@@ -41,8 +42,8 @@ class HistoryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return History.objects.filter(deleted=False).order_by('-created_at')
-        #return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by(
-         #   '-created_at')
+        # return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by(
+        #   '-created_at')
 
 
 class ClearHistoryView(APIView):
@@ -72,22 +73,37 @@ class PollJobView(APIView):
         ), status=status.HTTP_200_OK)
 
 
-class ExportResultsView(APIView):
+class ThresholdSerializer(serializers.Serializer):
+    start = serializers.IntegerField()
+    end = serializers.IntegerField()
+    raw_score = serializers.FloatField()
+    norm_score = serializers.FloatField()
 
-    def get(self, request, job_id):
-        rq_job = django_rq.get_queue('default').fetch_job(str(job_id))
 
-        if rq_job is None:
-            return Response(dict(msg='Unable to find job'), status=status.HTTP_404_NOT_FOUND)
+class ExportThresholdView(APIView):
 
-        rq_job.result
+    def post(self, request, history_id):
+        # if str(history_id) not in request.session.get('history', []):
+        #   return Response(dict(msg='History with such id not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
+        history = History.objects.filter(uuid=str(history_id), deleted=False).first()
+
+        job = django_rq.get_queue('default').fetch_job(str(history.job_id))
+
+        record = history.construct.to_record()
+
+        # for d in serializer.validated_data:
         # Add annotation
-        # feature = SeqFeature(FeatureLocation(start=3, end=12), type='misc_feature')
+        #   feature = SeqFeature(FeatureLocation(start=d['start'], end=d['end']), type='SQY_BOX')
+        #  feature.qualifiers = [ ]
         # record.features.append(feature)
 
         # Save as GenBank file
-        # output_file = open('example.gb', 'w')
-        # SeqIO.write(record, output_file, 'genbank')
+        file = open('example.gb', 'w')
+        SeqIO.write(record, file, 'genbank')
 
-        # return Response(job, status=status.HTTP_200_OK)
+        file = (None if file.file_data is None else
+                dict(data=file.file_data, name=file.file_name,
+                     mimetype=file.file_mimetype))
+
+        return Response(dict(file=file), status=status.HTTP_200_OK)

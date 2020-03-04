@@ -1,0 +1,15 @@
+LOCUS       Example                  165 bp    DNA              UNK 01-JAN-1980
+DEFINITION  .
+ACCESSION   <unknown id>
+VERSION     <unknown id>
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     SQY_BOX         2..165
+ORIGIN
+        1 cgacgcagta actatatatc agactgcatt atcatgacga tcatctatac tatacattca
+       61 tcattgcgtc cgtgtctgca tgaatgatat atgcatgatg aaaaatgcat aaaattgata
+      121 tgcatgacta tactatctga tgatctgact gtacattgca tgcat
+//

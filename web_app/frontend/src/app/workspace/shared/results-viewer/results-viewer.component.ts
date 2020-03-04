@@ -42,7 +42,12 @@ export class ResultsViewerComponent implements AfterViewInit {
       this.options.push({
         name: key,
         display: true,
-        data: JSON.parse(this._data.results[key]),
+        data: JSON.parse(this._data.results[key]).map((d: any) => {
+          return {
+            pos: d.start,
+            score: d.raw_score
+          }
+        }),
         color: this.colors[index],
         values: 'raw',
         operator: this.operators[0].op
@@ -50,7 +55,7 @@ export class ResultsViewerComponent implements AfterViewInit {
     });
   }
 
-  _data: ResultData = null;
+  _data: ResultData = null; // Original data
   isSearching = false;
   options: GraphsOptions[] = [];
   enzime: string;
@@ -108,14 +113,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
       this.tracksComponent.nativeElement['data'] = ResultsViewerComponent.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.matrix-graph').forEach((x: any, i: number) => {
-        let data: any;
-        data = this.options[i].data.map((v: any) => {
-          return {
-            pos: v.start,
-            score: this.options[i].values === 'raw' ? v.raw_score : v.norm_score
-          };
-        });
-        x.data = data;
+        x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
       this.dnaSeq.nativeElement.click(); // Fix init issue. Simulate click to show data.
@@ -166,9 +164,9 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   setThreshold(value: number, graph_i: number) {
     if (this.options[graph_i] && this.options[graph_i].values && this.options[graph_i].operator && value) {
-      const values = this.options[graph_i].data.filter((d: any) => this.operatorsFn[this.options[graph_i].operator](value, this.options[graph_i].values === 'raw' ? d.raw_score : d.norm_score));
+      const values = this.options[graph_i].data.filter((d: any) => this.operatorsFn[this.options[graph_i].operator](value, d.score));
       if (values.length) {
-        document.getElementById('matrix-graph' + graph_i)['cutoffs'] = values.map((v: any) => v.start);
+        document.getElementById('matrix-graph' + graph_i)['cutoffs'] = values.map((v: any) => v.pos);
       } else {
         this.notify.info('No match was found');
         this.clearThreshold(graph_i);
@@ -176,13 +174,8 @@ export class ResultsViewerComponent implements AfterViewInit {
     }
   }
 
-  changeValues(graph_i: number) {
-    const data = this.options[graph_i].data.map((v: any) => {
-      return {
-        pos: v.start,
-        score: this.options[graph_i].values === 'raw' ? v.raw_score : v.norm_score
-      };
-    });
+  changeValues(i: number) {
+    this.options[i].data.score = this.options[i].values === 'raw' ? this._data.results[i].raw_score : this._data.results[this.options[i].name][i].norm_score;
     // document.getElementById('matrix-graph' + graph_i)['data'] = data;
   }
 
