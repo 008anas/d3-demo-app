@@ -70,7 +70,7 @@ def check_sequence_iterator(sequence, n, circular=False):
 def check_outhandle(d, outhandle='json', window_len=0):
     """ Converts <d> in shape {<position>:<score>} to [{"start":"<position>", "score":"<score>"}] """
     if outhandle == 'json':
-        return json.dumps([{'start':k, 'end':k+window_len, 'raw_score': v, 'norm_score': v} for k, v in d.items()])
+        return json.dumps([{'start':k, 'end':k+window_len, 'raw_score': round(v, 2), 'norm_score': round(v, 2)} for k, v in d.items()])
     else:
         return d
 
@@ -223,7 +223,7 @@ def codon_adaptation_scoring(sequence, matrix, circular=False, residue_type='DNA
     if verbose >= 1: print('\tCodon adaptation scoring: Scoring sequence...')
     codons = extract_codons_list(sequence, checkLengthMultipleOf3=False)
     # Averaged rolling window
-    rs = pd.Series(codons).map(matrix.iloc[:, 0].to_dict()).rolling(window=n, center=True).mean()
+    rs = pd.Series(codons).map(matrix.iloc[:, 0].to_dict()).rolling(window=n).mean()
     # convert codon position to nucleotide position, repeat codon score
     # for each nucleotide position in the codon
     rs0 = rs.copy()
@@ -265,7 +265,7 @@ def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA
             RBSs.append((rbs_start, energy))
 
     print('\RBS_scoring: finished.\n\n')
-    return check_outhandle(rs, outhandle, 0)   # window len not defined
+    return check_outhandle(rs, outhandle, len(motif))   # window len not defined
 
 
 def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', fixed_sequences = ['ATG', 'GTG', 'TTG'], mode=1,
@@ -368,4 +368,6 @@ def checker(sequence,
         elif element == 'GC20':
             rs[element] = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
                                      outhandle=outhandle, standardize=standardize)
+        # elif element == 'RBS':
+        #     rs[element] = RBS_scoring(sequence, circular=circular, outhandle=outhandle)
     return rs   # TODO second dictionary is expected to be the normalized dictionary

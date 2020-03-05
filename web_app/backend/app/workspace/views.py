@@ -1,5 +1,8 @@
+import json
+
 import django_rq
 from Bio import SeqIO
+from Bio.SeqFeature import FeatureLocation, SeqFeature
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -92,18 +95,21 @@ class ExportThresholdView(APIView):
 
         record = history.construct.to_record()
 
-        # for d in serializer.validated_data:
-        # Add annotation
-        #   feature = SeqFeature(FeatureLocation(start=d['start'], end=d['end']), type='SQY_BOX')
-        #  feature.qualifiers = [ ]
-        # record.features.append(feature)
+        if not record or not job:
+            return Response(dict(msg='Unable to export'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+        result = job.result
+
+        # Append result scores
+        for r in result:
+            for t in json.loads(result[r]):
+                feature = SeqFeature(FeatureLocation(t.get('start')-1, t.get('end')), type='SQY_SCORE')
+                feature.qualifiers = dict(norm_score=t.get('norm_score'), raw_score=t.get('raw_score'))
+                feature.qualifiers['sqy_type'] = r
+                record.features.append(feature)
 
         # Save as GenBank file
         file = open('example.gb', 'w')
         SeqIO.write(record, file, 'genbank')
 
-        file = (None if file.file_data is None else
-                dict(data=file.file_data, name=file.file_name,
-                     mimetype=file.file_mimetype))
-
-        return Response(dict(file=file), status=status.HTTP_200_OK)
+        return Response(dict(msg='GenBank generated'), status=status.HTTP_200_OK)

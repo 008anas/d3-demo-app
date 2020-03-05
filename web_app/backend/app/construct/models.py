@@ -20,7 +20,8 @@ class Construct(models.Model):
     circular = models.BooleanField(blank=True, default=False)
     description = models.TextField(blank=True, null=True)
     example = models.BooleanField(default=False, help_text='Determine if is it used as example')
-    from_file = models.BooleanField(default=False, help_text='Describe if construct was loaded from file or using SQRUTINY sketcher')
+    from_file = models.BooleanField(default=False,
+                                    help_text='Describe if construct was loaded from file or using SQRUTINY sketcher')
     deleted = models.BooleanField(default=False, help_text='Determine if it is visible in the application')
     created_at = models.DateTimeField('creation date', auto_now_add=True)
     updated_at = models.DateTimeField('last update', auto_now=True)
@@ -43,16 +44,28 @@ class Construct(models.Model):
         return
 
     def to_record(self):
-        # Create a sequence
+        # Create sequence
         sequence_object = Seq(self.dna_seq, IUPAC.unambiguous_dna)
 
-        # Create a record
+        # Create record
         record = SeqRecord(sequence_object,
-                           name='Example',
+                           name='Example_GenBank',
                            description=self.description or '')
 
+        record.annotations['organism'] = record.annotations['source'] = self.specie.name
+        record.annotations['topology'] = 'circular' if self.circular else 'linear'
+
+        first_ft = SeqFeature(FeatureLocation(0, len(self.dna_seq)), type='source')
+        first_ft.qualifiers['organism'] = self.specie.name
+        first_ft.qualifiers['db_xref'] = 'taxon:' + str(self.specie.tax_id)
+
+        record.features.append(first_ft)
+
         for t in self.track_set.all():
-            feature = SeqFeature(FeatureLocation(start=t.start, end=t.end), type='SQY_BOX')
+            feature = SeqFeature(FeatureLocation(t.start-1, t.end), type='SQY_BOX')
+            feature.qualifiers['sqy_type'] = t.genetic_element.name
+            if t.label:
+                feature.qualifiers['label'] = t.label
             record.features.append(feature)
 
         return record
@@ -62,7 +75,7 @@ class Track(models.Model):
     genetic_element = models.ForeignKey(GeneticElement, on_delete=models.CASCADE)
     construct = models.ForeignKey(Construct, on_delete=models.CASCADE)
     label = models.CharField(max_length=255, null=True, blank=True)
-    sequence = models.TextField()
+    sequence = models.TextField(help_text='DNA sequence')
     start = models.IntegerField(blank=True)
     end = models.IntegerField(blank=True)
     color = models.CharField(max_length=10, default='#4e0a77')

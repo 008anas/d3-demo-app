@@ -10,7 +10,7 @@ from app.construct.models import Construct
 from app.construct.serializers import ConstructRetrieveSerializer
 from app.serializers import GenBankSerializer
 
-FEATURE_PREFIX = 'SQY_BOX_'
+FEATURE_PREFIX = 'SQY_BOX'
 
 
 class ConstructListRetrieveView(viewsets.ModelViewSet):
@@ -86,7 +86,7 @@ class FromGenBankView(APIView):
                                 color='#4e0a77',
                                 start=feature.location.nofuzzy_start,
                                 end=feature.location.nofuzzy_end))
-                        elif feature.type.upper().startswith(FEATURE_PREFIX):
+                        elif feature.type.upper() == FEATURE_PREFIX:
                             sqy_tracks.append(dict(
                                 label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                 type=feature.type,
