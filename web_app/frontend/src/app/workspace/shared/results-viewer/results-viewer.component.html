@@ -83,30 +83,54 @@
             </div>
 
             <div class="column">
-              <div class="ui equal width padded center aligned grid">
 
-                <div class="column txt-l">
-                  <a class="action-m" (click)="displayAll()">
-                    <i class="eye icon"></i>
-                    Display all
-                  </a>
-                  <a class="action-m" (click)="hideAll()">
-                    <i class="eye slash icon"></i>
-                    Hide all
-                  </a>
+              <div class="ui top attached menu">
+
+                <div class="item">
+                  <button class="ui primary labeled icon right button" type="button" (click)="isVisible = true">
+                    <i class="filter icon"></i>
+                    Threshold
+                  </button>
                 </div>
 
-                <div class="column" *ngFor="let o of options">
-                  <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
-                    <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
-                    <span class="ant-badge-status-text">{{o.name | titlecase}}</span>
-                  </a>
+                <div class="item">
+                  <button type="button" class="ui primary button" [disabled]="!filters">
+                    Export threshold
+                  </button>
+                </div>
+
+                <div class="right menu">
+                  <div class="item">
+                    <button class="ui primary labeled icon right simple dropdown button" type="button">
+                      <i class="eye icon"></i>
+                      <span class="text">Visibility</span>
+                      <div class="menu">
+                        <div class="header">
+                          Click to Show or Hide
+                        </div>
+                        <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
+                          <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
+                          <span class="ant-badge-status-text">{{o.name | titlecase}}</span>
+                        </a>
+                        <div class="ui divider"></div>
+                        <a class="item" (click)="displayAll()">
+                          <i class="eye icon"></i>
+                          Display all
+                        </a>
+                        <a class="item" (click)="hideAll()">
+                          <i class="eye slash icon"></i>
+                          Hide all
+                        </a>
+                      </div>
+                    </button>
+                  </div>
                 </div>
 
               </div>
+
             </div>
 
-            <div class="column" [hidden]="!op.display" *ngFor="let op of options; let i = index">
+            <div class="column pt-5" [hidden]="!op.display" *ngFor="let op of options; let i = index">
 
               <div class="ui padded grid">
 
@@ -118,7 +142,7 @@
 
                 <div class="row">
 
-                  <div class="column" style="width: fit-content;">
+                  <!-- <div class="column" style="width: fit-content;">
                     <nz-select class="action-m" nzAllowClear [(ngModel)]="op.values" (ngModelChange)="changeValues(i)" nzPlaceHolder="Type" nzSize="small" style="width: 160px">
                       <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
                       <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
@@ -141,9 +165,9 @@
 
                   <div class="column" style="width: fit-content;">
                     <input type="number" placeholder="Score" (keyup.enter)="setThreshold($event.target.value, i)" style="width: 100px" />
-                  </div>
+                  </div> -->
 
-                  <div class="column right aligned" style="width: fit-content; margin-left: auto">
+                  <div class="column right aligned">
                     <a [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
                       Move up <i class="up arrow icon"></i>
                     </a>
@@ -172,3 +196,34 @@
   </div>
 
 </div>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Threshold" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
+
+  <div class="ui grid">
+
+    <div class="row">
+      <div class="column">
+        <h1 class="ui header">
+          <i class="filter icon"></i> Set threshold for graphs
+        </h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+        <button type="button" class="ui fluid button" [disabled]="filters?.length >= options.length">
+          <i class="plus icon"></i>
+          Add filter
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</nz-modal>

@@ -25,6 +25,13 @@ class GraphsOptions {
   color: string;
 }
 
+class Filter {
+  op: string;
+  value: number;
+  key: string;
+  type: string;
+}
+
 @Component({
   selector: 'sqy-results-viewer',
   templateUrl: './results-viewer.component.html',
@@ -42,7 +49,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       this.options.push({
         name: key,
         display: true,
-        data: JSON.parse(this._data.results[key]).map((d: any) => {
+        data: this._data.results[key].map((d: any) => {
           return {
             pos: d.start,
             score: d.raw_score
@@ -55,10 +62,12 @@ export class ResultsViewerComponent implements AfterViewInit {
     });
   }
 
+  isVisible = false;
   _data: ResultData = null; // Original data
   isSearching = false;
   options: GraphsOptions[] = [];
   enzime: string;
+  filters: Filter[];
   colors = [
     'red',
     'blue',
@@ -202,6 +211,10 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   static proteinSeqProtvista(val: string) {
     return ` ${val.split('').join('  ')} `;
+  }
+
+  applyFilters() {
+    this.isVisible = false;
   }
 
   valuesModal(graph_i: number) {

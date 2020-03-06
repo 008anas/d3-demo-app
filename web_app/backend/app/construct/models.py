@@ -49,7 +49,7 @@ class Construct(models.Model):
 
         # Create record
         record = SeqRecord(sequence_object,
-                           name='Example_GenBank',
+                           name=self.name.replace(' ', '_'),
                            description=self.description or '')
 
         record.annotations['organism'] = record.annotations['source'] = self.specie.name
@@ -62,7 +62,7 @@ class Construct(models.Model):
         record.features.append(first_ft)
 
         for t in self.track_set.all():
-            feature = SeqFeature(FeatureLocation(t.start-1, t.end), type='SQY_BOX')
+            feature = SeqFeature(FeatureLocation(t.start - 1, t.end), type='SQY_BOX')
             feature.qualifiers['sqy_type'] = t.genetic_element.name
             if t.label:
                 feature.qualifiers['label'] = t.label
