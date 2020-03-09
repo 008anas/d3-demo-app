@@ -72,7 +72,7 @@ def minmaxscale(val, minimum, maximum):
 
 def check_outhandle(d, window_len=0, minimum=0, maximum=1):
     """ Converts <d> in shape {<position>:<score>} to [{"start":"<position>", "score":"<score>"}] """
-    return [dict(start=k, end=k + window_len, raw_score=round(v, 2), norm_score=minmaxscale(v,minimum,maximum) for k, v in d.items()]
+    return [dict(start=k, end=k + window_len, raw_score=round(v, 2), norm_score=minmaxscale(v,minimum,maximum)) for k, v in d.items()]
 
 def load_matrix(inFile, residue_type='DNA', k=1, indexed=True):
     """
@@ -160,7 +160,7 @@ def matrix_scoring(sequence, matrix, circular=False, residue_type='DNA',
     rs = {i + 1: sum([matrix.at[sequence[i:i + n][subindex], str(subindex + 1)] for subindex in range(n)]) for i in
           range(0, limit)}
     print('\tMatrix scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    return check_outhandle(rs, n, standardize[0], standardize=[1])
+    return check_outhandle(rs, n, standardize[0], standardize[1])
 
 
 def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', standardize=[0,1]):
@@ -175,7 +175,7 @@ def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', sta
     print('\tRNA structure scoring: Scoring sequence...')
     rs = {i + 1: fold(sequence[i:i + n])[1] for i in range(0, limit)}
     print('\tRNA structure scoring: Returning results...\n--> RNA structure scoring finished.\n\n')
-    return check_outhandle(rs, n, standardize[0], standardize=[1])
+    return check_outhandle(rs, n, standardize[0], standardize[1])
 
 
 def GC_scoring(sequence, n=20, circular=False, residue_type='DNA', standardize=[0,1]):
@@ -190,7 +190,7 @@ def GC_scoring(sequence, n=20, circular=False, residue_type='DNA', standardize=[
     print('\tGC scoring: Scoring sequence...')
     rs = {i + 1: GC(sequence[i:i + n]) for i in range(0, limit)}
     print('\tGC scoring: Returning results...\n--> GC scoring finished.\n\n')
-    return check_outhandle(rs, n, standardize[0], standardize=[1])
+    return check_outhandle(rs, n, standardize[0], standardize[1])
 
 
 def extract_codons_list(seq, frame=0, checkLengthMultipleOf3=False, frameFromEnd=False):
@@ -325,10 +325,90 @@ def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', f
     return check_outhandle(rs, n, standardize[0], standardize[1])
 
 
+### TERMINATORS ###
+def _create_patterns(min_stem_size=3, max_stem_size=12, max_loop_size=6, mismatches=1):
+    patterns = []
+    for stem in range(min_stem_size, max_stem_size):
+        for loop in range(1,max_loop_size+1):
+            patterns.append('('*stem + '.'*loop + ')'*stem)
+    return set(patterns)
+
+def _evaluate_hp(motifs, sequence):
+    """ Evaluate RNA structures in sequence matching any structure in motifs """
+    structure, energy = fold(sequence)
+    if structure in motifs:
+        return energy, structure
+    else:
+        return 0.0, ''
+
+def _tscore(sequence, penalty=0.2, max_stretch_size=12):
+    """ Return the score for a poly T using the method proposed by Carleton L Kingsford """
+    cost_d = {'T':0.9}
+    m     = 0
+    score = 0
+    while m < max_stretch_size:
+        if m == 0:
+            cost = 0.9
+            previous_cost = 1
+        else:
+            cost = cost_d.get(sequence[m], penalty)
+        score += cost*previous_cost
+        previous_cost *= cost
+        m += 1
+    return score
+
+def _dscore(energy, l, tscore):
+    """ http://2012.igem.org/files/presentation/SUSTC-Shenzhen-B_Championship.pdf """
+    return (-96.6*energy/l)+18.6*tscore-116.9
+
+def terminator_scoring(sequence, n=40,
+                       min_stem_size=3, max_stem_size=12, max_loop_size=6, mismatches=1,
+                       penalty=0.2, max_stretch_size=12,
+                       circular=False, residue_type='DNA', standardize=[0,1]):
+    """
+    Given a <sequence>, an integer <n> corresponding to the desired window size,
+    Returns a <outhandle> object with the terminator score generated using the formula
+    presented in
+    http://2012.igem.org/files/presentation/SUSTC-Shenzhen-B_Championship.pdf
+
+    1. Find hairpin structure
+    1. Check if poly-T stretch at the end of the selected window 
+    2. Calculate energy upstream region, at most one base spacer
+    3. Take the one with the highest value
+
+    return score, if no condition is satisfied return 0
+
+    #TODO implement mismatches in stem
+    #TODO use a valid scoring
+    """
+    hp_patterns = _create_patterns(min_stem_size, max_stem_size, max_loop_size, mismatches)
+    lower_limit = min([len(i) for i in hp_patterns])
+    upper_limit = max([len(i) for i in hp_patterns])
+
+    # Check matrix and load it if required
+    print('\n\n--> Terminator scoring started for window size={}'.format(n))
+    # Iterate by windows and score
+    sequence, limit = check_sequence_iterator(sequence, n, circular)
+    print('\tTerminator scoring: Scoring sequence...')
+    rs = {}
+    for i in range(0, limit):
+        subseq = sequence[i:i+n]
+        for j in range(lower_limit, upper_limit):
+            hp_energy, structure = _evaluate_hp(hp_patterns, subseq[:j])
+            t_score = _tscore(subseq[j:], penalty=penalty, max_stretch_size=max_stretch_size)
+            d_score = _dscore(hp_energy, j, t_score)
+            if i in rs:
+                if d_score>rs[i]:
+                    rs[i] = d_score
+            else:
+                rs[i] = d_score
+
+    print('\tTerminator scoring: Returning results...\n--> Terminator scoring finished.\n\n')
+    return check_outhandle(rs, n, standardize[0], standardize[1])
+
 ###
 # Main checker
 ###
-
 
 def checker(sequence,
             elements='all', parameter_dict=None,
@@ -374,20 +454,22 @@ def checker(sequence,
                 elif element == 'GC20':
                     rs[element] = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
                                              standardize=standardize)
-
+                elif element == 'terminator':
+                    rs[element] = terminator_scoring(sequence, n=40, circular=circular, residue_type=residue_type,
+                                                     standardize=standardize)   # This has a more complex parametrization, check sequence
             else:
                 # Matrix based methods
                 if element == 'codon_adaptation':
-                    rs[element] = codon_adaptation_scoring(sequence, matrix=matrix, n=1,
+                    rs[element] = codon_adaptation_scoring(sequence, matrix=matrix_path, n=1,
                                                            circular=circular, residue_type=residue_type,
                                                            indexed=indexed, standardize=standardize,
                                                            verbose=verbose)
                 elif element == 'utr5':
-                    rs[element] = fixed_matrix_scoring(sequence, matrix=matrix, circular=circular,
+                    rs[element] = fixed_matrix_scoring(sequence, matrix=matrix_path, circular=circular,
                                                        residue_type='DNA', fixed_sequences=['ATG', 'GTG', 'TTG'], mode=1,
                                                        indexed=indexed, standardize=standardize)
                 else:
-                    rs[element] = matrix_scoring(sequence, matrix=matrix, circular=circular,
+                    rs[element] = matrix_scoring(sequence, matrix=matrix_path, circular=circular,
                                                  residue_type=residue_type,
                                                  indexed=indexed, standardize=standardize)
         # elif element == 'RBS':
