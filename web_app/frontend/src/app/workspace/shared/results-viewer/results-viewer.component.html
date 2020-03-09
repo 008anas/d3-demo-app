@@ -87,23 +87,20 @@
               <div class="ui top attached menu">
 
                 <div class="item">
-                  <button class="ui primary labeled icon right button" type="button" (click)="isVisible = true">
+                  <a (click)="isVisible = true">
                     <i class="filter icon"></i>
                     Threshold
-                  </button>
-                </div>
-
-                <div class="item">
-                  <button type="button" class="ui primary button" [disabled]="!filters">
-                    Export threshold
-                  </button>
+                  </a>
                 </div>
 
                 <div class="right menu">
                   <div class="item">
-                    <button class="ui primary labeled icon right simple dropdown button" type="button">
-                      <i class="eye icon"></i>
-                      <span class="text">Visibility</span>
+                    <div class="ui simple dropdown">
+                      <div class="text">
+                        <i class="eye icon"></i>
+                        Visibility
+                      </div>
+                      <i class="dropdown icon"></i>
                       <div class="menu">
                         <div class="header">
                           Click to Show or Hide
@@ -112,7 +109,7 @@
                           <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
                           <span class="ant-badge-status-text">{{o.name | titlecase}}</span>
                         </a>
-                        <div class="ui divider"></div>
+                        <div class="divider"></div>
                         <a class="item" (click)="displayAll()">
                           <i class="eye icon"></i>
                           Display all
@@ -122,7 +119,7 @@
                           Hide all
                         </a>
                       </div>
-                    </button>
+                    </div>
                   </div>
                 </div>
 
@@ -140,32 +137,46 @@
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="two column row mb-2">
 
-                  <!-- <div class="column" style="width: fit-content;">
-                    <nz-select class="action-m" nzAllowClear [(ngModel)]="op.values" (ngModelChange)="changeValues(i)" nzPlaceHolder="Type" nzSize="small" style="width: 160px">
-                      <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
-                      <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
-                    </nz-select>
+                  <div class="column">
+                    <a (click)="clearThreshold(op.name)" [ngClass]="{'disabled': !op.cutoffs}">Clear threshold</a>
+                    <!-- <a class="ui simple dropdown">
+                      <div class="text">Export threshold</div>
+                      <i class="dropdown icon"></i>
+                      <div class="menu">
+                        <div class="item">New</div>
+                        <div class="item">
+                          <span class="description">ctrl + o</span>
+                          Open...
+                        </div>
+                        <div class="item">
+                          <span class="description">ctrl + r</span>
+                          Rename
+                        </div>
+                        <div class="item">Make a copy</div>
+                        <div class="item">
+                          <i class="folder icon"></i>
+                          Move to folder
+                        </div>
+                        <div class="item">
+                          <i class="trash icon"></i>
+                          Move to trash
+                        </div>
+                        <div class="divider"></div>
+                        <div class="item">Download As...</div>
+                        <div class="item">
+                          <i class="dropdown icon"></i>
+                          Publish To Web
+                          <div class="menu">
+                            <div class="item">Google Docs</div>
+                            <div class="item">Another Service...</div>
+                          </div>
+                        </div>
+                        <div class="item">E-mail Collaborators</div>
+                      </div>
+                    </a> -->
                   </div>
-
-                  <div class="column p-2" style="width: fit-content;">
-                    <a (click)="valuesModal(i)">See {{op.values === 'raw' ? 'raw' : 'normalized'}} values</a>
-                  </div>
-
-                  <div class="column p-2" style="width: fit-content;">
-                    <a (click)="clearThreshold(i)">Clear threshold</a>
-                  </div>
-
-                  <div class="column" style="width: fit-content;">
-                    <nz-select class="action-m" nzSize="small" [(ngModel)]="op.operator" nzPlaceHolder="Operator">
-                      <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
-                    </nz-select>
-                  </div>
-
-                  <div class="column" style="width: fit-content;">
-                    <input type="number" placeholder="Score" (keyup.enter)="setThreshold($event.target.value, i)" style="width: 100px" />
-                  </div> -->
 
                   <div class="column right aligned">
                     <a [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
@@ -183,7 +194,7 @@
 
               </div>
 
-              <sqrutiny-matrix class="protvista matrix-graph" id="matrix-graph{{i}}" height="60"></sqrutiny-matrix>
+              <sqrutiny-matrix class="protvista score-graph" id="{{op.name}}" height="60"></sqrutiny-matrix>
 
             </div>
           </div>
@@ -197,33 +208,65 @@
 
 </div>
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Threshold" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
+<nz-modal [nzWidth]="800" [(nzVisible)]="isVisible" nzTitle="Threshold" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
 
-  <div class="ui grid">
+  <form class="ui very padded form">
 
-    <div class="row">
-      <div class="column">
-        <h1 class="ui header">
-          <i class="filter icon"></i> Set threshold for graphs
-        </h1>
-      </div>
+    <div class="field">
+      <h1 class="ui header" style="font-weight: normal">
+        <i class="filter icon"></i> Set threshold for graphs
+      </h1>
     </div>
 
-    <div class="row">
-      <div class="column">
+    <div class="fields" *ngFor="let f of filters; let in = index">
 
+      <div class="required four wide field field">
+        <nz-select [(ngModel)]="f.key" name="filter-graph" nzPlaceHolder="Graph">
+          <nz-option *ngFor="let op of options" [nzLabel]="op.name | titlecase" [nzValue]="op.name"></nz-option>
+        </nz-select>
       </div>
+
+      <div class="required four wide field field">
+        <nz-select [(ngModel)]="f.type" name="filter-type" nzPlaceHolder="Type">
+          <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
+          <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
+        </nz-select>
+      </div>
+
+      <div class="required four wide field field">
+        <nz-select [(ngModel)]="f.op" name="filter-operator" nzPlaceHolder="Operator">
+          <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
+        </nz-select>
+      </div>
+
+      <div class="required four wide field field">
+        <input type="number" [(ngModel)]="f.value" name="filter-score" placeholder="Score" />
+      </div>
+
+      <div class="one wide field txt-c">
+        <i class="x red link large icon" (click)="filters.splice(in, 1)"></i>
+      </div>
+
     </div>
 
-    <div class="row">
-      <div class="column">
-        <button type="button" class="ui fluid button" [disabled]="filters?.length >= options.length">
-          <i class="plus icon"></i>
-          Add filter
-        </button>
+    <div class="ui placeholder segment" [hidden]="filters.length">
+      <div class="ui icon header">
+        <i class="inbox icon"></i>
+        There is no threshold setted
       </div>
+      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length+1 >= options.length">
+        <i class="plus icon"></i>
+        Add filter
+      </button>
     </div>
 
-  </div>
+    <div class="field" [hidden]="!filters.length">
+      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length+1 >= options.length">
+        <i class="plus icon"></i>
+        Add filter
+      </button>
+    </div>
+
+  </form>
 
 </nz-modal>

@@ -3,6 +3,7 @@
     "name": "Mycoplasma pneumoniae",
     "comment": "Experimental data",
     "slug": "myco_pneu",
+    "genome_gbk": "genome_files/myco_pneu_m129.gb",
     "tax_link": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=2104",
     "tax_id": 2104,
     "gc_content": 40,

@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from app.construct.serializers import ConstructCreateSerializer
-from app.matrix.models import Matrix
+from app.parameter.models import Parameter
 from app.specie.models import Specie
 from app.utils import *
 from app.workspace.models import History
@@ -35,13 +35,13 @@ class OptimizeSequenceSkectherView(APIView):
 
         construct = serializer.save(specie=specie)
 
-        matrix = Matrix.objects.filter(active=True, specie=specie)
+        parameters = Parameter.objects.filter(active=True, specie=specie)
 
-        if not matrix:
+        if not parameters:
             return Response({'msg': 'Sorry but it was not possible to perform action. Please try later'},
                             status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        job = django_rq.enqueue(checker, sequence=construct.dna_seq, matrix_dict=self.matrix_to_dict(matrix),
+        job = django_rq.enqueue(checker, sequence=construct.dna_seq, parameter_dict=self.parameters_to_dict(parameters),
                                 circular=construct.circular, codon_table=specie.codon_table, result_ttl=-1)
 
         if job.get_status() == 'failed':
@@ -64,8 +64,10 @@ class OptimizeSequenceSkectherView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @staticmethod
-    def matrix_to_dict(matrix):
-        return {entry.alias: entry.matrix_file.path for entry in matrix}
+    def parameters_to_dict(matrix):
+        return {
+            entry.alias: dict(min=entry.genome_min or 0, max=entry.genome_max or 1,
+                              matrix=entry.matrix_file.path if entry.matrix_file else '') for entry in matrix}
 
 
 class SearchMotifView(APIView):

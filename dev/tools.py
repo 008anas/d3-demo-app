@@ -372,7 +372,7 @@ def terminator_scoring(sequence, n=40,
     http://2012.igem.org/files/presentation/SUSTC-Shenzhen-B_Championship.pdf
 
     1. Find hairpin structure
-    1. Check if poly-T stretch at the end of the selected window 
+    1. Check if poly-T stretch at the end of the selected window
     2. Calculate energy upstream region, at most one base spacer
     3. Take the one with the highest value
 

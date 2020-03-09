@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'app.contact.apps.ContactConfig',
     'app.construct.apps.ConstructConfig',
     'app.workspace.apps.WorkspaceConfig',
-    'app.matrix.apps.MatrixConfig'
+    'app.parameter.apps.ParameterConfig'
 ]
 
 MIDDLEWARE = [

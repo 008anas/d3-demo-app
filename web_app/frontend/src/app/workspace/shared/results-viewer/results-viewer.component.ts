@@ -19,9 +19,7 @@ class GraphsOptions {
   name: string;
   display: boolean;
   data: any;
-  values: string;
-  operator: string;
-  cutoff?: number;
+  cutoffs?: number[];
   color: string;
 }
 
@@ -55,9 +53,7 @@ export class ResultsViewerComponent implements AfterViewInit {
             score: d.raw_score
           }
         }),
-        color: this.colors[index],
-        values: 'raw',
-        operator: this.operators[0].op
+        color: this.colors[index]
       });
     });
   }
@@ -67,7 +63,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   isSearching = false;
   options: GraphsOptions[] = [];
   enzime: string;
-  filters: Filter[];
+  filters: Filter[] = [];
   colors = [
     'red',
     'blue',
@@ -121,7 +117,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
       this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
       this.tracksComponent.nativeElement['data'] = ResultsViewerComponent.getTrackView(this._data.construct.tracks);
-      document.querySelectorAll('.matrix-graph').forEach((x: any, i: number) => {
+      document.querySelectorAll('.score-graph').forEach((x: any, i: number) => {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
@@ -171,29 +167,27 @@ export class ResultsViewerComponent implements AfterViewInit {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
   }
 
-  setThreshold(value: number, graph_i: number) {
-    if (this.options[graph_i] && this.options[graph_i].values && this.options[graph_i].operator && value) {
-      const values = this.options[graph_i].data.filter((d: any) => this.operatorsFn[this.options[graph_i].operator](value, d.score));
+  setThreshold(graph: string, value: number, operator: string) {
+    if (graph && operator) {
+      const values = this.options.filter(op => op.name === graph)[0].data.filter((d: any) => this.operatorsFn[operator](value, d.score));
       if (values.length) {
-        document.getElementById('matrix-graph' + graph_i)['cutoffs'] = values.map((v: any) => v.pos);
+        this.options.filter(op => op.name === graph)[0].cutoffs = values;
+        document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
       } else {
+        this.clearThreshold(graph);
         this.notify.info('No match was found');
-        this.clearThreshold(graph_i);
       }
     }
   }
 
-  changeValues(i: number) {
-    this.options[i].data.score = this.options[i].values === 'raw' ? this._data.results[i].raw_score : this._data.results[this.options[i].name][i].norm_score;
-    // document.getElementById('matrix-graph' + graph_i)['data'] = data;
-  }
-
-  clearThreshold(graph_i: number) {
-    document.getElementById('matrix-graph' + graph_i)['cutoffs'] = undefined;
+  clearThreshold(graph: string) {
+    document.getElementById(graph)['cutoffs'] = undefined;
+    this.options.filter(op => op.name === graph)[0].cutoffs = null;
   }
 
   clearAllThreshold() {
-    document.querySelectorAll('.matrix-graph').forEach((x: any) => x.cutoffs = undefined);
+    document.querySelectorAll('.score-graph').forEach((x: any) => x.cutoffs = undefined);
+    this.options.map(op => op.cutoffs = null);
   }
 
   static getTrackView(tracks: Track[]) {
@@ -214,7 +208,21 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   applyFilters() {
+    this.filters.map((f: Filter) => {
+      if (f.key && f.op) {
+        this.setThreshold(f.key, f.value, f.op);
+      }
+    });
     this.isVisible = false;
+  }
+
+  addFilter() {
+    this.filters.push({
+      op: this.operators[0].desc,
+      key: this.options[0].name,
+      value: 0,
+      type: 'raw'
+    });
   }
 
   valuesModal(graph_i: number) {

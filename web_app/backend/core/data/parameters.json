@@ -5,6 +5,8 @@
     "specie": 1,
     "genetic_element": 1,
     "matrix_file": "matrices/myco_pneu/promoter_matrix.txt",
+    "genome_min": -71.66,
+    "genome_max": 1.53,
     "active": true,
     "created_at": "2019-07-24T15:01:24Z",
     "updated_at": "2019-07-24T15:01:24Z"
@@ -16,6 +18,8 @@
     "specie": 1,
     "genetic_element": 2,
     "matrix_file": "matrices/myco_pneu/utr5_mpneumoniae.txt",
+    "genome_min": 0,
+    "genome_max": 24.81,
     "active": true,
     "created_at": "2019-07-24T15:01:24Z",
     "updated_at": "2019-07-24T15:01:24Z"
@@ -27,6 +31,8 @@
     "specie": 1,
     "genetic_element": 6,
     "matrix_file": "matrices/myco_pneu/codon_adaptation_matrix.txt",
+    "genome_min": 0.12,
+    "genome_max": 1,
     "active": true,
     "created_at": "2019-07-24T15:01:24Z",
     "updated_at": "2019-07-24T15:01:24Z"
