@@ -36,5 +36,65 @@
     "active": true,
     "created_at": "2019-07-24T15:01:24Z",
     "updated_at": "2019-07-24T15:01:24Z"
+  },
+  {
+    "id": 4,
+    "name": "Terminator",
+    "alias": "terminator",
+    "specie": 1,
+    "genetic_element": 7,
+    "genome_min": -95.98,
+    "genome_max": 30.49,
+    "active": true,
+    "created_at": "2019-07-24T15:01:24Z",
+    "updated_at": "2019-07-24T15:01:24Z"
+  },
+  {
+    "id": 5,
+    "name": "RBS",
+    "alias": "rbs",
+    "specie": 1,
+    "genetic_element": 4,
+    "genome_min": -9.5,
+    "genome_max": -0.7,
+    "active": true,
+    "created_at": "2019-07-24T15:01:24Z",
+    "updated_at": "2019-07-24T15:01:24Z"
+  },
+  {
+    "id": 6,
+    "name": "GC Content 20",
+    "alias": "gc20",
+    "specie": 1,
+    "genetic_element": 9,
+    "genome_min": 0,
+    "genome_max": 90,
+    "active": true,
+    "created_at": "2019-07-24T15:01:24Z",
+    "updated_at": "2019-07-24T15:01:24Z"
+  },
+  {
+    "id": 7,
+    "name": "RNA structure 60",
+    "alias": "rna_structure60",
+    "specie": 1,
+    "genetic_element": 9,
+    "genome_min": 0,
+    "genome_max": 1,
+    "active": true,
+    "created_at": "2019-07-24T15:01:24Z",
+    "updated_at": "2019-07-24T15:01:24Z"
+  },
+  {
+    "id": 7,
+    "name": "RNA structure 20",
+    "alias": "rna_structure20",
+    "specie": 1,
+    "genetic_element": 9,
+    "genome_min": 0,
+    "genome_max": 1,
+    "active": true,
+    "created_at": "2019-07-24T15:01:24Z",
+    "updated_at": "2019-07-24T15:01:24Z"
   }
 ]

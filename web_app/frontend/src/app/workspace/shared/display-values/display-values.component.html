@@ -1,9 +1,31 @@
 <!-- Values viewer modal-->
 <div class="ui padded grid">
 
-  <div class="one column row">
+  <div class="two column row">
     <div class="column">
       <strong> Total score:</strong>{{values?.length}}
+    </div>
+    <div class="column right aligned">
+      <a class="ui simple dropdown">
+        <div class="text">
+          <i class="download icon"></i>
+          Export
+        </div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="header">
+            Export As
+          </div>
+          <a class="item" (click)="exportToExcel()">
+            <i class="file excel icon"></i>
+            Excel
+          </a>
+          <a class="item">
+            <i class="dna icon"></i>
+            GenBank
+          </a>
+        </div>
+      </a>
     </div>
   </div>
 
@@ -14,10 +36,16 @@
         <thead>
           <tr>
             <th>
-              Position
+              Start
             </th>
             <th>
-              Value
+              End
+            </th>
+            <th>
+              Raw values
+            </th>
+            <th>
+              Normalized values
             </th>
           </tr>
         </thead>
@@ -26,10 +54,16 @@
 
           <tr *ngFor="let v of values">
             <td>
-              {{v.pos}}
+              {{v.start}}
             </td>
             <td>
-              {{v.score}}
+              {{v.end}}
+            </td>
+            <td>
+              {{v.raw_score}}
+            </td>
+            <td>
+              {{v.norm_score}}
             </td>
           </tr>
 

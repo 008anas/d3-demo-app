@@ -9,6 +9,7 @@ import { Construct } from '@models/construct';
 import Utils from 'app/shared/utils';
 import { Track } from 'app/optimizer/shared/track';
 import { DisplayValuesComponent } from '../display-values/display-values.component';
+import { ExcelService } from '@services/excel.service';
 
 class ResultData {
   construct: Construct;
@@ -17,6 +18,7 @@ class ResultData {
 
 class GraphsOptions {
   name: string;
+  alias: string;
   display: boolean;
   data: any;
   cutoffs?: number[];
@@ -40,20 +42,21 @@ export class ResultsViewerComponent implements AfterViewInit {
   @Input() set data(data: ResultData) {
     this._data = data;
     this.options = [];
-    if (!this._data.results || this._data.results.length) {
+    if (!this._data.results || !this._data.results.length) {
       return;
     }
-    Object.keys(this._data.results).forEach((key, index) => {
+    this._data.results.forEach((r, i: number) => {
       this.options.push({
-        name: key,
+        name: r.name,
+        alias: r.alias,
         display: true,
-        data: this._data.results[key].map((d: any) => {
+        data: r.scores.map((d: any) => {
           return {
             pos: d.start,
             score: d.raw_score
           }
         }),
-        color: this.colors[index]
+        color: this.colors[i]
       });
     });
   }
@@ -64,6 +67,8 @@ export class ResultsViewerComponent implements AfterViewInit {
   options: GraphsOptions[] = [];
   enzime: string;
   filters: Filter[] = [];
+  fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+  fileExtension = '.xlsx';
   colors = [
     'red',
     'blue',
@@ -104,7 +109,8 @@ export class ResultsViewerComponent implements AfterViewInit {
   constructor(
     private sqSrvc: SqrutinyService,
     private notify: NzMessageService,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private excelSrvc: ExcelService
   ) { }
 
   ngAfterViewInit() {
@@ -169,9 +175,9 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   setThreshold(graph: string, value: number, operator: string) {
     if (graph && operator) {
-      const values = this.options.filter(op => op.name === graph)[0].data.filter((d: any) => this.operatorsFn[operator](value, d.score));
+      const values = this.options.find(op => op.alias === graph).data.filter((d: any) => this.operatorsFn[operator](value, d.score));
       if (values.length) {
-        this.options.filter(op => op.name === graph)[0].cutoffs = values;
+        this.options.find(op => op.alias === graph).cutoffs = values;
         document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
       } else {
         this.clearThreshold(graph);
@@ -182,7 +188,7 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   clearThreshold(graph: string) {
     document.getElementById(graph)['cutoffs'] = undefined;
-    this.options.filter(op => op.name === graph)[0].cutoffs = null;
+    this.options.find(op => op.alias === graph).cutoffs = null;
   }
 
   clearAllThreshold() {
@@ -225,15 +231,20 @@ export class ResultsViewerComponent implements AfterViewInit {
     });
   }
 
-  valuesModal(graph_i: number) {
+  valuesModal(key: string) {
     this.modal.create({
       nzContent: DisplayValuesComponent,
       nzWrapClassName: 'center-modal',
       nzComponentParams: {
-        values: this.options[graph_i].data
+        values: this._data.results.find(r => r.alias === key).scores
       },
       nzFooter: null
     });
+  }
+
+  exportToExcel(key: string) {
+    this.excelSrvc.exportAsExcelFile(this._data.results.find(r => r.alias === key).scores, 'sample');
+    this.notify.success('Exported successfully!');
   }
 
 }
