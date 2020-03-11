@@ -4,6 +4,7 @@ import django_rq
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_tracking.mixins import LoggingMixin
 
 from app.construct.serializers import ConstructCreateSerializer
 from app.parameter.models import Parameter
@@ -19,7 +20,7 @@ from tools import checker, is_dna_seq_valid, match_sequence
 TOOL_NAME = 'SQrutiny - Optimize Sequence - '
 
 
-class OptimizeSequenceSkectherView(APIView):
+class OptimizeSequenceSkectherView(LoggingMixin, APIView):
 
     def post(self, request):
         serializer = ConstructCreateSerializer(data=request.data)
@@ -50,8 +51,7 @@ class OptimizeSequenceSkectherView(APIView):
 
         history = History.objects.create(
             name=TOOL_NAME + construct.name,
-            construct=construct, job_id=job.id,
-            request_ip=get_request_ip(request) or None
+            construct=construct, job_id=job.id
         )
 
         # Save history in current session

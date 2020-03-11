@@ -1,20 +1,17 @@
 import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { saveAs } from 'file-saver';
 
 import { SqrutinyService } from '@services/sqrutiny.service';
-import { Construct } from '@models/construct';
 import Utils from 'app/shared/utils';
 import { Track } from 'app/optimizer/shared/track';
 import { DisplayValuesComponent } from '../display-values/display-values.component';
-import { ExcelService } from '@services/excel.service';
-
-class ResultData {
-  construct: Construct;
-  results: any;
-}
+import { HistoryService } from '../history.service';
+import { FileService } from '@services/file.service';
 
 class GraphsOptions {
   name: string;
@@ -39,10 +36,10 @@ class Filter {
 })
 export class ResultsViewerComponent implements AfterViewInit {
 
-  @Input() set data(data: ResultData) {
+  @Input() set data(data: any) {
     this._data = data;
     this.options = [];
-    if (!this._data.results || !this._data.results.length) {
+    if (!this._data.results || !this._data.construct || !this._data.results.length) {
       return;
     }
     this._data.results.forEach((r, i: number) => {
@@ -56,13 +53,13 @@ export class ResultsViewerComponent implements AfterViewInit {
             score: d.raw_score
           }
         }),
-        color: this.colors[i]
+        color: this.getRandomColor()
       });
     });
   }
 
   isVisible = false;
-  _data: ResultData = null; // Original data
+  _data: any = null; // Original data
   isSearching = false;
   options: GraphsOptions[] = [];
   enzime: string;
@@ -110,7 +107,9 @@ export class ResultsViewerComponent implements AfterViewInit {
     private sqSrvc: SqrutinyService,
     private notify: NzMessageService,
     private modal: NzModalService,
-    private excelSrvc: ExcelService
+    private fileSrvc: FileService,
+    private historySrvc: HistoryService,
+    private route: ActivatedRoute
   ) { }
 
   ngAfterViewInit() {
@@ -118,7 +117,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   init() {
-    if (this._data) {
+    if (this._data && this.options) {
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
       this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
@@ -242,9 +241,41 @@ export class ResultsViewerComponent implements AfterViewInit {
     });
   }
 
-  exportToExcel(key: string) {
-    this.excelSrvc.exportAsExcelFile(this._data.results.find(r => r.alias === key).scores, 'sample');
+  exportToExcel(key?: string) {
+    if (key) {
+      this.fileSrvc.exportAsExcelFile(this._data.results.find(r => r.alias === key).scores, 'sample');
+    } else {
+      // TODO: export all
+    }
     this.notify.success('Exported successfully!');
+  }
+
+  changeColors(key?: string) {
+    if (key) {
+      this.options.find(o => o.alias === key).color = this.getRandomColor();
+      document.getElementById(key).setAttribute('color', this.options.find(o => o.alias === key).color);
+    } else {
+      this.options.forEach(o => o.color = this.getRandomColor());
+      document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
+    }
+  }
+
+  getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  export() {
+    this.historySrvc.export(this.route.snapshot.data.history.id, this.filters)
+      .subscribe((d: any) => {
+        this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);
+      },
+        err => this.notify.error(err)
+      );
   }
 
 }

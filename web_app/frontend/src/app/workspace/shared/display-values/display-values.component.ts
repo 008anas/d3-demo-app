@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { ExcelService } from '@services/excel.service';
+import { FileService } from '@services/file.service';
 
 @Component({
   selector: 'sqy-display-values',
@@ -12,7 +12,7 @@ import { ExcelService } from '@services/excel.service';
 export class DisplayValuesComponent {
 
   constructor(
-    private excelSrvc: ExcelService,
+    private fileSrvc: FileService,
     private notify: NzMessageService
   ) { }
 
@@ -20,7 +20,7 @@ export class DisplayValuesComponent {
 
   exportToExcel() {
     if (this.values) {
-      this.excelSrvc.exportAsExcelFile(this.values, 'sample');
+      this.fileSrvc.exportAsExcelFile(this.values, 'sample');
       this.notify.success('Exported successfully!');
     }
   }

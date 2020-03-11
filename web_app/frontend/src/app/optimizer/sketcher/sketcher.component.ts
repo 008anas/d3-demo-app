@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { saveAs } from 'file-saver';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { SpecieService } from '@services/specie.service';
@@ -16,6 +15,7 @@ import { UserHistory } from 'app/workspace/shared/user-history';
 import Utils from 'app/shared/utils';
 import { Construct } from '@models/construct';
 import { SqrutinyService } from '@services/sqrutiny.service';
+import { FileService } from '@services/file.service';
 
 class Category {
   name: string;
@@ -57,6 +57,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private trackSrvc: TrackService,
     private constructSrvc: ConstructService,
     private sqrutinySrvc: SqrutinyService,
+    private fileSrvc: FileService,
     private router: Router,
     private notify: NzMessageService
   ) {
@@ -320,8 +321,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       }
 
       if (data) {
-        const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
-        saveAs(blob, `SQrutiny_${this.construct.name || 'untitled'}.${ext}`);
+        this.fileSrvc.saveFileAs(data, 'text/plain;charset=utf-8', `SQrutiny_${this.construct.name || 'untitled'}.${ext}`);
         this.notify.success(`Exported to ${op}!`);
       } else {
         this.notify.error('Unable to export');

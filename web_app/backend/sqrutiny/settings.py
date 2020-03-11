@@ -28,7 +28,7 @@ APP_URL = config.get('MAIN', 'APP_URL')
 APPEND_SLASH = False
 
 # EMAIL
-EMAIL_HOST_USER = 'bioroboost@crg.es'
+EMAIL_HOST_USER = 'sqrutiny@crg.es'
 EMAIL_HOST_PASSWORD = ''
 
 LOGGING_DIR = os.path.join(BASE_DIR, 'logs')
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_rq',
     'rest_framework',
     'core',
+    'rest_framework_tracking',
     'app.specie.apps.SpeciesConfig',
     'app.genetic_element.apps.GeneticElementsConfig',
     'app.contact.apps.ContactConfig',

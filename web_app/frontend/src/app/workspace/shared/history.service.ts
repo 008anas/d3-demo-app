@@ -40,4 +40,8 @@ export class HistoryService {
     return this.http.delete(`${this.url}/all`).pipe();
   }
 
+  export(id: string, params?) {
+    return this.http.post(`${this.url}/export/${id}`, params).pipe();
+  }
+
 }

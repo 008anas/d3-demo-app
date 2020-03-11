@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 import { WorkspaceRoutingModule } from './workspace-routing.module';
 import { WorkspaceComponent } from './workspace.component';
@@ -26,7 +27,8 @@ import { DisplayValuesComponent } from './shared/display-values/display-values.c
     WorkspaceRoutingModule,
     SharedModule,
     NzModalModule,
-    NzSelectModule
+    NzSelectModule,
+    NzDropDownModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

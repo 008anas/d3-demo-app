@@ -1,14 +1,15 @@
 import operator
+import tempfile
 
 import django_rq
 from Bio import SeqIO
 from Bio.SeqFeature import SeqFeature, FeatureLocation
-from rest_framework import viewsets, status, serializers
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import History
-from .serializers import HistorySerializer
+from .serializers import HistorySerializer, ExportResultsSerializer
 
 
 class HistoryCountView(APIView):
@@ -76,16 +77,13 @@ class PollJobView(APIView):
         ), status=status.HTTP_200_OK)
 
 
-class ThresholdSerializer(serializers.Serializer):
-    start = serializers.IntegerField()
-    end = serializers.IntegerField()
-    raw_score = serializers.FloatField()
-    norm_score = serializers.FloatField()
-
-
 class ExportThresholdView(APIView):
 
     def post(self, request, history_id):
+
+        serializer = ExportResultsSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
 
         op_fn = {
             '<': operator.lt,
@@ -94,9 +92,6 @@ class ExportThresholdView(APIView):
             '>': operator.gt,
             '>=': operator.ge,
         }
-
-        scores_type = ['raw', 'norm']
-        modes = ['default', 'bulk']
 
         # if str(history_id) not in request.session.get('history', []):
         #   return Response(dict(msg='History with such id not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
@@ -112,31 +107,37 @@ class ExportThresholdView(APIView):
 
         result = job.result
 
-        filters = request.data.get('filters', [])
-        mode = request.data.get('mode', 'default')
+        filters = serializer.validated_data.get('filters', [])
+        mode = serializer.validated_data.get('mode', 'default')
 
         for f in filters:
-            if f.get('key', None) in result and f.get('value') is not None and f.get('op', None) in op_fn and \
-                    f.get('type') in scores_type:
-                # Override results
-                result[f['key']] = [score for score in result[f['key']] if
-                                    op_fn.get(f['op'])(
-                                        score.get('raw_score') if f['type'] == 'raw' else score.get('norm_score'),
-                                        float(f['value']))]
+            # Override results
+            result[f['key']] = [score for score in result[f['key']] if op_fn.get(f['op'])(
+                score.get('raw_score') if f['type'] == 'raw' else score.get('norm_score'), float(f['value']))]
+
         # Remove non filters
         if mode == 'default':
-            result = {k: result[k] for k in set([d.get('key', None) for d in filters])}
+            result = {k: result[k] for k in set([ft.get('key', None) for ft in filters])}
 
         # Append result scores
         for r in result:
-            for t in result[r]:
+            for t in r.get('scores', []):
                 feature = SeqFeature(FeatureLocation(t.get('start') - 1, t.get('end')), type='SQY_SCORE')
                 feature.qualifiers = dict(norm_score=t.get('norm_score'), raw_score=t.get('raw_score'))
                 feature.qualifiers['sqy_type'] = r
                 record.features.append(feature)
 
-        # Save as GenBank file
-        file = open('example.gb', 'w')
-        SeqIO.write(record, file, 'genbank')
+        tmp_file = tempfile.TemporaryFile(mode="r+")
 
-        return Response(dict(msg='GenBank generated'), status=status.HTTP_200_OK)
+        SeqIO.write(record, tmp_file, 'genbank')
+
+        tmp_file.seek(0)
+        data = tmp_file.read()
+        tmp_file.close()
+
+        file = dict(
+            data=data,
+            filename=history.name + '_scores_export.gb',
+            mimetype='application/genbank')
+
+        return Response(file, status=status.HTTP_200_OK)

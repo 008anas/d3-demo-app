@@ -10,7 +10,6 @@ class History(models.Model):
     name = models.CharField(max_length=255, blank=True)
     construct = models.ForeignKey(Construct, on_delete=models.CASCADE)
     job_id = models.UUIDField()
-    request_ip = models.GenericIPAddressField(null=True)
     deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField('creation date', auto_now_add=True)
     updated_at = models.DateTimeField('last update', auto_now=True)

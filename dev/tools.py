@@ -176,7 +176,6 @@ def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', sta
     print('\n\n--> RNA structure scoring started for window size={}'.format(n))
     # Iterate by windows and score
     sequence, limit = check_sequence_iterator(sequence, n, circular)
-    print(limit)
     print('\tRNA structure scoring: Scoring sequence...')
     rs = {i + 1: fold(sequence[i:i + n])[1] for i in range(0, limit)}
     print('\tRNA structure scoring: Returning results...\n--> RNA structure scoring finished.\n\n')

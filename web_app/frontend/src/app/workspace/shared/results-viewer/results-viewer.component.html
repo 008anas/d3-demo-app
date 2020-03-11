@@ -28,26 +28,29 @@
     </div>
 
     <div class="column">
-      <a class="ui simple dropdown">
-        <div class="text">
-          <i class="download icon"></i>
-          Export
-        </div>
+      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="exMenu">
+        <i class="download icon"></i>
+        Export
         <i class="dropdown icon"></i>
-        <div class="menu">
-          <div class="header">
-            Export As
-          </div>
-          <a class="item" (click)="exportToExcel(op.alias)">
-            <i class="file excel icon"></i>
-            Excel
-          </a>
-          <a class="item disabled">
-            <i class="dna icon"></i>
-            GenBank
-          </a>
-        </div>
       </a>
+      <nz-dropdown-menu #exMenu="nzDropdownMenu">
+        <div class="ui floating multiple dropdown">
+          <div class="scrolling menu transition visible">
+            <div class="header">
+              Export scores as
+            </div>
+            <div class="divider"></div>
+            <a class="item" (click)="exportToExcel()">
+              <i class="file excel icon"></i>
+              Excel
+            </a>
+            <a class="item" (click)="export()">
+              <i class="dna icon"></i>
+              GenBank
+            </a>
+          </div>
+        </div>
+      </nz-dropdown-menu>
     </div>
 
   </div>
@@ -99,34 +102,44 @@
                   </a>
                 </div>
 
+                <div class="item">
+                  <a (click)="changeColors()">
+                    <i class="sync icon"></i>
+                    Change colors
+                  </a>
+                </div>
+
                 <div class="right menu">
 
                   <div class="item">
-                    <a class="ui simple dropdown">
-                      <div class="text">
-                        <i class="eye icon"></i>
-                        Visibility
-                      </div>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="vsMenu">
+                      <i class="eye icon"></i>
+                      Visibility
                       <i class="dropdown icon"></i>
-                      <div class="menu">
-                        <div class="header">
-                          Click to Show or Hide
-                        </div>
-                        <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
-                          <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
-                          <span class="ant-badge-status-text">{{o.name}}</span>
-                        </a>
-                        <div class="divider"></div>
-                        <a class="item" (click)="displayAll()">
-                          <i class="eye icon"></i>
-                          Display all
-                        </a>
-                        <a class="item" (click)="hideAll()">
-                          <i class="eye slash icon"></i>
-                          Hide all
-                        </a>
-                      </div>
                     </a>
+                    <nz-dropdown-menu #vsMenu="nzDropdownMenu">
+                      <div class="ui floating multiple dropdown">
+                        <div class="scrolling menu transition visible">
+                          <div class="header">
+                            Click to Show or Hide
+                          </div>
+                          <div class="divider"></div>
+                          <a class="item" (click)="displayAll()">
+                            <i class="eye icon"></i>
+                            Display all
+                          </a>
+                          <a class="item" (click)="hideAll()">
+                            <i class="eye slash icon"></i>
+                            Hide all
+                          </a>
+                          <div class="divider"></div>
+                          <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
+                            <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
+                            <span class="ant-badge-status-text">{{o.name}}</span>
+                          </a>
+                        </div>
+                      </div>
+                    </nz-dropdown-menu>
                   </div>
 
                 </div>
@@ -157,6 +170,9 @@
                         </div>
                         <a class="item" (click)="clearThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
                           Clear threshold
+                        </a>
+                        <a class="item" (click)="changeColors(op.alias)">
+                          Change color
                         </a>
                       </div>
                     </a>
