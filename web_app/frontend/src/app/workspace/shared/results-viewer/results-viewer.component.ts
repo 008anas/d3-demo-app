@@ -4,7 +4,6 @@ import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { saveAs } from 'file-saver';
 
 import { SqrutinyService } from '@services/sqrutiny.service';
 import Utils from 'app/shared/utils';
@@ -12,6 +11,7 @@ import { Track } from 'app/optimizer/shared/track';
 import { DisplayValuesComponent } from '../display-values/display-values.component';
 import { HistoryService } from '../history.service';
 import { FileService } from '@services/file.service';
+import { LoaderService } from '@services/loader.service';
 
 class GraphsOptions {
   name: string;
@@ -42,7 +42,7 @@ export class ResultsViewerComponent implements AfterViewInit {
     if (!this._data.results || !this._data.construct || !this._data.results.length) {
       return;
     }
-    this._data.results.forEach((r, i: number) => {
+    this._data.results.forEach((r) => {
       this.options.push({
         name: r.name,
         alias: r.alias,
@@ -64,6 +64,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   options: GraphsOptions[] = [];
   enzime: string;
   filters: Filter[] = [];
+  bulk = false;
   fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   fileExtension = '.xlsx';
   colors = [
@@ -109,7 +110,8 @@ export class ResultsViewerComponent implements AfterViewInit {
     private modal: NzModalService,
     private fileSrvc: FileService,
     private historySrvc: HistoryService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private loader: LoaderService
   ) { }
 
   ngAfterViewInit() {
@@ -270,11 +272,14 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   export() {
-    this.historySrvc.export(this.route.snapshot.data.history.id, this.filters)
+    this.loader.startLoading();
+    this.historySrvc.export(this.route.snapshot.data.history.id, { filters: this.filters || null, bulk: this.bulk || false })
       .subscribe((d: any) => {
+        this.notify.success('Exported! Your download is about to start.');
         this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);
       },
-        err => this.notify.error(err)
+        err => this.notify.error(err),
+        () => this.loader.stopLoading()
       );
   }
 

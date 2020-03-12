@@ -108,16 +108,21 @@ class ExportThresholdView(APIView):
         result = job.result
 
         filters = serializer.validated_data.get('filters', [])
-        mode = serializer.validated_data.get('mode', 'default')
+        bulk = serializer.validated_data.get('bulk', False)
+
+        keys = [f.get('key', '') for f in filters]
+
+        # Keep only in filters (if minimize mode)
+        if not bulk:
+            result = [r for r in result if r['alias'] in keys]
 
         for f in filters:
             # Override results
-            result[f['key']] = [score for score in result[f['key']] if op_fn.get(f['op'])(
-                score.get('raw_score') if f['type'] == 'raw' else score.get('norm_score'), float(f['value']))]
-
-        # Remove non filters
-        if mode == 'default':
-            result = {k: result[k] for k in set([ft.get('key', None) for ft in filters])}
+            single = next((r for r in result if r['alias'] == f['key']), None)
+            if single:
+                single['scores'] = [s for s in single['scores'] if op_fn.get(f['op'])(
+                    s.get('raw_score') if f['type'] == 'raw' else s.get('norm_score'), float(f['value']))]
+                result[result.index(single)] = single
 
         # Append result scores
         for r in result:
@@ -135,9 +140,12 @@ class ExportThresholdView(APIView):
         data = tmp_file.read()
         tmp_file.close()
 
-        file = dict(
-            data=data,
-            filename=history.name + '_scores_export.gb',
-            mimetype='application/genbank')
+        file = {}
+
+        if data:
+            file = dict(
+                data=data,
+                filename=history.name + '_scores_export.gb',
+                mimetype='application/genbank')
 
         return Response(file, status=status.HTTP_200_OK)

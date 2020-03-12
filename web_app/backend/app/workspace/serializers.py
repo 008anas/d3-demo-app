@@ -36,4 +36,4 @@ class FilterSerializer(serializers.Serializer):
 
 class ExportResultsSerializer(serializers.Serializer):
     filters = FilterSerializer(many=True, required=False)
-    mode = serializers.ChoiceField(choices=['default', 'bulk'], required=False)
+    bulk = serializers.BooleanField(required=False)

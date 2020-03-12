@@ -20,13 +20,15 @@ import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
 import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
 import { VectorEditorComponent } from './vector-editor/vector-editor.component';
+import { LoaderComponent } from '@components/loader/loader.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ContactComponent,
-    VectorEditorComponent
+    VectorEditorComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,

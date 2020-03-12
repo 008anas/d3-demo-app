@@ -33,24 +33,6 @@
         Export
         <i class="dropdown icon"></i>
       </a>
-      <nz-dropdown-menu #exMenu="nzDropdownMenu">
-        <div class="ui floating multiple dropdown">
-          <div class="scrolling menu transition visible">
-            <div class="header">
-              Export scores as
-            </div>
-            <div class="divider"></div>
-            <a class="item" (click)="exportToExcel()">
-              <i class="file excel icon"></i>
-              Excel
-            </a>
-            <a class="item" (click)="export()">
-              <i class="dna icon"></i>
-              GenBank
-            </a>
-          </div>
-        </div>
-      </nz-dropdown-menu>
     </div>
 
   </div>
@@ -117,29 +99,6 @@
                       Visibility
                       <i class="dropdown icon"></i>
                     </a>
-                    <nz-dropdown-menu #vsMenu="nzDropdownMenu">
-                      <div class="ui floating multiple dropdown">
-                        <div class="scrolling menu transition visible">
-                          <div class="header">
-                            Click to Show or Hide
-                          </div>
-                          <div class="divider"></div>
-                          <a class="item" (click)="displayAll()">
-                            <i class="eye icon"></i>
-                            Display all
-                          </a>
-                          <a class="item" (click)="hideAll()">
-                            <i class="eye slash icon"></i>
-                            Hide all
-                          </a>
-                          <div class="divider"></div>
-                          <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
-                            <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
-                            <span class="ant-badge-status-text">{{o.name}}</span>
-                          </a>
-                        </div>
-                      </div>
-                    </nz-dropdown-menu>
                   </div>
 
                 </div>
@@ -161,50 +120,70 @@
                 <div class="two column row mb-3">
 
                   <div class="column s-action">
-                    <a class="ui simple dropdown">
-                      <div class="text">Action</div>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="acMenu">
+                      Action
                       <i class="dropdown icon"></i>
-                      <div class="menu">
-                        <div class="header">
-                          Graph action
-                        </div>
-                        <a class="item" (click)="clearThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
-                          Clear threshold
-                        </a>
-                        <a class="item" (click)="changeColors(op.alias)">
-                          Change color
-                        </a>
-                      </div>
                     </a>
-                    <a class="ui simple dropdown">
-                      <div class="text">Data</div>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="dataMenu">
+                      Data
                       <i class="dropdown icon"></i>
-                      <div class="menu">
-                        <div class="header">
-                          Display data
-                        </div>
-                        <a class="item" (click)="valuesModal(op.alias)">
-                          Display scores
-                        </a>
-                      </div>
                     </a>
-                    <a class="ui simple dropdown">
-                      <div class="text">Export</div>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="sExMenu">
+                      Export as
                       <i class="dropdown icon"></i>
-                      <div class="menu">
-                        <div class="header">
-                          Export as
-                        </div>
-                        <a class="item" (click)="exportToExcel(op.alias)">
-                          <i class="file excel icon"></i>
-                          Excel
-                        </a>
-                        <a class="item disabled">
-                          <i class="dna icon"></i>
-                          GenBank
-                        </a>
-                      </div>
                     </a>
+
+                    <!-- Action -->
+                    <nz-dropdown-menu #acMenu="nzDropdownMenu">
+                      <div class="ui floating multiple dropdown">
+                        <div class="scrolling menu transition visible">
+                          <div class="header">
+                            Graph options
+                          </div>
+                          <div class="divider"></div>
+                          <a class="item" (click)="changeColors(op.alias)">
+                            Change color
+                          </a>
+                          <a class="item" (click)="clearThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
+                            Clear threshold
+                          </a>
+                        </div>
+                      </div>
+                    </nz-dropdown-menu>
+
+                    <!-- Data -->
+                    <nz-dropdown-menu #dataMenu="nzDropdownMenu">
+                      <div class="ui floating multiple dropdown">
+                        <div class="scrolling menu transition visible">
+                          <div class="header">
+                            Display data
+                          </div>
+                          <a class="item" (click)="valuesModal(op.alias)">
+                            Display scores
+                          </a>
+                        </div>
+                      </div>
+                    </nz-dropdown-menu>
+
+                    <!-- Single Graph Export -->
+                    <nz-dropdown-menu #sExMenu="nzDropdownMenu">
+                      <div class="ui floating multiple dropdown">
+                        <div class="scrolling menu transition visible">
+                          <div class="header">
+                            Export as
+                          </div>
+                          <a class="item" (click)="exportToExcel(op.alias)">
+                            <i class="file excel icon"></i>
+                            Excel
+                          </a>
+                          <a class="item disabled">
+                            <i class="dna icon"></i>
+                            GenBank
+                          </a>
+                        </div>
+                      </div>
+                    </nz-dropdown-menu>
+
                   </div>
 
                   <div class="column right aligned">
@@ -299,3 +278,54 @@
   </form>
 
 </nz-modal>
+
+<!-- Menus -->
+
+<!-- Visibility -->
+<nz-dropdown-menu #vsMenu="nzDropdownMenu">
+  <div class="ui floating multiple dropdown">
+    <div class="scrolling menu transition visible">
+      <div class="header">
+        Click to Show or Hide
+      </div>
+      <div class="divider"></div>
+      <a class="item" (click)="displayAll()">
+        <i class="eye icon"></i>
+        Display all
+      </a>
+      <a class="item" (click)="hideAll()">
+        <i class="eye slash icon"></i>
+        Hide all
+      </a>
+      <div class="divider"></div>
+      <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
+        <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
+        <span class="ant-badge-status-text">{{o.name}}</span>
+      </a>
+    </div>
+  </div>
+</nz-dropdown-menu>
+
+<!-- General Export -->
+<nz-dropdown-menu #exMenu="nzDropdownMenu">
+  <div class="ui floating multiple dropdown">
+    <div class="scrolling menu transition visible">
+      <div class="header">
+        Download as
+      </div>
+      <div class="divider"></div>
+      <a class="item" (click)="exportToExcel()">
+        <i class="file excel icon"></i>
+        Excel
+      </a>
+      <a class="item" (click)="bulk = false;export()">
+        <i class="file icon"></i>
+        Partial GenBank
+      </a>
+      <a class="item" (click)="bulk = true;export()">
+        <i class="file icon"></i>
+        Full GenBank
+      </a>
+    </div>
+  </div>
+</nz-dropdown-menu>

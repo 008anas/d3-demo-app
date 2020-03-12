@@ -1,0 +1,82 @@
+.loading-screen-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10000;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.loading-screen-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+/**
+  Loader: https://codepen.io/eliortabeka/pen/EXJyPP
+ */
+svg {
+  display: none;
+}
+$bolb-color: #475158; // Loader
+
+.blobs {
+  filter: url(#goo);
+  width: 300px;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 70px;
+  transform-style: preserve-3d;
+}
+// Blob item
+
+.blob {
+  position: absolute;
+  background: $bolb-color;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  animation: blobs ease-out 3.4s infinite;
+  transform: scale(.9) translate(-50%, -50%);
+  transform-origin: center top;
+  opacity: 0;
+  // Set animation delay for each of type
+  @for $i from 1 to 6 {
+    &:nth-child(#{$i}) {
+      animation-delay: $i * 0.2 + s;
+    }
+  }
+}
+// Keyframes variables
+$left: calc(-330px - 50%);
+$right: calc(330px - 50%); // Keyframes
+@keyframes blobs {
+  0% {
+    opacity: 0;
+    transform: scale(0) translate($left, -50%);
+  }
+
+  1% {
+    opacity: 1;
+  }
+
+  35%,
+  65% {
+    opacity: 1;
+    transform: scale(.9) translate(-50%, -50%);
+  }
+
+  99% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0) translate($right, -50%);
+  }
+}
