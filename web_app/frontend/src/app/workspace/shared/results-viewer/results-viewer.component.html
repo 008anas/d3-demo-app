@@ -15,6 +15,13 @@
     </div>
 
     <div class="column">
+      <a>
+        Highlight
+        <i class="dropdown icon"></i>
+      </a>
+    </div>
+
+    <div class="column">
       <div class="ui icon fluid input" [ngClass]="{'loading disabled': isSearching}">
         <i class="search icon"></i>
         <input type="text" placeholder="Search for motif" (keyup.enter)="searchMotif($event.target.value)">
@@ -35,18 +42,6 @@
       </a>
     </div>
 
-  </div>
-
-  <div class="equal width center aligned middle aligned row" style="padding: 0em">
-    <div class="column">
-      <strong>DNA sequence length:</strong> {{_data.construct?.dna_seq.length}}
-    </div>
-    <div class="column">
-      <strong>Protein sequence length:</strong> {{_data.construct?.protein_seq.length}}
-    </div>
-    <div class="column">
-      <strong>Number of tracks:</strong> {{_data.construct?.n_tracks}}
-    </div>
   </div>
 
   <div class="one column row">
@@ -121,7 +116,7 @@
 
                   <div class="column s-action">
                     <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="acMenu">
-                      Action
+                      Chart
                       <i class="dropdown icon"></i>
                     </a>
                     <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="dataMenu">
@@ -129,14 +124,14 @@
                       <i class="dropdown icon"></i>
                     </a>
                     <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="sExMenu">
-                      Export as
+                      Export
                       <i class="dropdown icon"></i>
                     </a>
 
                     <!-- Action -->
                     <nz-dropdown-menu #acMenu="nzDropdownMenu">
                       <div class="ui floating multiple dropdown">
-                        <div class="scrolling menu transition visible">
+                        <div class="menu transition visible">
                           <div class="header">
                             Graph options
                           </div>
@@ -144,8 +139,11 @@
                           <a class="item" (click)="changeColors(op.alias)">
                             Change color
                           </a>
+                          <div class="header">
+                            Threshold
+                          </div>
                           <a class="item" (click)="clearThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
-                            Clear threshold
+                            Clear
                           </a>
                         </div>
                       </div>
@@ -154,12 +152,13 @@
                     <!-- Data -->
                     <nz-dropdown-menu #dataMenu="nzDropdownMenu">
                       <div class="ui floating multiple dropdown">
-                        <div class="scrolling menu transition visible">
+                        <div class="menu transition visible">
                           <div class="header">
-                            Display data
+                            Data
                           </div>
+                          <div class="divider"></div>
                           <a class="item" (click)="valuesModal(op.alias)">
-                            Display scores
+                            Display
                           </a>
                         </div>
                       </div>
@@ -168,17 +167,32 @@
                     <!-- Single Graph Export -->
                     <nz-dropdown-menu #sExMenu="nzDropdownMenu">
                       <div class="ui floating multiple dropdown">
-                        <div class="scrolling menu transition visible">
+                        <div class="menu transition visible">
                           <div class="header">
-                            Export as
+                            Export
+                          </div>
+                          <div class="divider"></div>
+                          <div class="header">
+                            Scores
                           </div>
                           <a class="item" (click)="exportToExcel(op.alias)">
                             <i class="file excel icon"></i>
                             Excel
                           </a>
-                          <a class="item disabled">
+                          <a class="item">
                             <i class="dna icon"></i>
                             GenBank
+                          </a>
+                          <div class="header">
+                            Current threshold
+                          </div>
+                          <a class="item" (click)="exportThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
+                            <i class="dna icon"></i>
+                            GenBank
+                          </a>
+                          <a class="item" [ngClass]="{'disabled': !op.cutoffs}">
+                            <i class="file excel icon"></i>
+                            Excel
                           </a>
                         </div>
                       </div>
@@ -309,7 +323,7 @@
 <!-- General Export -->
 <nz-dropdown-menu #exMenu="nzDropdownMenu">
   <div class="ui floating multiple dropdown">
-    <div class="scrolling menu transition visible">
+    <div class="menu transition visible">
       <div class="header">
         Download as
       </div>
@@ -318,13 +332,20 @@
         <i class="file excel icon"></i>
         Excel
       </a>
+      <div class="divider"></div>
+      <div class="header">
+        GenBank
+      </div>
       <a class="item" (click)="bulk = false;export()">
         <i class="file icon"></i>
-        Partial GenBank
+        Only tracks
       </a>
       <a class="item" (click)="bulk = true;export()">
         <i class="file icon"></i>
-        Full GenBank
+        With all scores
+        <div class="description">
+          (heavy)
+        </div>
       </a>
     </div>
   </div>

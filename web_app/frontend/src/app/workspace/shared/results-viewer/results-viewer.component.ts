@@ -87,10 +87,10 @@ export class ResultsViewerComponent implements AfterViewInit {
   ];
   operators = [
     { desc: 'Greater or equal than', op: '<=' },
-    { desc: 'Greater than', op: '<' },
+    { desc: 'Greater than', op: '>' },
     { desc: 'Equal', op: '=' },
     { desc: 'Lower or equal than', op: '>=' },
-    { desc: 'Lower than', op: '>' }
+    { desc: 'Lower than', op: '<' }
   ];
   operatorsFn = {
     '<': (a: number, b: number) => a < b,
@@ -176,7 +176,7 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   setThreshold(graph: string, value: number, operator: string) {
     if (graph && operator) {
-      const values = this.options.find(op => op.alias === graph).data.filter((d: any) => this.operatorsFn[operator](value, d.score));
+      const values = this.options.find(op => op.alias === graph).data.filter((d: any) => this.operatorsFn[operator](d.score, value));
       if (values.length) {
         this.options.find(op => op.alias === graph).cutoffs = values;
         document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
@@ -190,6 +190,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   clearThreshold(graph: string) {
     document.getElementById(graph)['cutoffs'] = undefined;
     this.options.find(op => op.alias === graph).cutoffs = null;
+    this.filters = this.filters.filter(f => f.key != graph)
   }
 
   clearAllThreshold() {
@@ -225,8 +226,8 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   addFilter() {
     this.filters.push({
-      op: this.operators[0].desc,
-      key: this.options[0].name,
+      op: this.operators[0].op,
+      key: this.options[0].alias,
       value: 0,
       type: 'raw'
     });
@@ -254,8 +255,8 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   changeColors(key?: string) {
     if (key) {
-      this.options.find(o => o.alias === key).color = this.getRandomColor();
-      document.getElementById(key).setAttribute('color', this.options.find(o => o.alias === key).color);
+      this.getByAlias(key).color = this.getRandomColor();
+      document.getElementById(key).setAttribute('color', this.getByAlias(key).color);
     } else {
       this.options.forEach(o => o.color = this.getRandomColor());
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
@@ -271,11 +272,30 @@ export class ResultsViewerComponent implements AfterViewInit {
     return color;
   }
 
-  export() {
+  getByAlias(alias: string): GraphsOptions {
+    return this.options.find(o => o.alias === alias);
+  }
+
+  exportThreshold(key?: string) {
+    if (key) {
+      const f = this.filters.filter(f => f.key === key);
+      this.loader.startLoading();
+      this.historySrvc.export(this.route.snapshot.data.history.id, { filters: f || null, bulk: this.bulk || false })
+        .subscribe((d: any) => {
+          this.notify.success('Your download is about to start.');
+          this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);
+        },
+          err => this.notify.error(err),
+          () => this.loader.stopLoading()
+        );
+    }
+  }
+
+  export(params?) {
     this.loader.startLoading();
     this.historySrvc.export(this.route.snapshot.data.history.id, { filters: this.filters || null, bulk: this.bulk || false })
       .subscribe((d: any) => {
-        this.notify.success('Exported! Your download is about to start.');
+        this.notify.success('Your download is about to start.');
         this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);
       },
         err => this.notify.error(err),
