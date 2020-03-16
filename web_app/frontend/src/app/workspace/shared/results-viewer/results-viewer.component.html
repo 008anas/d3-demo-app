@@ -154,11 +154,14 @@
                       <div class="ui floating multiple dropdown">
                         <div class="menu transition visible">
                           <div class="header">
-                            Data
+                            Display
                           </div>
                           <div class="divider"></div>
                           <a class="item" (click)="valuesModal(op.alias)">
-                            Display
+                            Scores
+                          </a>
+                          <a class="item" [ngClass]="{'disabled': !op.cutoffs}" (click)="thresholdModal(op.alias)">
+                            Threshold positions
                           </a>
                         </div>
                       </div>
@@ -336,11 +339,11 @@
       <div class="header">
         GenBank
       </div>
-      <a class="item" (click)="bulk = false;export()">
+      <a class="item" (click)="bulk = false;export([])">
         <i class="file icon"></i>
         Only tracks
       </a>
-      <a class="item" (click)="bulk = true;export()">
+      <a class="item" (click)="bulk = true;export([])">
         <i class="file icon"></i>
         With all scores
         <div class="description">

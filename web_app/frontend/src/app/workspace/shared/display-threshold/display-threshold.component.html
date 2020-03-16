@@ -1,0 +1,64 @@
+<!-- Values viewer modal-->
+<div class="ui padded grid">
+
+  <div class="two column row">
+    <div class="column">
+      <strong> Total score:</strong>{{values?.length}}
+    </div>
+    <div class="column pr-5 right aligned">
+      <a class="ui simple dropdown">
+        <div class="text">
+          <i class="download icon"></i>
+          Export
+        </div>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div class="header">
+            Export As
+          </div>
+          <a class="item" (click)="exportToExcel()">
+            <i class="file excel icon"></i>
+            Excel
+          </a>
+          <a class="item">
+            <i class="dna icon"></i>
+            GenBank
+          </a>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <table class="ui selectable small table">
+
+        <thead>
+          <tr>
+            <th>
+              Positions
+            </th>
+            <th>
+              Score
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let v of values">
+            <td>
+              {{v.pos}}
+            </td>
+            <td>
+              {{v.score}}
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</div>

@@ -12,6 +12,7 @@ import { DisplayValuesComponent } from '../display-values/display-values.compone
 import { HistoryService } from '../history.service';
 import { FileService } from '@services/file.service';
 import { LoaderService } from '@services/loader.service';
+import { DisplayThresholdComponent } from '../display-threshold/display-threshold.component';
 
 class GraphsOptions {
   name: string;
@@ -51,7 +52,7 @@ export class ResultsViewerComponent implements AfterViewInit {
           return {
             pos: d.start,
             score: d.raw_score
-          }
+          };
         }),
         color: this.getRandomColor()
       });
@@ -174,9 +175,15 @@ export class ResultsViewerComponent implements AfterViewInit {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
   }
 
-  setThreshold(graph: string, value: number, operator: string) {
+  setThreshold(graph: string, value: number, operator: string, type: string) {
     if (graph && operator) {
-      const values = this.options.find(op => op.alias === graph).data.filter((d: any) => this.operatorsFn[operator](d.score, value));
+      const values = [];
+      this._data.results.find(r => r.alias === graph).scores.map((s: any) => {
+        const score = type === 'raw' ? s.raw_score : s.norm_score;
+        if (this.operatorsFn[operator](value, score)) {
+          values.push({ pos: s.start, score });
+        }
+      });
       if (values.length) {
         this.options.find(op => op.alias === graph).cutoffs = values;
         document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
@@ -190,7 +197,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   clearThreshold(graph: string) {
     document.getElementById(graph)['cutoffs'] = undefined;
     this.options.find(op => op.alias === graph).cutoffs = null;
-    this.filters = this.filters.filter(f => f.key != graph)
+    this.filters = this.filters.filter(f => f.key !== graph);
   }
 
   clearAllThreshold() {
@@ -218,7 +225,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   applyFilters() {
     this.filters.map((f: Filter) => {
       if (f.key && f.op) {
-        this.setThreshold(f.key, f.value, f.op);
+        this.setThreshold(f.key, f.value, f.op, f.type);
       }
     });
     this.isVisible = false;
@@ -239,6 +246,17 @@ export class ResultsViewerComponent implements AfterViewInit {
       nzWrapClassName: 'center-modal',
       nzComponentParams: {
         values: this._data.results.find(r => r.alias === key).scores
+      },
+      nzFooter: null
+    });
+  }
+
+  thresholdModal(key: string) {
+    this.modal.create({
+      nzContent: DisplayThresholdComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        values: this.options.find(r => r.alias === key).cutoffs
       },
       nzFooter: null
     });
@@ -279,21 +297,13 @@ export class ResultsViewerComponent implements AfterViewInit {
   exportThreshold(key?: string) {
     if (key) {
       const f = this.filters.filter(f => f.key === key);
-      this.loader.startLoading();
-      this.historySrvc.export(this.route.snapshot.data.history.id, { filters: f || null, bulk: this.bulk || false })
-        .subscribe((d: any) => {
-          this.notify.success('Your download is about to start.');
-          this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);
-        },
-          err => this.notify.error(err),
-          () => this.loader.stopLoading()
-        );
+      this.export(f);
     }
   }
 
-  export(params?) {
+  export(filters: Filter[]) {
     this.loader.startLoading();
-    this.historySrvc.export(this.route.snapshot.data.history.id, { filters: this.filters || null, bulk: this.bulk || false })
+    this.historySrvc.export(this.route.snapshot.data.history.id, { filters: filters || null, bulk: this.bulk || false })
       .subscribe((d: any) => {
         this.notify.success('Your download is about to start.');
         this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);

@@ -12,6 +12,7 @@ import { HistoryLoadingComponent } from './shared/history-loading/history-loadin
 import { SharedModule } from '../shared/shared.module';
 import { ResultsViewerComponent } from './shared/results-viewer/results-viewer.component';
 import { DisplayValuesComponent } from './shared/display-values/display-values.component';
+import { DisplayThresholdComponent } from './shared/display-threshold/display-threshold.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { DisplayValuesComponent } from './shared/display-values/display-values.c
     HistoryComponent,
     HistoryLoadingComponent,
     ResultsViewerComponent,
-    DisplayValuesComponent
+    DisplayValuesComponent,
+    DisplayThresholdComponent
   ],
   imports: [
     CommonModule,

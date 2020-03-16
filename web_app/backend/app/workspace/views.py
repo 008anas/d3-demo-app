@@ -127,9 +127,9 @@ class ExportThresholdView(APIView):
         # Append result scores
         for r in result:
             for t in r.get('scores', []):
-                feature = SeqFeature(FeatureLocation(t.get('start') - 1, t.get('end')), type='SQY_SCORE')
-                feature.qualifiers = dict(norm_score=t.get('norm_score'), raw_score=t.get('raw_score'))
-                feature.qualifiers['sqy_type'] = r
+                feature = SeqFeature(FeatureLocation(t['start'], t['end']), type='SQY_SCORE')
+                feature.qualifiers = dict(norm_score=t['norm_score'], raw_score=t['raw_score'])
+                feature.qualifiers['sqy_type'] = r['alias']
                 record.features.append(feature)
 
         tmp_file = tempfile.TemporaryFile(mode="r+")
