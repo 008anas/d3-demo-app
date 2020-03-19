@@ -3,20 +3,16 @@
   <div class="equal width center aligned middle aligned row" style="padding: 0em">
 
     <div class="column">
-      <button class="ui primary circular icon button" data-inverted="" data-tooltip="Reset charts" data-position="top center" (click)="clearHighlight()">
-        <i class="sync icon"></i>
-      </button>
-    </div>
-
-    <div class="column">
-      <button class="ui primary circular icon button" data-inverted="" data-tooltip="Clear highlight" data-position="top center" (click)="clearHighlight()">
-        <i class="eraser icon"></i>
-      </button>
-    </div>
-
-    <div class="column">
-      <a>
+      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="hgMenu">
         Highlight
+        <i class="dropdown icon"></i>
+      </a>
+    </div>
+
+    <div class="column">
+      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="exMenu">
+        <i class="download icon"></i>
+        Export
         <i class="dropdown icon"></i>
       </a>
     </div>
@@ -32,14 +28,6 @@
       <nz-select class="w-1-1" nzPlaceHolder="Restriction enzyme" (ngModelChange)="searchMotif($event)" nzDisabled [(ngModel)]="enzime" ngDefaultControl nzAllowClear>
         <nz-option *ngFor="let e of enzimes" [nzLabel]="e" [nzValue]="e"></nz-option>
       </nz-select>
-    </div>
-
-    <div class="column">
-      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="exMenu">
-        <i class="download icon"></i>
-        Export
-        <i class="dropdown icon"></i>
-      </a>
     </div>
 
   </div>
@@ -139,6 +127,18 @@
                           <a class="item" (click)="changeColors(op.alias)">
                             Change color
                           </a>
+                          <a class="item" [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
+                            <i class="up arrow icon"></i>
+                            Move up
+                          </a>
+                          <a class="item" [ngClass]="{'disabled': i === options.length - 1 || options.length < 2}" (click)="move(i, 1)">
+                            <i class="down arrow icon"></i>
+                            Move down
+                          </a>
+                          <a class="item" (click)="op.display = false">
+                            <i class="eye slash icon"></i>
+                            Hide
+                          </a>
                           <div class="header">
                             Threshold
                           </div>
@@ -204,15 +204,25 @@
                   </div>
 
                   <div class="column right aligned">
-                    <a [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
-                      Move up <i class="up arrow icon"></i>
-                    </a>
-                    <a [ngClass]="{'disabled': i === options.length - 1 || options.length < 2}" (click)="move(i, 1)">
-                      Move down <i class="down arrow icon"></i>
-                    </a>
-                    <a (click)="op.display = false">
-                      Hide <i class="eye slash icon"></i>
-                    </a>
+                    <div class="ui dropdown" nz-dropdown nzTrigger="click" [nzDropdownMenu]="vlMenu">
+                      <div class="text">
+                        <strong>Values: </strong>{{op.type === 'raw' ? 'Raw' : 'Normalized'}}
+                      </div>
+                      <i class="dropdown icon"></i>
+                    </div>
+
+                    <!-- Values -->
+                    <nz-dropdown-menu #vlMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="switchValues('raw', op.alias)">
+                          Raw <i [hidden]="op.type !== 'raw'" class="check small icon"></i>
+                        </li>
+                        <li nz-menu-item (click)="switchValues('norm', op.alias)">
+                          Normalized <i [hidden]="op.type !== 'norm'" class="check small icon"></i>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
                   </div>
 
                 </div>
@@ -220,7 +230,6 @@
               </div>
 
               <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60"></sqrutiny-matrix>
-
             </div>
           </div>
 
@@ -233,7 +242,7 @@
 
 </div>
 
-<nz-modal [nzWidth]="800" [(nzVisible)]="isVisible" nzTitle="Threshold" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
+<nz-modal [nzWidth]="800" [(nzVisible)]="isVisible" nzTitle="Threshold" nzOkText="Apply" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
 
   <form class="ui very padded form">
 
@@ -247,7 +256,7 @@
 
       <div class="required four wide field field">
         <nz-select [(ngModel)]="f.key" name="filter-graph" nzPlaceHolder="Graph">
-          <nz-option *ngFor="let op of options" [nzLabel]="op.name" [nzValue]="op.alias"></nz-option>
+          <nz-option *ngFor="let op of options" [nzLabel]="op.name" [nzValue]="op.alias" [nzDisabled]="op.disabled"></nz-option>
         </nz-select>
       </div>
 
@@ -279,16 +288,16 @@
         <i class="inbox icon"></i>
         There is no threshold setted
       </div>
-      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length+1 >= options.length">
+      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length >= options.length">
         <i class="plus icon"></i>
-        Add filter
+        Add threshold
       </button>
     </div>
 
     <div class="field" [hidden]="!filters.length">
-      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length+1 >= options.length">
+      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length >= options.length">
         <i class="plus icon"></i>
-        Add filter
+        Add threshold
       </button>
     </div>
 
@@ -349,6 +358,21 @@
         <div class="description">
           (heavy)
         </div>
+      </a>
+    </div>
+  </div>
+</nz-dropdown-menu>
+
+<!-- Highlight -->
+<nz-dropdown-menu #hgMenu="nzDropdownMenu">
+  <div class="ui floating multiple dropdown">
+    <div class="menu transition visible">
+      <a class="item">
+        Set highlight
+      </a>
+      <a class="item" (click)="clearHighlight()">
+        <i class="eraser icon"></i>
+        Clear highlight
       </a>
     </div>
   </div>

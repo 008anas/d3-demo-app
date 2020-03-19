@@ -400,6 +400,7 @@ def terminator_scoring(sequence, n=40, min_stem_size=3, max_stem_size=12, max_lo
             hp_energy, structure = _evaluate_hp(hp_patterns, subseq[:j])
             t_score = _tscore(subseq[j:], penalty=penalty, max_stretch_size=max_stretch_size)
             d_score = _dscore(hp_energy, j, t_score)
+            i +=1
             if i in rs:
                 if d_score > rs[i]:
                     rs[i] = d_score

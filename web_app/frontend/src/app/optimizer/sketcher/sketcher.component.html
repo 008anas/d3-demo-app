@@ -53,33 +53,26 @@
         </div>
 
         <div class="column">
-          <button class="ui primary right labeled icon button simple dropdown" type="button" [disabled]="!construct.tracks?.length">
-            Export as
-            <i class="dropdown icon"></i>
-            <div class="menu">
-              <a class="item disabled">
-                <i class="file icon"></i>
-                PNG/JPG
-              </a>
-              <a class="item disabled" (click)="downloadAs('GenBank')">
-                <i class="dna icon"></i>
-                GenBank
-              </a>
+          <button class="ui circular icon primary button" nz-dropdown nzTrigger="click" [nzDropdownMenu]="downMenu">
+            <i class="download icon"></i>
+          </button>
+        </div>
+
+        <!-- Download -->
+        <nz-dropdown-menu #downMenu="nzDropdownMenu">
+          <div class="ui floating multiple dropdown">
+            <div class="menu transition visible">
               <a class="item" (click)="downloadAs('Fasta')">
                 <i class="dna icon"></i>
-                Fasta
-              </a>
-              <a class="item disabled">
-                <i class="pdf file outline icon"></i>
-                PDF
+                Download as fasta
               </a>
               <a class="item" (click)="downloadAs('Json')">
                 <i class="file code icon"></i>
-                JSON
+                Download as JSON
               </a>
             </div>
-          </button>
-        </div>
+          </div>
+        </nz-dropdown-menu>
 
       </div>
     </div>

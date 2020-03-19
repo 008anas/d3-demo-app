@@ -19,15 +19,17 @@ class GraphsOptions {
   alias: string;
   display: boolean;
   data: any;
+  type: string;
   cutoffs?: number[];
   color: string;
 }
 
 class Filter {
   op: string;
-  value: number;
+  value?: number;
   key: string;
   type: string;
+  disabled: boolean;
 }
 
 @Component({
@@ -54,6 +56,7 @@ export class ResultsViewerComponent implements AfterViewInit {
             score: d.raw_score
           };
         }),
+        type: 'raw',
         color: this.getRandomColor()
       });
     });
@@ -119,7 +122,7 @@ export class ResultsViewerComponent implements AfterViewInit {
     this.init();
   }
 
-  init() {
+  private init() {
     if (this._data && this.options) {
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
@@ -224,6 +227,7 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   applyFilters() {
     this.filters.map((f: Filter) => {
+      f.disabled = true;
       if (f.key && f.op) {
         this.setThreshold(f.key, f.value, f.op, f.type);
       }
@@ -232,12 +236,15 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   addFilter() {
-    this.filters.push({
-      op: this.operators[0].op,
-      key: this.options[0].alias,
-      value: 0,
-      type: 'raw'
-    });
+    if (this.filters.length < this.options.length) {
+      this.filters.push({
+        op: this.operators[0].op,
+        key: this.options[0].alias,
+        type: 'raw',
+        value: 0,
+        disabled: true
+      });
+    }
   }
 
   valuesModal(key: string) {
@@ -311,6 +318,16 @@ export class ResultsViewerComponent implements AfterViewInit {
         err => this.notify.error(err),
         () => this.loader.stopLoading()
       );
+  }
+
+  switchValues(type: string, alias: string) {
+    document.getElementById(alias)['data'] = this._data.results.find(r => r.alias === alias).scores.map((s: any) => {
+      return {
+        pos: s.start,
+        score: type === 'raw' ? s.raw_score : s.norm_score
+      }
+    });
+    this.options.find(o => o.alias === alias).type = type;
   }
 
 }
