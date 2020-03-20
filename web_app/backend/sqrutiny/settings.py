@@ -179,3 +179,5 @@ RQ_QUEUES = {
         'DEFAULT_TIMEOUT': 360,
     }
 }
+
+RQ_SHOW_ADMIN_LINK = True

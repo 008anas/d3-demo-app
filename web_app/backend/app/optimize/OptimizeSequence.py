@@ -9,7 +9,6 @@ from rest_framework_tracking.mixins import LoggingMixin
 from app.construct.serializers import ConstructCreateSerializer
 from app.parameter.models import Parameter
 from app.specie.models import Specie
-from app.utils import *
 from app.workspace.models import History
 from app.workspace.serializers import HistorySerializer
 from sqrutiny.settings import BASE_DIR

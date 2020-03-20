@@ -1,5 +1,6 @@
 import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -29,7 +30,6 @@ class Filter {
   value?: number;
   key: string;
   type: string;
-  disabled: boolean;
 }
 
 @Component({
@@ -69,8 +69,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   enzime: string;
   filters: Filter[] = [];
   bulk = false;
-  fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-  fileExtension = '.xlsx';
+  highlightForm: FormGroup;
   colors = [
     'red',
     'blue',
@@ -115,10 +114,15 @@ export class ResultsViewerComponent implements AfterViewInit {
     private fileSrvc: FileService,
     private historySrvc: HistoryService,
     private route: ActivatedRoute,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private builder: FormBuilder
   ) { }
 
   ngAfterViewInit() {
+    this.highlightForm = this.builder.group({
+      from: [0, Validators.required],
+      to: [this._data.construct.dna_seq.length, Validators.required]
+    });
     this.init();
   }
 
@@ -174,6 +178,10 @@ export class ResultsViewerComponent implements AfterViewInit {
     }
   }
 
+  setHighlight() {
+    document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = `${this.highlightForm.value.from}:${this.highlightForm.value.to}`);
+  }
+
   clearHighlight() {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
   }
@@ -181,7 +189,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   setThreshold(graph: string, value: number, operator: string, type: string) {
     if (graph && operator) {
       const values = [];
-      this._data.results.find(r => r.alias === graph).scores.map((s: any) => {
+      this._data.results.find((r: any) => r.alias === graph).scores.map((s: any) => {
         const score = type === 'raw' ? s.raw_score : s.norm_score;
         if (this.operatorsFn[operator](value, score)) {
           values.push({ pos: s.start, score });
@@ -190,17 +198,22 @@ export class ResultsViewerComponent implements AfterViewInit {
       if (values.length) {
         this.options.find(op => op.alias === graph).cutoffs = values;
         document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
+        const element = document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0]
+        element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === operator).desc} ${value}`;
+        element.style.visibility = 'visible';
       } else {
         this.clearThreshold(graph);
-        this.notify.info('No match was found');
+        this.notify.info(this.getByAlias(graph).name + ': No result was found');
       }
     }
   }
 
   clearThreshold(graph: string) {
     document.getElementById(graph)['cutoffs'] = undefined;
-    this.options.find(op => op.alias === graph).cutoffs = null;
+    this.getByAlias(graph).cutoffs = null;
     this.filters = this.filters.filter(f => f.key !== graph);
+    document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0].innerHTML = '';
+    document.getElementById('cutoffRes' + graph).style.visibility = 'hidden';
   }
 
   clearAllThreshold() {
@@ -226,8 +239,8 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   applyFilters() {
+    this.clearAllThreshold();
     this.filters.map((f: Filter) => {
-      f.disabled = true;
       if (f.key && f.op) {
         this.setThreshold(f.key, f.value, f.op, f.type);
       }
@@ -239,10 +252,8 @@ export class ResultsViewerComponent implements AfterViewInit {
     if (this.filters.length < this.options.length) {
       this.filters.push({
         op: this.operators[0].op,
-        key: this.options[0].alias,
-        type: 'raw',
-        value: 0,
-        disabled: true
+        key: this.options[this.filters.length].alias,
+        type: 'raw'
       });
     }
   }
@@ -311,12 +322,12 @@ export class ResultsViewerComponent implements AfterViewInit {
   export(filters: Filter[]) {
     this.loader.startLoading();
     this.historySrvc.export(this.route.snapshot.data.history.id, { filters: filters || null, bulk: this.bulk || false })
+      .pipe(finalize(() => this.loader.stopLoading()))
       .subscribe((d: any) => {
         this.notify.success('Your download is about to start.');
         this.fileSrvc.saveFileAs(d.data, d.mimetype, d.filename);
       },
-        err => this.notify.error(err),
-        () => this.loader.stopLoading()
+        err => this.notify.error(err)
       );
   }
 

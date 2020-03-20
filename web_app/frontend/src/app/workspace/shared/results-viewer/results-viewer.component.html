@@ -100,7 +100,7 @@
                   </div>
                 </div>
 
-                <div class="two column row mb-3">
+                <div class="three column row mb-3">
 
                   <div class="column s-action">
                     <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="acMenu">
@@ -203,6 +203,10 @@
 
                   </div>
 
+                  <div class="column txt-c" id="cutoffRes{{op.alias}}" style="visibility: hidden">
+                    <p></p>
+                  </div>
+
                   <div class="column right aligned">
                     <div class="ui dropdown" nz-dropdown nzTrigger="click" [nzDropdownMenu]="vlMenu">
                       <div class="text">
@@ -242,7 +246,7 @@
 
 </div>
 
-<nz-modal [nzWidth]="800" [(nzVisible)]="isVisible" nzTitle="Threshold" nzOkText="Apply" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
+<nz-modal [nzWidth]="800" [(nzVisible)]="isVisible" nzTitle="Threshold" [nzOkDisabled]="filters.length < 1" nzOkText="Apply" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
 
   <form class="ui very padded form">
 
@@ -255,8 +259,8 @@
     <div class="fields" *ngFor="let f of filters; let in = index">
 
       <div class="required four wide field field">
-        <nz-select [(ngModel)]="f.key" name="filter-graph" nzPlaceHolder="Graph">
-          <nz-option *ngFor="let op of options" [nzLabel]="op.name" [nzValue]="op.alias" [nzDisabled]="op.disabled"></nz-option>
+        <nz-select [(ngModel)]="f.key" name="filter-{{f.key}}" nzPlaceHolder="Graph">
+          <nz-option *ngFor="let op of options" [nzLabel]="op.name" [nzValue]="op.alias" [nzDisabled]="f.disabled"></nz-option>
         </nz-select>
       </div>
 
@@ -367,7 +371,8 @@
 <nz-dropdown-menu #hgMenu="nzDropdownMenu">
   <div class="ui floating multiple dropdown">
     <div class="menu transition visible">
-      <a class="item">
+      <a class="item" nz-popover nzType="primary" nzPopoverTitle="Set highlight positions" [nzPopoverContent]="contentTemplate">
+        <i class="crosshairs icon"></i>
         Set highlight
       </a>
       <a class="item" (click)="clearHighlight()">
@@ -377,3 +382,25 @@
     </div>
   </div>
 </nz-dropdown-menu>
+
+<ng-template #contentTemplate>
+  <form class="ui small form" [formGroup]="highlightForm" (ngSubmit)="setHighlight()">
+
+    <div class="fields">
+
+      <div class="field">
+        <input type="text" placeholder="From" name="highlight-from" formControlName="from">
+      </div>
+
+      <div class="field">
+        <input type="text" placeholder="To" name="highlight-to" formControlName="to">
+      </div>
+
+    </div>
+
+    <div class="field">
+      <button type="submit" class="ui fluid primary button" [disabled]="highlightForm.invalid">Set</button>
+    </div>
+
+  </form>
+</ng-template>

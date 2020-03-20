@@ -228,6 +228,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.sketcherLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
       this.sqrutinySrvc.fromSketch(this.construct)
+      .pipe(finalize(() => (this.sketcherLoading = false)))
         .subscribe(
           (data: UserHistory) => {
             this.history = new UserHistory().deserialize(data);
@@ -237,8 +238,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
               this.router.navigate(['/workspace', this.history.id]);
             }, 3000);
           },
-          err => this.notify.error(err),
-          () => this.sketcherLoading = false
+          err => this.notify.error(err)
         );
     }
   }
