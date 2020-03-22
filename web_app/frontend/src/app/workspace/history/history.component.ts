@@ -68,7 +68,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       .subscribe(
         (data: Job) => {
           this.history.job = data;
-          // this.history.job.status = 'queued';
           if (this.history.isDone()) {
             if (this.interval) {
               clearInterval(this.interval);

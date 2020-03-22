@@ -15,6 +15,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ResultsViewerComponent } from './shared/results-viewer/results-viewer.component';
 import { DisplayValuesComponent } from './shared/display-values/display-values.component';
 import { DisplayThresholdComponent } from './shared/display-threshold/display-threshold.component';
+import { SetHighlightComponent } from './shared/set-highlight/set-highlight.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { DisplayThresholdComponent } from './shared/display-threshold/display-th
     HistoryLoadingComponent,
     ResultsViewerComponent,
     DisplayValuesComponent,
-    DisplayThresholdComponent
+    DisplayThresholdComponent,
+    SetHighlightComponent
   ],
   imports: [
     CommonModule,

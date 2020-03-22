@@ -25,24 +25,14 @@
         </div>
 
         <div class="column">
-          <button class="ui circular icon primary button" nz-dropdown [nzDropdownMenu]="settingsMenu" [nzClickHide]="false" nzTrigger="click" nzOverlayClassName="ui settings dropdown" nzPlacement="bottomCenter" [disabled]="isTracksLoading">
-            <i class="eye icon"></i>
+          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Add tracks" data-position="bottom center" (click)="showPicker = true" [disabled]="isTracksLoading || locked">
+            <i class="plus icon"></i>
           </button>
-          <nz-dropdown-menu #settingsMenu="nzDropdownMenu" tabindex="0">
-            <div class="ui vertical menu transition visible" tabindex="-1" style="display: block !important;">
-              <div class="item">
-                Show/Hide indexes
-                <div class="description">
-                  <input type="checkbox" [(ngModel)]="showIndexes">
-                </div>
-              </div>
-            </div>
-          </nz-dropdown-menu>
         </div>
 
         <div class="column">
-          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Add tracks" data-position="bottom center" (click)="showPicker = true" [disabled]="isTracksLoading || locked">
-            <i class="plus icon"></i>
+          <button class="ui circular icon primary button" nz-dropdown [nzDropdownMenu]="settingsMenu" [nzClickHide]="false" nzTrigger="click" nzPlacement="bottomCenter" [disabled]="isTracksLoading">
+            <i class="cogs icon"></i>
           </button>
         </div>
 
@@ -53,26 +43,10 @@
         </div>
 
         <div class="column">
-          <button class="ui circular icon primary button" nz-dropdown nzTrigger="click" [nzDropdownMenu]="downMenu">
+          <button class="ui circular icon primary button" nz-dropdown nzTrigger="click" [nzDropdownMenu]="downMenu" nzPlacement="bottomCenter">
             <i class="download icon"></i>
           </button>
         </div>
-
-        <!-- Download -->
-        <nz-dropdown-menu #downMenu="nzDropdownMenu">
-          <div class="ui floating multiple dropdown">
-            <div class="menu transition visible">
-              <a class="item" (click)="downloadAs('Fasta')">
-                <i class="dna icon"></i>
-                Download as fasta
-              </a>
-              <a class="item" (click)="downloadAs('Json')">
-                <i class="file code icon"></i>
-                Download as JSON
-              </a>
-            </div>
-          </div>
-        </nz-dropdown-menu>
 
       </div>
     </div>
@@ -332,10 +306,10 @@
 <sqy-track-details (onSave)="addTrack($event)" [track]="track" (changePos)="changeTrack($event)" [max]="construct.tracks?.length" *ngIf="track"></sqy-track-details>
 
 <!-- Tracks Modal Picker -->
-<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose tracks" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isLoading" [nzOkDisabled]="!someSelected()" (nzOnCancel)="showPicker = false"
-  (nzOnOk)="addTracks()">
+<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose tracks" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isTracksLoading" [nzOkDisabled]="!someSelected()"
+  (nzOnCancel)="showPicker = false" (nzOnOk)="addTracks()">
   <ng-container *ngIf="showPicker">
-    <div class="ui basic segment one column grid track-picker mt-0" [ngClass]="{'loading': isLoading}">
+    <div class="ui basic segment one column grid track-picker mt-0" [ngClass]="{'loading': isTracksLoading}">
       <div class="column">
         <div class="ui message">
           <div class="header">
@@ -435,3 +409,33 @@
   </div>
 
 </nz-modal>
+
+<!-- Download -->
+<nz-dropdown-menu #downMenu="nzDropdownMenu">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item>
+      <a (click)="downloadAs('Fasta')">
+        <i class="dna icon"></i>
+        Download as fasta
+      </a>
+    </li>
+    <li nz-menu-item>
+      <a (click)="downloadAs('Json')">
+        <i class="file code icon"></i>
+        Download as JSON
+      </a>
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!-- Visibility -->
+<nz-dropdown-menu #settingsMenu="nzDropdownMenu" tabindex="0">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item>
+      <a (click)="showIndexes = !showIndexes">
+        Show/Hide indexes
+        <i class="check small icon" [hidden]="!showIndexes"></i>
+      </a>
+    </li>
+  </ul>
+</nz-dropdown-menu>

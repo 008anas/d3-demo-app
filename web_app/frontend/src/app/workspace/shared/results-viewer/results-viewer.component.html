@@ -384,23 +384,5 @@
 </nz-dropdown-menu>
 
 <ng-template #contentTemplate>
-  <form class="ui small form" [formGroup]="highlightForm" (ngSubmit)="setHighlight()">
-
-    <div class="fields">
-
-      <div class="field">
-        <input type="text" placeholder="From" name="highlight-from" formControlName="from">
-      </div>
-
-      <div class="field">
-        <input type="text" placeholder="To" name="highlight-to" formControlName="to">
-      </div>
-
-    </div>
-
-    <div class="field">
-      <button type="submit" class="ui fluid primary button" [disabled]="highlightForm.invalid">Set</button>
-    </div>
-
-  </form>
+  <sqy-set-highlight [max]="_data.construct.dna_seq.length" (onSet)="setHighlight($event)"></sqy-set-highlight>
 </ng-template>

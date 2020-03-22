@@ -31,6 +31,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
   }
 
   set data(data) {
+    this._data = undefined;
     if (!Array.isArray(data) || data.length < 1) {
       return;
     }
@@ -59,20 +60,22 @@ class SqrutinyMatrix extends ProtvistaTrack {
     this._xExtent = extent(this._data, d => parseInt(d.x));
     this._yExtent = extent(this._data, d => d.y);
 
-    this.xScale.domain(this._xExtent).range([0, this._width]);
+    this.xScale.domain(this._xExtent).range([0, this.width]);
     this._yScale.domain(this._yExtent).range([this._height - this.margin.bottom, this.margin.top]);
   }
 
   _createTrack() {
-    this.svg = select(this)
-      .append('div')
-      .append('svg')
-      .attr('width', this.getWidthWithMargins())
-      .attr('height', this._height);
+    if (!this.svg) {
+      this.svg = select(this)
+        .append('div')
+        .append('svg')
+        .attr('width', this.getWidthWithMargins())
+        .attr('height', this._height);
 
-    this.cutoff_g = this.svg.append('g').attr('class', 'cutoff');
+      this.cutoff_g = this.svg.append('g').attr('class', 'cutoff');
 
-    this.trackHighlighter.appendHighlightTo(this.svg);
+      this.trackHighlighter.appendHighlightTo(this.svg);
+    }
 
     // Create the visualisation here
     this.updateYScale();

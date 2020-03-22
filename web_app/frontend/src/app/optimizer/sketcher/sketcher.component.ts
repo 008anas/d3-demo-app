@@ -140,10 +140,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   getTracksByCategories() {
-    this.isLoading = true;
+    this.isTracksLoading = true;
     this.trackSrvc
       .getByCategories()
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => (this.isTracksLoading = false)))
       .subscribe(data => (this.categories = data));
   }
 

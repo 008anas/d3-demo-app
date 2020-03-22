@@ -5,35 +5,38 @@ import { finalize } from 'rxjs/operators';
 
 declare var createVectorEditor: any;
 
-import { Construct } from '@models/construct';
-import { ConstructService } from '@services/construct.service';
+import { UserHistory } from 'app/workspace/shared/user-history';
+import { HistoryService } from 'app/workspace/shared/history.service';
+import { TitleService } from '@services/title.service';
 
 @Component({
-  selector: 'sqy-vector-editor',
-  templateUrl: './vector-editor.component.html',
-  styleUrls: ['./vector-editor.component.scss']
+  selector: 'sqy-vector',
+  templateUrl: './vector.component.html',
+  styleUrls: ['./vector.component.scss']
 })
-export class VectorEditorComponent implements OnInit, OnDestroy {
+export class VectorComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
-  construct: Construct = null;
+  history: UserHistory = null;
   isLoading = true;
 
   constructor(
     private route: ActivatedRoute,
-    private constructSrvc: ConstructService
+    private historySrvc: HistoryService,
+    private titleSrvc: TitleService
   ) { }
 
   ngOnInit() {
-    this.construct = new Construct().deserialize(this.route.snapshot.data.construct);
+    this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
 
-    if (this.construct) {
+    if (this.history) {
+      this.titleSrvc.setTitle(this.history.name);
       this.loadConstructInEditor();
     } else {
-      this.sub = this.route.queryParams.subscribe(params => this.construct.id = params.construct || null);
+      this.sub = this.route.queryParams.subscribe(params => this.history.id = params.construct || null);
 
-      if (this.construct.id) {
-        this.getConstruct();
+      if (this.history.id) {
+        this.getHistory();
       } else {
         createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe');
       }
@@ -44,12 +47,12 @@ export class VectorEditorComponent implements OnInit, OnDestroy {
     if (this.sub) { this.sub.unsubscribe(); }
   }
 
-  getConstruct() {
+  getHistory() {
     this.isLoading = true;
-    this.constructSrvc.getById(this.construct.id)
+    this.historySrvc.getById(this.history.id)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
-        this.construct.deserialize(data);
+        this.history.deserialize(data);
         this.loadConstructInEditor();
       }
       );
@@ -59,79 +62,21 @@ export class VectorEditorComponent implements OnInit, OnDestroy {
     const editor = createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe'); /* createDomNodeForMe will make a dom node for you and append it to the document.body*/
     editor.updateEditor({
       sequenceData: {
-        sequence: this.construct.dna_seq,
-        circular: this.construct.circular,
+        sequence: this.history.construct.dna_seq,
+        circular: this.history.construct.circular,
         sequenceFileName: 'pj5_00001.gb',
-        name: 'pj5_00001',
         size: 8832,
-        description: '',
-        translations: {
-          '55a4a061f0c5b500012a8qqqq': {
-            name: 'Operator I2 and I1',
-            type: 'protein_bind',
-            id: '55a4a061f0c5b500012a8qqqq',
-            start: 1123,
-            end: 1162,
-            strand: 1,
-            notes: [],
-            forward: true,
-            annotationType: 'translation'
-          },
-          '55a4a061f0c5b500312340a8qqqq': {
-            name: 'pBAD promoter',
-            type: 'promoter',
-            id: '55a4a061f0c5b500312340a8qqqq',
-            start: 1163,
-            end: 1188,
-            strand: 1,
-            notes: [],
-            forward: true,
-            annotationType: 'translation'
-          }
-        },
-        features: this.construct.tracks.map(t => {
+        description: this.history.construct.description || '',
+        features: this.history.construct.tracks.map(t => {
           return {
-            color: t.color, // you can override the default color for each individual feature if you want
+            color: t.color,
             name: t.label,
             type: t.type,
-            start: t.start, // start and end are 0-based inclusive for all annotations
+            start: t.start,
             end: t.end,
             forward: true // ie true=positive strand     false=negative strange
           };
-        })
-        // {
-        //   '55a4a061f0c5b50asd00a8bfaf5': {
-        //     name: 'Operator I2 and I1',
-        //     type: 'protein_bind',
-        //     id: '55a4a061f0c5b50asd00a8bfaf5',
-        //     start: 4,
-        //     end: 20,
-        //     strand: 1,
-        //     notes: [],
-        //     color: '#BBBBBB',
-        //     forward: true,
-        //     annotationType: 'feature'
-        //   },
-        //   '55a4a061f0c5b5000a8bfaf8': {
-        //     name: 'GFPuv',
-        //     type: 'CDS',
-        //     id: '55a4a061f0c5b5000a8bfaf8',
-        //     start: 1235,
-        //     end: 2018,
-        //     strand: 1,
-        //     notes: [
-        //       {
-        //         name: 'vntifkey',
-        //         value: '4',
-        //         quoted: true
-        //       }
-        //     ],
-        //     color: '#BBBBBB',
-        //     forward: true,
-        //     annotationType: 'feature'
-        //   },
-        // }
-        ,
+        }),
         fromFileUpload: false
       },
       annotationLabelVisibility: {
@@ -243,4 +188,5 @@ export class VectorEditorComponent implements OnInit, OnDestroy {
       instantiated: true
     });
   }
+
 }

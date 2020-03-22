@@ -1,6 +1,5 @@
 import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -69,7 +68,6 @@ export class ResultsViewerComponent implements AfterViewInit {
   enzime: string;
   filters: Filter[] = [];
   bulk = false;
-  highlightForm: FormGroup;
   colors = [
     'red',
     'blue',
@@ -114,15 +112,10 @@ export class ResultsViewerComponent implements AfterViewInit {
     private fileSrvc: FileService,
     private historySrvc: HistoryService,
     private route: ActivatedRoute,
-    private loader: LoaderService,
-    private builder: FormBuilder
+    private loader: LoaderService
   ) { }
 
   ngAfterViewInit() {
-    this.highlightForm = this.builder.group({
-      from: [0, Validators.required],
-      to: [this._data.construct.dna_seq.length, Validators.required]
-    });
     this.init();
   }
 
@@ -178,8 +171,10 @@ export class ResultsViewerComponent implements AfterViewInit {
     }
   }
 
-  setHighlight() {
-    document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = `${this.highlightForm.value.from}:${this.highlightForm.value.to}`);
+  setHighlight(positions: string) {
+    if (positions) {
+      document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = positions);
+    }
   }
 
   clearHighlight() {
@@ -189,28 +184,29 @@ export class ResultsViewerComponent implements AfterViewInit {
   setThreshold(graph: string, value: number, operator: string, type: string) {
     if (graph && operator) {
       const values = [];
-      this._data.results.find((r: any) => r.alias === graph).scores.map((s: any) => {
+      this.getByAlias(this._data.results, graph).scores.map((s: any) => {
         const score = type === 'raw' ? s.raw_score : s.norm_score;
         if (this.operatorsFn[operator](value, score)) {
           values.push({ pos: s.start, score });
         }
       });
       if (values.length) {
-        this.options.find(op => op.alias === graph).cutoffs = values;
+        this.switchValues(type, graph);
+        this.getByAlias(this.options, graph).cutoffs = values;
         document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
         const element = document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0]
         element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === operator).desc} ${value}`;
         element.style.visibility = 'visible';
       } else {
         this.clearThreshold(graph);
-        this.notify.info(this.getByAlias(graph).name + ': No result was found');
+        this.notify.info(this.getByAlias(this.options, graph).name + ': No result was found');
       }
     }
   }
 
   clearThreshold(graph: string) {
     document.getElementById(graph)['cutoffs'] = undefined;
-    this.getByAlias(graph).cutoffs = null;
+    this.getByAlias(this.options, graph).cutoffs = null;
     this.filters = this.filters.filter(f => f.key !== graph);
     document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0].innerHTML = '';
     document.getElementById('cutoffRes' + graph).style.visibility = 'hidden';
@@ -281,18 +277,30 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   exportToExcel(key?: string) {
+    let data = null;
     if (key) {
-      this.fileSrvc.exportAsExcelFile(this._data.results.find(r => r.alias === key).scores, 'sample');
+      const op = this.getByAlias(this.options, key);
+      data = [{ name: op.name, data: op.data }];
     } else {
-      // TODO: export all
+      data = this.options.map(op => {
+        return {
+          name: op.name,
+          data: op.data
+        }
+      })
     }
-    this.notify.success('Exported successfully!');
+    if (data) {
+      this.fileSrvc.exportAsExcelFile(data, key || 'All export');
+      this.notify.success('Exported! Your download is about to start.');
+    } else {
+      this.notify.error('Unable to export.')
+    }
   }
 
   changeColors(key?: string) {
     if (key) {
-      this.getByAlias(key).color = this.getRandomColor();
-      document.getElementById(key).setAttribute('color', this.getByAlias(key).color);
+      this.getByAlias(this.options, key).color = this.getRandomColor();
+      document.getElementById(key).setAttribute('color', this.getByAlias(this.options, key).color);
     } else {
       this.options.forEach(o => o.color = this.getRandomColor());
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
@@ -308,8 +316,8 @@ export class ResultsViewerComponent implements AfterViewInit {
     return color;
   }
 
-  getByAlias(alias: string): GraphsOptions {
-    return this.options.find(o => o.alias === alias);
+  getByAlias(data: any[], alias: string): any {
+    return data.find(o => o.alias === alias);
   }
 
   exportThreshold(key?: string) {
@@ -332,7 +340,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   switchValues(type: string, alias: string) {
-    document.getElementById(alias)['data'] = this._data.results.find(r => r.alias === alias).scores.map((s: any) => {
+    document.getElementById(alias)['data'] = this.getByAlias(this._data.results, alias).scores.map((s: any) => {
       return {
         pos: s.start,
         score: type === 'raw' ? s.raw_score : s.norm_score
@@ -341,4 +349,14 @@ export class ResultsViewerComponent implements AfterViewInit {
     this.options.find(o => o.alias === alias).type = type;
   }
 
+  // TODO: get by score type
+  //   getByScoreType(type)
+  // {
+  //   this._data.results.find(r => r.alias === alias).scores.map((s: any) => {
+  //     return {
+  //       pos: s.start,
+  //       score: type === 'raw' ? s.raw_score : s.norm_score
+  //     }
+  //   });
+  // }
 }

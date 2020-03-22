@@ -1,0 +1,17 @@
+<div class="ui main fluid container">
+  <div class="ui container p-5">
+    <form class="ui form" style="width:50%; margin: 0.5em auto">
+      <div class="field txt-c">
+        <p>Enter a history ID to load the construct in the Vector Editor.</p>
+        <div class="ui action input">
+          <input type="text" name="history-id" [(ngModel)]="history.id">
+          <button type="submit" class="ui right labeled icon primary button" [disabled]="!history" (click)="getHistory()">
+            {{history ? 'Change' : 'Retrieve'}}
+            <i class="search icon"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div id="vector_editor"></div>
+</div>

@@ -25,11 +25,37 @@ export class TrackDetailsComponent implements OnChanges, OnDestroy {
   display = false;
   _track: Track = null;
   trackForm: FormGroup;
+  public colors: string[] = [
+    '#000105',
+    '#3e6158',
+    '#3f7a89',
+    '#96c582',
+    '#b7d5c4',
+    '#bcd6e7',
+    '#7c90c1',
+    '#9d8594',
+    '#dad0d8',
+    '#4b4fce',
+    '#4e0a77',
+    '#a367b5',
+    '#ee3e6d',
+    '#d63d62',
+    '#c6a670',
+    '#f46600',
+    '#cf0500',
+    '#efabbd',
+    '#8e0622',
+    '#f0b89a',
+    '#f0ca68',
+    '#62382f',
+    '#c97545',
+    '#c1800b'
+  ];
 
   constructor(private builder: FormBuilder) {
     this.trackForm = this.builder.group({
       label: [''],
-      color: [''],
+      color: [this.colors[0]],
       sequence: ['', Validators.pattern(Utils.dnaSeqRegex)]
     });
   }
@@ -75,9 +101,9 @@ export class TrackDetailsComponent implements OnChanges, OnDestroy {
   }
 
   updateTrack() {
-    this._track.label = this.trackForm.value.label;
-    this._track.color = this.trackForm.value.color;
-    this._track.sequence = this.trackForm.value.sequence;
+    this._track.label = this.label.value;
+    this._track.color = this.color.value;
+    this._track.sequence = this.sequence.value;
     this.onSave.emit(this._track);
   }
 

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VectorEditorComponent } from './vector-editor.component';
+import { VectorComponent } from './vector.component';
 
-describe('VectorEditorComponent', () => {
-  let component: VectorEditorComponent;
-  let fixture: ComponentFixture<VectorEditorComponent>;
+describe('VectorComponent', () => {
+  let component: VectorComponent;
+  let fixture: ComponentFixture<VectorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VectorEditorComponent ]
+      declarations: [ VectorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VectorEditorComponent);
+    fixture = TestBed.createComponent(VectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

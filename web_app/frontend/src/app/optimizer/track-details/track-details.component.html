@@ -41,7 +41,14 @@
 
       <div class="seven wide field">
         <label>Color</label>
-        <sqy-color-picker [color]="_track.color" [heading]="'Color'" (event)="setColor($event)"></sqy-color-picker>
+        <nz-select nzShowSearch nzPlaceHolder="Select color" name="track-color" formControlName="color" [nzCustomTemplate]="custom">
+          <nz-option *ngFor="let c of colors" nzCustomContent [nzLabel]="c" [nzValue]="c">
+            <i class="circle icon" [style.color]="c"></i> {{c}}
+          </nz-option>
+        </nz-select>
+        <ng-template #custom let-selected>
+          <span><i class="circle icon" [style.color]="selected.nzValue"></i> {{ selected.nzValue }}</span>
+        </ng-template>
       </div>
 
     </div>

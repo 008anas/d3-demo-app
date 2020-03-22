@@ -19,15 +19,14 @@ import { SharedModule } from './shared/shared.module';
 import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
 import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
-import { VectorEditorComponent } from './vector-editor/vector-editor.component';
 import { LoaderComponent } from '@components/loader/loader.component';
+import { VectorEditorModule } from './vector-editor/vector-editor.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ContactComponent,
-    VectorEditorComponent,
     LoaderComponent
   ],
   imports: [
@@ -43,7 +42,8 @@ import { LoaderComponent } from '@components/loader/loader.component';
     SharedModule,
     NzSelectModule,
     NzMessageModule,
-    NzAlertModule
+    NzAlertModule,
+    VectorEditorModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
