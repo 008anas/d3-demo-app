@@ -3,7 +3,7 @@
   <div class="equal width center aligned middle aligned row" style="padding: 0em">
 
     <div class="column">
-      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="hgMenu">
+      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="hgMenu" nzPlacement="bottomCenter">
         Highlight
         <i class="dropdown icon"></i>
       </a>
@@ -179,7 +179,7 @@
                             Scores
                           </div>
                           <a class="item" (click)="exportToExcel(op.alias)">
-                            <i class="file excel icon"></i>
+                            <i class="file excel outline icon"></i>
                             Excel
                           </a>
                           <a class="item">
@@ -194,7 +194,7 @@
                             GenBank
                           </a>
                           <a class="item" [ngClass]="{'disabled': !op.cutoffs}">
-                            <i class="file excel icon"></i>
+                            <i class="file excel outline icon"></i>
                             Excel
                           </a>
                         </div>
@@ -345,7 +345,7 @@
       </div>
       <div class="divider"></div>
       <a class="item" (click)="exportToExcel()">
-        <i class="file excel icon"></i>
+        <i class="file excel outline icon"></i>
         Excel
       </a>
       <div class="divider"></div>
@@ -353,11 +353,11 @@
         GenBank
       </div>
       <a class="item" (click)="bulk = false;export([])">
-        <i class="file icon"></i>
+        <i class="file outline icon"></i>
         Only tracks
       </a>
       <a class="item" (click)="bulk = true;export([])">
-        <i class="file icon"></i>
+        <i class="file outline icon"></i>
         With all scores
         <div class="description">
           (heavy)
@@ -369,18 +369,16 @@
 
 <!-- Highlight -->
 <nz-dropdown-menu #hgMenu="nzDropdownMenu">
-  <div class="ui floating multiple dropdown">
-    <div class="menu transition visible">
-      <a class="item" nz-popover nzType="primary" nzPopoverTitle="Set highlight positions" [nzPopoverContent]="contentTemplate">
-        <i class="crosshairs icon"></i>
-        Set highlight
-      </a>
-      <a class="item" (click)="clearHighlight()">
-        <i class="eraser icon"></i>
-        Clear highlight
-      </a>
-    </div>
-  </div>
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item nz-popover nzType="primary" nzPopoverTitle="Set highlight positions" [nzPopoverContent]="contentTemplate">
+      <i class="crosshairs icon"></i>
+      Set highlight
+    </li>
+    <li nz-menu-item (click)="clearHighlight()">
+      <i class="eraser icon"></i>
+      Clear highlight
+    </li>
+  </ul>
 </nz-dropdown-menu>
 
 <ng-template #contentTemplate>

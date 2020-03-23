@@ -6,7 +6,6 @@ export class Construct extends Deserializable {
   id?: string;
   name: string;
   circular?: boolean;
-  sequence: string;
   description: string;
   dna_seq: string;
   protein_seq: string;

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { VectorEditorRoutingModule } from './vector-editor-routing.module';
 import { VectorComponent } from './vector/vector.component';
+import { SharedModule } from 'app/shared/shared.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { VectorComponent } from './vector/vector.component';
   ],
   imports: [
     CommonModule,
-    VectorEditorRoutingModule
+    VectorEditorRoutingModule,
+    SharedModule
   ]
 })
 export class VectorEditorModule { }

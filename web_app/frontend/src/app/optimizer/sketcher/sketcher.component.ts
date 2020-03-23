@@ -62,7 +62,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private notify: NzMessageService
   ) {
     this.construct.tracks = [];
-    this.construct.sequence = '';
+    this.construct.dna_seq = '';
   }
 
   ngOnInit() {
@@ -176,7 +176,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       )
     ) {
       this.construct.tracks = [];
-      this.construct.sequence = '';
+      this.construct.dna_seq = '';
     }
   }
 
@@ -228,7 +228,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.sketcherLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
       this.sqrutinySrvc.fromSketch(this.construct)
-      .pipe(finalize(() => (this.sketcherLoading = false)))
+        .pipe(finalize(() => (this.sketcherLoading = false)))
         .subscribe(
           (data: UserHistory) => {
             this.history = new UserHistory().deserialize(data);
@@ -256,10 +256,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
     if (track['pos'] > -1) {
       this.construct.tracks[track['pos']] = track;
       this.construct.tracks[track['pos']].start =
-        this.construct.sequence.length + 1;
+        this.construct.dna_seq.length + 1;
       this.construct.tracks[track['pos']].end =
-        this.construct.sequence.length + track.sequence.length;
-      this.construct.sequence += track.sequence;
+        this.construct.dna_seq.length + track.sequence.length;
+      this.construct.dna_seq += track.sequence;
       delete this.construct.tracks[track['pos']]['invalid']; // Now is valid
     }
     this.track = null;
@@ -311,8 +311,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
           data = Utils.jsonToFasta([this.construct]);
           ext = 'fasta';
           break;
-        case 'XLSX':
-          // TODO:
+        case 'Excel':
+          // data = this.construct.tracks;
+          ext = 'xlsx';
           break;
         case 'JSON':
           data = JSON.stringify({ construct: this.construct });
@@ -331,7 +332,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   // TODO:
   canDeactivate(): Observable<boolean> | boolean {
-    // if (this.newExperimentForm.dirty && !this.newExperimentForm.submitted) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
+    if (this.construct.tracks.length) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
 
     return true;
   }

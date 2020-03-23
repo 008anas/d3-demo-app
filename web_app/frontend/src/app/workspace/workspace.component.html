@@ -80,6 +80,9 @@
                   </div>
                 </td>
                 <td class="ui center aligned">
+                  <a [clipboard]="h.id" data-inverted="" data-position="top center" data-tooltip="Copy ID">
+                    <i class="copy icon"></i>
+                  </a>
                   <a (click)="deleteHistory(h.id)" data-inverted="" data-position="top center" data-tooltip="Delete">
                     <i class="trash link red icon"></i>
                   </a>

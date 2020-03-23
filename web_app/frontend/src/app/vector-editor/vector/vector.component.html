@@ -1,17 +1,26 @@
 <div class="ui main fluid container">
+
   <div class="ui container p-5">
-    <form class="ui form" style="width:50%; margin: 0.5em auto">
+    <form class="ui form" style="width:35%; margin: 0.5em auto">
+
       <div class="field txt-c">
-        <p>Enter a history ID to load the construct in the Vector Editor.</p>
+        <p>Enter a <strong>History ID</strong> to load the construct in the Vector Editor.</p>
+        <p>You can find a your history at your <a [routerLink]="'/workspace'">Workspace area</a>.</p>
         <div class="ui action input">
-          <input type="text" name="history-id" [(ngModel)]="history.id">
-          <button type="submit" class="ui right labeled icon primary button" [disabled]="!history" (click)="getHistory()">
-            {{history ? 'Change' : 'Retrieve'}}
+          <input type="text" name="history-id" [(ngModel)]="historyId">
+          <button type="submit" class="ui right labeled icon primary button" [disabled]="!historyId" (click)="getHistory()">
+            {{historyId ? 'Change' : 'Load in editor'}}
             <i class="search icon"></i>
           </button>
         </div>
       </div>
+
+      <div class="field">
+          <sqy-errors-list [errors]="response"></sqy-errors-list>
+      </div>
+
     </form>
   </div>
+
   <div id="vector_editor"></div>
 </div>

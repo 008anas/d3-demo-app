@@ -27,11 +27,13 @@ class OptimizeSequenceSkectherView(LoggingMixin, APIView):
         if not serializer.is_valid(raise_exception=True):
             return Response(dict(msg='Invalid construct.'), status=status.HTTP_400_BAD_REQUEST)
 
-        specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id', None)).first()
+        tax_id = serializer.validated_data.get('specie_tax_id', None)
+
+        specie = Specie.objects.filter(tax_id=tax_id).first()
 
         if specie is None:
-            return Response({'msg': 'Specie with ncbi tax id ' + str(
-                serializer.validated_data['specie_tax_id']) + ' was not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'msg': 'Specie with ncbi tax id ' + str(tax_id) + ' was not found'},
+                            status=status.HTTP_404_NOT_FOUND)
 
         construct = serializer.save(specie=specie)
 

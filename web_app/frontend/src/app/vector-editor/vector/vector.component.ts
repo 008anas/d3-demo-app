@@ -8,6 +8,7 @@ declare var createVectorEditor: any;
 import { UserHistory } from 'app/workspace/shared/user-history';
 import { HistoryService } from 'app/workspace/shared/history.service';
 import { TitleService } from '@services/title.service';
+import { LoaderService } from '@services/loader.service';
 
 @Component({
   selector: 'sqy-vector',
@@ -18,28 +19,24 @@ export class VectorComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
   history: UserHistory = null;
-  isLoading = true;
+  historyId: string;
+  editor: any = null;
+  response: any = null;
 
   constructor(
     private route: ActivatedRoute,
     private historySrvc: HistoryService,
-    private titleSrvc: TitleService
+    private titleSrvc: TitleService,
+    private loader: LoaderService
   ) { }
 
   ngOnInit() {
-    this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
-
-    if (this.history) {
+    this.loadEditor();
+    if (this.route.snapshot.data.history) {
+      this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
+      this.historyId = this.history.id;
       this.titleSrvc.setTitle(this.history.name);
       this.loadConstructInEditor();
-    } else {
-      this.sub = this.route.queryParams.subscribe(params => this.history.id = params.construct || null);
-
-      if (this.history.id) {
-        this.getHistory();
-      } else {
-        createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe');
-      }
     }
   }
 
@@ -48,37 +45,21 @@ export class VectorComponent implements OnInit, OnDestroy {
   }
 
   getHistory() {
-    this.isLoading = true;
-    this.historySrvc.getById(this.history.id)
-      .pipe(finalize(() => this.isLoading = false))
+    this.loader.startLoading();
+    this.response = null;
+    this.historySrvc.getById(this.historyId)
+      .pipe(finalize(() => this.loader.stopLoading()))
       .subscribe(data => {
-        this.history.deserialize(data);
+        this.history = new UserHistory().deserialize(data);
+        this.historyId = this.history.id;
         this.loadConstructInEditor();
-      }
-      );
+      },
+        err => this.response = err);
   }
 
-  loadConstructInEditor() {
-    const editor = createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe'); /* createDomNodeForMe will make a dom node for you and append it to the document.body*/
-    editor.updateEditor({
-      sequenceData: {
-        sequence: this.history.construct.dna_seq,
-        circular: this.history.construct.circular,
-        sequenceFileName: 'pj5_00001.gb',
-        size: 8832,
-        description: this.history.construct.description || '',
-        features: this.history.construct.tracks.map(t => {
-          return {
-            color: t.color,
-            name: t.label,
-            type: t.type,
-            start: t.start,
-            end: t.end,
-            forward: true // ie true=positive strand     false=negative strange
-          };
-        }),
-        fromFileUpload: false
-      },
+  loadEditor() {
+    this.editor = createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe'); /* createDomNodeForMe will make a dom node for you and append it to the document.body*/
+    this.editor.updateEditor({
       annotationLabelVisibility: {
         features: true,
         parts: true,
@@ -159,8 +140,7 @@ export class VectorComponent implements OnInit, OnDestroy {
             usForward: 0,
             usReverse: 0,
             color: '#0d994a'
-          },
-          // ...etc
+          }
         }
       },
       selectedAnnotations: {
@@ -189,4 +169,26 @@ export class VectorComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadConstructInEditor() {
+    this.editor.updateEditor({
+      sequenceData: {
+        sequence: this.history.construct.dna_seq,
+        circular: this.history.construct.circular,
+        sequenceFileName: 'pj5_00001.gb',
+        size: 8832,
+        description: this.history.construct.description || '',
+        features: this.history.construct.tracks.map(t => {
+          return {
+            color: t.color,
+            name: t.label,
+            type: t.type,
+            start: t.start,
+            end: t.end,
+            forward: true // ie true=positive strand     false=negative strange
+          };
+        }),
+        fromFileUpload: false
+      }
+    });
+  }
 }

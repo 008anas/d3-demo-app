@@ -13,14 +13,8 @@
         </div>
 
         <div class="column">
-          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Load example construct" data-position="bottom center" [disabled]="locked" (click)="exampleConstruct()">
+          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Options" data-position="bottom center" nz-dropdown [nzDropdownMenu]="optionsMenu" nzTrigger="click" nzPlacement="bottomCenter">
             <i class="database icon"></i>
-          </button>
-        </div>
-
-        <div class="column">
-          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Clear construct" data-position="bottom center" (click)="clear()" [disabled]="!construct.tracks?.length || locked">
-            <i class="eraser icon"></i>
           </button>
         </div>
 
@@ -31,7 +25,7 @@
         </div>
 
         <div class="column">
-          <button class="ui circular icon primary button" nz-dropdown [nzDropdownMenu]="settingsMenu" [nzClickHide]="false" nzTrigger="click" nzPlacement="bottomCenter" [disabled]="isTracksLoading">
+          <button class="ui circular icon primary button" nz-dropdown [nzDropdownMenu]="settingsMenu" nzTrigger="click" nzPlacement="bottomCenter" [disabled]="isTracksLoading">
             <i class="cogs icon"></i>
           </button>
         </div>
@@ -70,7 +64,7 @@
                 </div>
 
                 <div class="inline field txt-c">
-                  <label>Total length:</label> {{construct.sequence?.length}} bps
+                  <label>Total length:</label> {{construct.dna_seq?.length}} bps
                 </div>
 
                 <div class="inline field txt-c">
@@ -413,17 +407,17 @@
 <!-- Download -->
 <nz-dropdown-menu #downMenu="nzDropdownMenu">
   <ul nz-menu nzSelectable>
-    <li nz-menu-item>
-      <a (click)="downloadAs('Fasta')">
-        <i class="dna icon"></i>
-        Download as fasta
-      </a>
+    <li nz-menu-item (click)="downloadAs('Fasta')">
+      <i class="dna icon"></i>
+      Download as Fasta
     </li>
-    <li nz-menu-item>
-      <a (click)="downloadAs('Json')">
-        <i class="file code icon"></i>
-        Download as JSON
-      </a>
+    <li nz-menu-item (click)="downloadAs('Excel')">
+      <i class="file excel outline icon"></i>
+      Download as Excel
+    </li>
+    <li nz-menu-item (click)="downloadAs('Json')">
+      <i class="file code outline icon"></i>
+      Download as JSON
     </li>
   </ul>
 </nz-dropdown-menu>
@@ -431,11 +425,27 @@
 <!-- Visibility -->
 <nz-dropdown-menu #settingsMenu="nzDropdownMenu" tabindex="0">
   <ul nz-menu nzSelectable>
-    <li nz-menu-item>
-      <a (click)="showIndexes = !showIndexes">
-        Show/Hide indexes
-        <i class="check small icon" [hidden]="!showIndexes"></i>
-      </a>
+    <li nz-menu-item (click)="showIndexes = !showIndexes">
+      Show/Hide indexes
+      <i class="check small icon" [hidden]="!showIndexes"></i>
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!-- Optiones -->
+<nz-dropdown-menu #optionsMenu="nzDropdownMenu" tabindex="0">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item [nzDisabled]="!construct.dna_seq && !construct.dna_seq.length" [clipboard]="construct.dna_seq">
+      <i class="copy icon"></i>
+      Copy sequence
+    </li>
+    <li nz-menu-item [nzDisabled]="locked" (click)="exampleConstruct()">
+      <i class="database icon"></i>
+      Load example construct
+    </li>
+    <li nz-menu-item (click)="clear()" [nzDisabled]="!construct.tracks?.length || locked">
+      <i class="eraser icon"></i>
+      Clear construct
     </li>
   </ul>
 </nz-dropdown-menu>
