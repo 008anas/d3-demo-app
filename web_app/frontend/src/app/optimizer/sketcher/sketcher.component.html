@@ -181,7 +181,7 @@
 
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
                 <label for="construct_name">Enter a label</label>
-                <input type="text" class="transparent" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
+                <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
               </div>
 
               <div class="inline field">

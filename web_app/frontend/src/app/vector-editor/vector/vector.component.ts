@@ -9,6 +9,7 @@ import { UserHistory } from 'app/workspace/shared/user-history';
 import { HistoryService } from 'app/workspace/shared/history.service';
 import { TitleService } from '@services/title.service';
 import { LoaderService } from '@services/loader.service';
+import Utils from 'app/shared/utils';
 
 @Component({
   selector: 'sqy-vector',
@@ -22,6 +23,7 @@ export class VectorComponent implements OnInit, OnDestroy {
   historyId: string;
   editor: any = null;
   response: any = null;
+  uuidRegex = Utils.uuidRegex;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,7 +49,7 @@ export class VectorComponent implements OnInit, OnDestroy {
   getHistory() {
     this.loader.startLoading();
     this.response = null;
-    this.historySrvc.getById(this.historyId)
+    this.historySrvc.getByIdNot404(this.historyId)
       .pipe(finalize(() => this.loader.stopLoading()))
       .subscribe(data => {
         this.history = new UserHistory().deserialize(data);

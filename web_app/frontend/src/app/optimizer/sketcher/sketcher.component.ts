@@ -332,7 +332,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   // TODO:
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.construct.tracks.length) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
+    // if (!this.submitted && this.construct.tracks.length) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
 
     return true;
   }

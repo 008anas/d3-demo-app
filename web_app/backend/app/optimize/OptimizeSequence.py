@@ -32,19 +32,21 @@ class OptimizeSequenceSkectherView(LoggingMixin, APIView):
         specie = Specie.objects.filter(tax_id=tax_id).first()
 
         if specie is None:
-            return Response({'msg': 'Specie with ncbi tax id ' + str(tax_id) + ' was not found'},
+            return Response(dict(msg='Specie with ncbi tax id ' + str(tax_id) + ' was not found'),
                             status=status.HTTP_404_NOT_FOUND)
 
         construct = serializer.save(specie=specie)
 
-        parameters = Parameter.objects.filter(active=True, specie=specie)
+        parameters = Parameter.objects.filter(active=True, specie=specie).values_list('id', flat=True)
 
         if not parameters:
-            return Response({'msg': 'Sorry but it was not possible to perform action. Please try later'},
+            return Response(dict(msg='Sorry but it was not possible to perform action. Please try later'),
                             status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        job = django_rq.enqueue(checker, sequence=construct.dna_seq, parameter_dict=self.parameters_to_dict(parameters),
-                                circular=construct.circular, codon_table=specie.codon_table, result_ttl=-1)
+        job = django_rq.enqueue(checker, sequence=construct.dna_seq,
+                                parameter_dict=Parameter.to_dict_by_id(ids=parameters),
+                                circular=construct.circular,
+                                codon_table=specie.codon_table, result_ttl=-1)
 
         if job.get_status() == 'failed':
             return Response(dict(msg='Sorry There has been a problem. Please try later'),
@@ -63,12 +65,6 @@ class OptimizeSequenceSkectherView(LoggingMixin, APIView):
         serializer = HistorySerializer(instance=history, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @staticmethod
-    def parameters_to_dict(matrix):
-        return {
-            entry.alias: dict(name=entry.name, min=entry.genome_min or 0, max=entry.genome_max or 1,
-                              matrix=entry.matrix_file.path if entry.matrix_file else '') for entry in matrix}
 
 
 class SearchMotifView(APIView):

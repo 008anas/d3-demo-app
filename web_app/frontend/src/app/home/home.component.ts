@@ -7,6 +7,7 @@ import { Specie } from '@models/specie';
 import { SpecieService } from '@services/specie.service';
 import { HistoryService } from 'app/workspace/shared/history.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
+import Utils from 'app/shared/utils';
 
 @Component({
   selector: 'sqy-home',
@@ -23,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   response: any = null;
   isRetriving = false;
   option = 1;
-  uuidRegex = '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+  uuidRegex = Utils.uuidRegex;
   carousel = [
     'https://www.earlham.ac.uk/sites/default/files/images/articles/Synthetic%20Biology%20Spotlight%20Yaomin%20Cai/synthetic-biology-spotlight-yaomin-cai-hero.jpg',
     'https://www.genengnews.com/wp-content/uploads/2019/09/Sep3_2019_Getty_157647511_DNASequence-1-1068x712.jpg',

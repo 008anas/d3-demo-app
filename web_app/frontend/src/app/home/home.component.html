@@ -90,17 +90,17 @@
             <div class="column">
               <form class="ui form" #retrieveHistory="ngForm" (ngSubmit)="getHistory()">
 
-                <div class="field" [ngClass]="{'error': historyId.errors?.pattern && (historyId.dirty || historyId.touched)}">
+                <div class="field" [ngClass]="{'error': historyID.errors?.pattern && (historyID.dirty || historyID.touched)}">
                   <div class="ui big action fluid input" [ngClass]="{'loading': isRetriving}">
-                    <input type="text" name="id" [(ngModel)]="history_id" required [pattern]="uuidRegex" #historyId="ngModel" placeholder="history id...">
+                    <input type="text" name="id" [(ngModel)]="history_id" required [pattern]="uuidRegex" #historyID="ngModel" placeholder="history id...">
                     <button type="submit" [disabled]="retrieveHistory.invalid || !history_id" class="ui primary right labeled icon button">
                       Retrieve <i class="right arrow icon"></i>
                     </button>
                   </div>
                 </div>
 
-                <div class="field" *ngIf="historyId.errors?.pattern && (historyId.dirty || historyId.touched)">
-                  <span class="error">This is a not valid id</span>
+                <div class="field" *ngIf="historyID.errors?.pattern && (historyID.dirty || historyID.touched)">
+                  <span class="error">This is a not valid ID</span>
                 </div>
 
                 <div class="field" *ngIf="response">
