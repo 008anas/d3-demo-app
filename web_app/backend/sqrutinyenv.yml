@@ -1,7 +1,7 @@
 name: sqrutinyenv
 channels:
-  - bioconda
   - conda-forge
+  - bioconda
   - defaults
 dependencies:
   - biopython=1.76
@@ -31,6 +31,7 @@ dependencies:
   - pip=20.0.2
   - python=3.7.3
   - python-dateutil=2.8.1
+  - python_abi=3.7
   - pytz=2019.3
   - readline=8.0
   - redis-py=3.3.11
@@ -47,5 +48,5 @@ dependencies:
   - zlib=1.2.11
   - pip:
     - drf-api-tracking==1.6.0
-prefix: /Users/agharrab/miniconda3/envs/sqrutinyenv
-
+    - drf-tracking==1.5.0
+prefix: /Users/pc/miniconda3/envs/sqrutinyenv
