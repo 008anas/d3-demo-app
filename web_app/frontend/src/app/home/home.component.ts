@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.sub = this.route.queryParams.subscribe(params => {
       if (params.option && params.option <= this.carousel.length) {
-        this.option = Number.parseInt(params.option);
+        this.option = Number.parseInt(params.option, 0);
       }
     });
     this.getSpecies();
@@ -85,6 +85,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   goTo(path: string) {
-    this.specie ? this.router.navigate(['/optimize', path], { queryParams: { specie: this.specie.slug } }) : alert('First choose a specie to proceed');
+    if (this.specie) {
+      this.router.navigate(['/optimize', path], { queryParams: { specie: this.specie.slug } });
+    } else {
+      alert('First choose a specie to proceed');
+    }
   }
 }

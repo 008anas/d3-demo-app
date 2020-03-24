@@ -248,19 +248,19 @@ export class SketcherComponent implements OnInit, OnDestroy {
   openSidebar(e: Track, i: number) {
     if (!this.locked) {
       this.track = Object.assign({}, e);
-      this.track['pos'] = i;
+      this.track.pos = i;
     }
   }
 
   addTrack(track: Track) {
-    if (track['pos'] > -1) {
-      this.construct.tracks[track['pos']] = track;
-      this.construct.tracks[track['pos']].start =
+    if (track.pos > -1) {
+      this.construct.tracks[track.pos] = track;
+      this.construct.tracks[track.pos].start =
         this.construct.dna_seq.length + 1;
-      this.construct.tracks[track['pos']].end =
+      this.construct.tracks[track.pos].end =
         this.construct.dna_seq.length + track.sequence.length;
       this.construct.dna_seq += track.sequence;
-      delete this.construct.tracks[track['pos']]['invalid']; // Now is valid
+      document.getElementById('track' + track.pos).classList.remove('invalid'); // Now is valid
     }
     this.track = null;
   }
@@ -280,9 +280,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   checkTracks() {
     let flag = true;
-    this.construct.tracks.map(t => {
+    this.construct.tracks.map((t, i) => {
       if (!t.sequence) {
-        t['invalid'] = true;
+        document.getElementById('track' + i).classList.add('invalid');
         flag = false;
       }
     });
@@ -332,7 +332,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   // TODO:
   canDeactivate(): Observable<boolean> | boolean {
-    // if (!this.submitted && this.construct.tracks.length) return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?'); // Dirty show dialog to user to confirm leaving
+    // if (!this.submitted && this.construct.tracks.length) {
+    //   return confirm('If you leave you\'ll lose all the unsaved data. Are you sure you want to leave this page?');
+    // }
 
     return true;
   }

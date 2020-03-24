@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class LoaderService {
 
-  private _loading: boolean = false;
+  private _loading = false;
   loadingStatus: Subject<boolean> = new Subject();
 
   get loading(): boolean {
@@ -28,6 +28,6 @@ export class LoaderService {
   }
 
   status(): Observable<boolean> {
-    return this.loadingStatus.asObservable()
+    return this.loadingStatus.asObservable();
   }
 }

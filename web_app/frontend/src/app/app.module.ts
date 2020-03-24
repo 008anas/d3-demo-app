@@ -49,7 +49,7 @@ import { VectorEditorModule } from './vector-editor/vector-editor.module';
     { provide: NZ_I18N, useValue: en_US },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AppHttpInterceptor, multi: true },
-    // { provide: ErrorHandler, useClass: SentryErrorHandler }
+    { provide: ErrorHandler, useClass: SentryErrorHandler }
   ],
   bootstrap: [AppComponent]
 })

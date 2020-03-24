@@ -24,7 +24,7 @@
         <tbody>
           <tr>
             <td>{{_track.type | titlecase}}</td>
-            <td>#{{_track['pos']+1}}</td>
+            <td>#{{_track.pos+1}}</td>
           </tr>
         </tbody>
 
@@ -62,7 +62,7 @@
     <div class="bottom three fields">
 
       <div class="field">
-        <button class="ui left labeled icon primary fluid button" name="action" type="button" (click)="change(_track['pos']-1)" [disabled]="_track['pos']+1 < 2">
+        <button class="ui left labeled icon primary fluid button" name="action" type="button" (click)="change(_track.pos-1)" [disabled]="_track.pos+1 < 2">
           <i class="left arrow icon"></i>
           Previous
         </button>
@@ -76,7 +76,7 @@
       </div>
 
       <div class="field">
-        <button class="ui right labeled icon primary fluid button" name="action" type="button" (click)="change(_track['pos']+1)" [disabled]="_track['pos']+1 === max">
+        <button class="ui right labeled icon primary fluid button" name="action" type="button" (click)="change(_track.pos+1)" [disabled]="_track.pos+1 === max">
           <i class="right arrow icon"></i>
           Next
         </button>

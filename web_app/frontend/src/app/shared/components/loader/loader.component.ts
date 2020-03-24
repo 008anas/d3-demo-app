@@ -11,14 +11,15 @@ import { debounceTime } from 'rxjs/operators';
 export class LoaderComponent implements AfterViewInit, OnDestroy {
 
 
-  debounceTime: number = 200;
-  loading: boolean = false;
+  debounceTime = 200;
+  loading = false;
   loadingSubscription: Subscription;
 
-  constructor(private loaderSrvc: LoaderService,
+  constructor(
+    private loaderSrvc: LoaderService,
     private _elmRef: ElementRef,
-    private _changeDetectorRef: ChangeDetectorRef) {
-  }
+    private _changeDetectorRef: ChangeDetectorRef
+  ) { }
 
   ngAfterViewInit(): void {
     this._elmRef.nativeElement.style.display = 'none';

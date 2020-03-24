@@ -17,7 +17,7 @@ export class TrackDetailsComponent implements OnChanges, OnDestroy {
   @Input() set track(x: Track) {
     if (x) {
       this._track = x;
-      this.max = this.max || this._track['pos'];
+      this.max = this.max || this._track.pos;
       this.updateTrackForm(x);
       this.display = true;
     }

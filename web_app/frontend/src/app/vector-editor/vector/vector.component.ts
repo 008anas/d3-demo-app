@@ -60,7 +60,7 @@ export class VectorComponent implements OnInit, OnDestroy {
   }
 
   loadEditor() {
-    this.editor = createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe'); /* createDomNodeForMe will make a dom node for you and append it to the document.body*/
+    this.editor = createVectorEditor(document.getElementById('vector_editor') || 'createDomNodeForMe');
     this.editor.updateEditor({
       annotationLabelVisibility: {
         features: true,

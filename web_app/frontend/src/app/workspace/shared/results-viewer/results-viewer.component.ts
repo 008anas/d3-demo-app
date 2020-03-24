@@ -194,7 +194,7 @@ export class ResultsViewerComponent implements AfterViewInit {
         this.switchValues(type, graph);
         this.getByAlias(this.options, graph).cutoffs = values;
         document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
-        const element = document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0]
+        const element = document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0];
         element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === operator).desc} ${value}`;
         element.style.visibility = 'visible';
       } else {
@@ -286,14 +286,14 @@ export class ResultsViewerComponent implements AfterViewInit {
         return {
           name: op.name,
           data: op.data
-        }
-      })
+        };
+      });
     }
     if (data) {
       this.fileSrvc.exportAsExcelFile(data, key || 'All export');
       this.notify.success('Exported! Your download is about to start.');
     } else {
-      this.notify.error('Unable to export.')
+      this.notify.error('Unable to export.');
     }
   }
 
@@ -309,8 +309,8 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   getRandomColor() {
     const letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
@@ -322,8 +322,8 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   exportThreshold(key?: string) {
     if (key) {
-      const f = this.filters.filter(f => f.key === key);
-      this.export(f);
+      const filter = this.filters.filter(f => f.key === key);
+      this.export(filter);
     }
   }
 
@@ -344,7 +344,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       return {
         pos: s.start,
         score: type === 'raw' ? s.raw_score : s.norm_score
-      }
+      };
     });
     this.options.find(o => o.alias === alias).type = type;
   }

@@ -14,7 +14,7 @@
 
         <div class="column">
           <button class="ui circular icon primary button" data-inverted="" data-tooltip="Options" data-position="bottom center" nz-dropdown [nzDropdownMenu]="optionsMenu" nzTrigger="click" nzPlacement="bottomCenter">
-            <i class="database icon"></i>
+            <i class="sliders horizontal icon"></i>
           </button>
         </div>
 
@@ -59,9 +59,6 @@
             <div class="ui form">
 
               <div class="inline four fields m-0">
-                <div class="inline field txt-c">
-                  <label>Total tracks:</label> {{construct.tracks?.length}}
-                </div>
 
                 <div class="inline field txt-c">
                   <label>Total length:</label> {{construct.dna_seq?.length}} bps
@@ -84,6 +81,10 @@
 
                 <div class="inline field txt-c" *ngIf="!locked">
                   <i class="pencil alternate icon"></i> Write mode
+                </div>
+
+                <div class="inline field txt-c">
+                  <span class="meta">{{construct.tracks?.length}} tracks</span>
                 </div>
               </div>
 
@@ -108,7 +109,7 @@
 
             <div class="strand" [hidden]="!construct.tracks?.length || isLoading">
 
-              <div class="track" [style.width]="zoom/5.5+'rem'" [ngClass]="{'invalid': t.invalid}" *ngFor="let t of construct.tracks; let i = index" (mouseover)="trackHovered=t" (mouseout)="trackHovered=null">
+              <div class="track" id="track{{i}}" [style.width]="zoom/5.5+'rem'" *ngFor="let t of construct.tracks; let i = index" (mouseover)="trackHovered=t" (mouseout)="trackHovered=null">
                 <div class="header">
                   <div class="ui fluid transparent large input" [ngClass]="{'show': t.label}">
                     <input type="text" name="track-label" placeholder="(label)" #trackLabel="ngModel" [(ngModel)]="t.label" [disabled]="locked">
@@ -411,10 +412,10 @@
       <i class="dna icon"></i>
       Download as Fasta
     </li>
-    <li nz-menu-item (click)="downloadAs('Excel')">
+    <!-- <li nz-menu-item (click)="downloadAs('Excel')">
       <i class="file excel outline icon"></i>
       Download as Excel
-    </li>
+    </li> -->
     <li nz-menu-item (click)="downloadAs('Json')">
       <i class="file code outline icon"></i>
       Download as JSON
@@ -435,7 +436,7 @@
 <!-- Optiones -->
 <nz-dropdown-menu #optionsMenu="nzDropdownMenu" tabindex="0">
   <ul nz-menu nzSelectable>
-    <li nz-menu-item [nzDisabled]="!construct.dna_seq && !construct.dna_seq.length" [clipboard]="construct.dna_seq">
+    <li nz-menu-item [nzDisabled]="!construct.dna_seq && !construct.dna_seq.length" [sqy-clipboard]="construct.dna_seq">
       <i class="copy icon"></i>
       Copy sequence
     </li>

@@ -21,7 +21,7 @@ export class FileService {
   constructor() { }
 
   public exportAsExcelFile(data: ExcelData[], fileName: string): void {
-    var wb: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
+    const wb: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
     data.forEach(d => {
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(d.data);
       wb.SheetNames.push(d.name);
