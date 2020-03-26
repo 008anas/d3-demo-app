@@ -49,4 +49,7 @@ dependencies:
   - pip:
     - drf-api-tracking==1.6.0
     - drf-tracking==1.5.0
+    - sentry-sdk==0.14.3
+    - urllib3==1.25.8
 prefix: /Users/pc/miniconda3/envs/sqrutinyenv
+
