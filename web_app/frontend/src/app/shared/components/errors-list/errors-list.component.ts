@@ -5,7 +5,7 @@ import { Errors } from '@models/error';
 @Component({
   selector: 'sqy-errors-list',
   template: `<div class="m-2">
-    <ul class="error-msgs" *ngIf="errorList">
+    <ul class="error-msgs" *ngIf="errorList" [ngClass]="{'no-point': errorList.length < 2}">
       <li *ngFor="let error of errorList">
         {{ error }}
       </li>

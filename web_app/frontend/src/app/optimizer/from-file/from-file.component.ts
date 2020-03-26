@@ -15,6 +15,7 @@ import { SpecieService } from '@services/specie.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 import { SqrutinyService } from '@services/sqrutiny.service';
+import { LoaderService } from '@services/loader.service';
 
 @Component({
   selector: 'sqy-from-file',
@@ -38,6 +39,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
   isSubmitting = false;
 
   customReq = (item: UploadXHRArgs) => {
+    this.loader.startLoading();
     this.fileList = [item.file];
     const formData = new FormData();
     // tslint:disable-next-line:no-any
@@ -46,8 +48,11 @@ export class FromFileComponent implements OnInit, OnDestroy {
       reportProgress: true,
       withCredentials: true
     });
+    this.response = null;
     this.construct = null;
-    return this.http.request(req).subscribe(
+    return this.http.request(req)
+    .pipe(finalize(() => this.loader.stopLoading()))
+    .subscribe(
       // tslint:disable-next-line no-any
       (event: HttpEvent<any>) => {
         if (event.type === HttpEventType.UploadProgress) {
@@ -63,7 +68,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
           this.notify.success('GenBank file parsed successfully!');
         }
       },
-      err => item.onError!({ statusText: err }, item.file!)
+      err => this.response = err
     );
   }
 
@@ -74,7 +79,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
     private router: Router,
     private notify: NzMessageService,
     private http: HttpClient,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private loader: LoaderService
   ) {
     this.endpoint = env.endpoints.api + '/constructs/from-genbank';
   }

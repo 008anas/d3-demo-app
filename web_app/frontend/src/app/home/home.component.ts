@@ -76,11 +76,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.historySrvc.getByIdNot404(this.history_id)
         .pipe(finalize(() => this.isRetriving = false))
         .subscribe(
-          (data: UserHistory) => {
-            this.router.navigate(['/workspace', data.id]);
-          },
-          err => this.response = err
-        );
+          (data: UserHistory) => this.router.navigate(['/workspace', data.id]),
+          err => {
+            console.log(err)
+            this.response = err});
     }
   }
 

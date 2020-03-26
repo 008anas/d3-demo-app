@@ -7,6 +7,7 @@ from Bio.SeqFeature import SeqFeature, FeatureLocation
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from sentry_sdk import capture_message
 
 from .models import History
 from .serializers import HistorySerializer, ExportResultsSerializer
@@ -45,7 +46,7 @@ class HistoryViewSet(viewsets.ModelViewSet):
         return Response(dict(msg='History deleted successfully!'), status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
-        # return History.objects.filter(deleted=False).order_by('-created_at')
+        capture_message("Captured", level="debug")
         return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by(
             '-created_at')
 

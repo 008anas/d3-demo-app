@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   sentry: {
-    dsn: 'https://f35c3be6cd794b069c754d34e0daa7a9@sentry.io/1552997'
+    dsn: 'https://6cc9263267344411963b532230e8ef25@sentry.io/5174978'
   },
   endpoints: {
     api: 'http://localhost:8000/api/v1',

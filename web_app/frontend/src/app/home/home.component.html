@@ -103,8 +103,8 @@
                   <span class="error">This is a not valid ID</span>
                 </div>
 
-                <div class="field" *ngIf="response">
-                  <span class="error">{{response}}</span>
+                <div class="field">
+                  <sqy-errors-list [errors]="response"></sqy-errors-list>
                 </div>
 
               </form>

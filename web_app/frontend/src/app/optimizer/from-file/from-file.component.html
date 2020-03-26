@@ -9,6 +9,10 @@
 
     <div class="ui two column centered padded grid">
 
+      <div class="column">
+        <sqy-errors-list [errors]="response"></sqy-errors-list>
+      </div>
+
       <div class="one column row">
         <div class="column right aligned">
           <a class="disabled" (click)="loadExample()">Load example file</a>
