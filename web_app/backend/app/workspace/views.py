@@ -1,5 +1,6 @@
 import operator
 import tempfile
+from random import randrange
 
 import django_rq
 from Bio import SeqIO
@@ -46,7 +47,7 @@ class HistoryViewSet(viewsets.ModelViewSet):
         return Response(dict(msg='History deleted successfully!'), status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
-        capture_message("Captured", level="debug")
+        capture_message("Captured event: " + randrange(10), level="debug")
         return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by(
             '-created_at')
 
