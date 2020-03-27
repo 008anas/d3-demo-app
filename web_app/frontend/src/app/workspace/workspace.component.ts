@@ -6,6 +6,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { HistoryService } from './shared/history.service';
 import { UserHistory } from './shared/user-history';
+import { NavService } from '@services/nav.service';
 
 @Component({
   selector: 'sqy-workspace',
@@ -20,7 +21,8 @@ export class WorkspaceComponent implements OnInit {
   constructor(
     private router: Router,
     private historySrvc: HistoryService,
-    private notify: NzMessageService
+    private notify: NzMessageService,
+    private navSrvc: NavService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -43,8 +45,9 @@ export class WorkspaceComponent implements OnInit {
       this.historySrvc.deleteAll()
         .pipe(finalize(() => this.isLoading = false))
         .subscribe(data => {
-          this.notify.success(data.msg);
+          this.navSrvc.updateBadge();
           this.getUserHistory();
+          this.notify.success(data.msg);
         });
     }
   }
@@ -55,8 +58,9 @@ export class WorkspaceComponent implements OnInit {
       this.historySrvc.delete(id)
         .pipe(finalize(() => this.isLoading = false))
         .subscribe(() => {
-          this.notify.success('History deleted!');
+          this.navSrvc.updateBadge();
           this.getUserHistory();
+          this.notify.success('History deleted!');
         });
     }
   }

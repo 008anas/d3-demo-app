@@ -16,6 +16,7 @@ import { UserHistory } from 'app/workspace/shared/user-history';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 import { SqrutinyService } from '@services/sqrutiny.service';
 import { LoaderService } from '@services/loader.service';
+import { NavService } from '@services/nav.service';
 
 @Component({
   selector: 'sqy-from-file',
@@ -42,7 +43,6 @@ export class FromFileComponent implements OnInit, OnDestroy {
     this.loader.startLoading();
     this.fileList = [item.file];
     const formData = new FormData();
-    // tslint:disable-next-line:no-any
     formData.append('file', item.file as any);
     const req = new HttpRequest('POST', item.action!, formData, {
       reportProgress: true,
@@ -51,25 +51,23 @@ export class FromFileComponent implements OnInit, OnDestroy {
     this.response = null;
     this.construct = null;
     return this.http.request(req)
-    .pipe(finalize(() => this.loader.stopLoading()))
-    .subscribe(
-      // tslint:disable-next-line no-any
-      (event: HttpEvent<any>) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          if (event.total! > 0) {
-            // tslint:disable-next-line:no-any
-            (event as any).percent = (event.loaded / event.total!) * 100;
+      .pipe(finalize(() => this.loader.stopLoading()))
+      .subscribe(
+        (event: HttpEvent<any>) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            if (event.total! > 0) {
+              (event as any).percent = (event.loaded / event.total!) * 100;
+            }
+            item.onProgress!(event, item.file!);
+          } else if (event instanceof HttpResponse) {
+            item.file.status = 'done';
+            item.onSuccess!(event.body, item.file!, event);
+            this.construct = new Construct().deserialize(event.body);
+            this.notify.success('GenBank file parsed successfully!');
           }
-          item.onProgress!(event, item.file!);
-        } else if (event instanceof HttpResponse) {
-          item.file.status = 'done';
-          item.onSuccess!(event.body, item.file!, event);
-          this.construct = new Construct().deserialize(event.body);
-          this.notify.success('GenBank file parsed successfully!');
-        }
-      },
-      err => this.response = err
-    );
+        },
+        err => this.response = err
+      );
   }
 
   constructor(
@@ -80,7 +78,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
     private notify: NzMessageService,
     private http: HttpClient,
     private modal: NzModalService,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private navSrvc: NavService
   ) {
     this.endpoint = env.endpoints.api + '/constructs/from-genbank';
   }
@@ -147,6 +146,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
     this.sqrutinySrvc.fromSketch(this.construct)
       .subscribe(
         (data: UserHistory) => {
+          this.navSrvc.updateBadge();
           this.notify.loading('Your job has been submitted! In a moment you will be redirected. Please be patient');
           setTimeout(() => {
             this.router.navigate(['/workspace', data.id]);

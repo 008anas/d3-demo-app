@@ -16,7 +16,7 @@ from sqrutiny.settings import BASE_DIR
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
 
-TOOL_NAME = 'SQrutiny - Optimize Sequence - '
+TOOL_NAME = 'SQrutiny - '
 
 
 class OptimizeSequenceSkectherView(LoggingMixin, APIView):
@@ -57,10 +57,10 @@ class OptimizeSequenceSkectherView(LoggingMixin, APIView):
             construct=construct, job_id=job.id
         )
 
-        # Save history in current session
-        self.request.session.setdefault('history', [])
-        self.request.session['history'].append(str(history.uuid))
-        self.request.session.modified = True
+        # save the current history in session
+        request.session.setdefault('history', [])
+        request.session['history'].append(str(history.uuid))
+        request.session.modified = True
 
         serializer = HistorySerializer(instance=history, context={'request': request})
 

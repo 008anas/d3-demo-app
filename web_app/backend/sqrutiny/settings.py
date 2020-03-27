@@ -9,6 +9,7 @@ from configparser import RawConfigParser
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.rq import RqIntegration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -187,6 +188,9 @@ RQ_SHOW_ADMIN_LINK = True
 
 sentry_sdk.init(
     dsn='https://18fa303e3ac248acac6faa0455ab6160@sentry.io/5174972',
-    integrations=[DjangoIntegration(), RqIntegration()],
+    integrations=[
+        DjangoIntegration(),
+        RqIntegration(),
+        RedisIntegration()],
     send_default_pii=True
 )

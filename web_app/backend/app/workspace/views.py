@@ -1,6 +1,5 @@
 import operator
 import tempfile
-from random import randrange
 
 import django_rq
 from Bio import SeqIO
@@ -8,7 +7,6 @@ from Bio.SeqFeature import SeqFeature, FeatureLocation
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from sentry_sdk import capture_message
 
 from .models import History
 from .serializers import HistorySerializer, ExportResultsSerializer
@@ -47,7 +45,6 @@ class HistoryViewSet(viewsets.ModelViewSet):
         return Response(dict(msg='History deleted successfully!'), status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
-        capture_message("Captured event: " + str(randrange(10)), level="debug")
         return History.objects.filter(uuid__in=self.request.session.get('history', []), deleted=False).order_by(
             '-created_at')
 
@@ -95,8 +92,8 @@ class ExportThresholdView(APIView):
             '>=': operator.ge,
         }
 
-        # if str(history_id) not in request.session.get('history', []):
-        #   return Response(dict(msg='History with such id not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        if str(history_id) not in request.session.get('history', []):
+            return Response(dict(msg='History with such id not found.'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
         history = History.objects.filter(uuid=str(history_id), deleted=False).first()
 

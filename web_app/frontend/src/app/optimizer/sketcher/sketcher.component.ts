@@ -16,6 +16,7 @@ import Utils from 'app/shared/utils';
 import { Construct } from '@models/construct';
 import { SqrutinyService } from '@services/sqrutiny.service';
 import { FileService } from '@services/file.service';
+import { NavService } from '@services/nav.service';
 
 class Category {
   name: string;
@@ -59,7 +60,8 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private sqrutinySrvc: SqrutinyService,
     private fileSrvc: FileService,
     private router: Router,
-    private notify: NzMessageService
+    private notify: NzMessageService,
+    private navSrvc: NavService
   ) {
     this.construct.tracks = [];
     this.construct.dna_seq = '';
@@ -231,6 +233,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => (this.sketcherLoading = false)))
         .subscribe(
           (data: UserHistory) => {
+            this.navSrvc.updateBadge();
             this.history = new UserHistory().deserialize(data);
             this.submitted = true;
             setTimeout(() => {
