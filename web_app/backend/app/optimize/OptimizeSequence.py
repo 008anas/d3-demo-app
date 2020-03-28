@@ -1,4 +1,3 @@
-import logging
 import sys
 
 import django_rq
@@ -16,9 +15,6 @@ from sqrutiny.settings import BASE_DIR
 
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
-
-# Get an instance of a logger
-logger = logging.getLogger('django')
 
 
 TOOL_NAME = 'SQrutiny - '
@@ -66,9 +62,6 @@ class OptimizeSequenceSkectherView(LoggingMixin, APIView):
         request.session.setdefault('history', [])
         request.session['history'].append(str(history.uuid))
         request.session.modified = True
-
-        logger.info('OPTIMIZE:')
-        logger.info(self.request.session.get('history', []))
 
         serializer = HistorySerializer(instance=history, context={'request': request})
 

@@ -1,4 +1,3 @@
-import logging
 import operator
 import tempfile
 
@@ -12,15 +11,10 @@ from rest_framework.views import APIView
 from .models import History
 from .serializers import HistorySerializer, ExportResultsSerializer
 
-# Get an instance of a logger
-logger = logging.getLogger('django')
-
 
 class HistoryCountView(APIView):
 
     def get(self, request):
-        logger.info('COUNT:')
-        logger.info(self.request.session.get('history', []))
         return Response(dict(count=len(self.request.session.get('history', []))))
 
 
@@ -117,7 +111,7 @@ class ExportThresholdView(APIView):
 
         keys = [f.get('key', '') for f in filters]
 
-        # Keep only in filters (if minimize mode)
+        # Keep only in filters (if bulk mode)
         if not bulk:
             result = [r for r in result if r['alias'] in keys]
 
