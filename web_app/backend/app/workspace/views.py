@@ -1,5 +1,6 @@
 import operator
 import tempfile
+import logging
 
 import django_rq
 from Bio import SeqIO
@@ -11,10 +12,13 @@ from rest_framework.views import APIView
 from .models import History
 from .serializers import HistorySerializer, ExportResultsSerializer
 
+logging.getLogger('django')
+
 
 class HistoryCountView(APIView):
 
     def get(self, request):
+        logger.info(self.request.META)
         return Response(dict(count=len(self.request.session.get('history', []))))
 
 
