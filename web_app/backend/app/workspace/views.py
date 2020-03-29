@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from .models import History
 from .serializers import HistorySerializer, ExportResultsSerializer
 
-logging.getLogger('django')
+logger = logging.getLogger('django')
 
 
 class HistoryCountView(APIView):
