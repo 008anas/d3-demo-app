@@ -9,9 +9,11 @@ from . import settings
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('admin/django-rq', include('django_rq.urls')),
-    path('api/v1/', include('app.urls'))
+    path('admin/django-rq', include('django_rq.urls'))
 ]
+
+if not settings.DEBUG:
+    urlpatterns += path('api/v1/', include('app.urls'))
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

@@ -24,7 +24,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     switch (error) {
       case 0:
       case 500:
-        // this.router.navigate([routes.error500]);
+        this.router.navigate([routes.error500]);
         break;
       case 404:
         this.router.navigate([routes.error404]);

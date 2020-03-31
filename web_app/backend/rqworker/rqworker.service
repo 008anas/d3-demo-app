@@ -1,0 +1,12 @@
+[Unit]
+Description=Django-RQ Worker
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www/html/sqrutiny/SQRUTINY/web_app/backend
+ExecStart=/home/bioroboost/miniconda3/envs/sqrutinyenv/bin/python \
+    /var/www/html/sqrutiny/SQRUTINY/web_app/backend/manage.py \
+    rqworker
+
+[Install]
+WantedBy=multi-user.target
