@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { main } from '@config/main';
@@ -10,15 +10,13 @@ import { SqrutinyService } from '@services/sqrutiny.service';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent {
 
   isLoading = false;
   contact: Contact = new Contact();
-  email: string;
+  email = '';
 
-  constructor(private sqrutinySrvc: SqrutinyService) { }
-
-  ngOnInit() {
+  constructor(private sqrutinySrvc: SqrutinyService) {
     this.email = main.email;
   }
 

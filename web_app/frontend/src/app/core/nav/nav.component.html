@@ -5,20 +5,9 @@
       <a class="item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         Home
       </a>
-      <div class="ui simple dropdown item">
-        Optimize
-        <i class="dropdown icon"></i>
-        <div class="menu">
-          <a class="item" routerLink="/optimize/sketcher">
-            <i class="dna icon"></i>
-            Sketcher
-          </a>
-          <a class="item" routerLink="/optimize/upload">
-            <i class="file outline icon"></i>
-            Upload file
-          </a>
-        </div>
-      </div>
+      <a class="item" routerLink="/optimize/sketcher" routerLinkActive="active">
+        Sketcher
+      </a>
       <a class="item" routerLink="/editor" routerLinkActive="active">
         Vector editor
       </a>

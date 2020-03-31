@@ -4,8 +4,8 @@ from .optimize.OptimizeSequence import SearchMotifView, \
     OptimizeSequenceSkectherView
 
 urlpatterns = [
-    path('tracks', include('app.genetic_element.urls')),
-    path('species', include('app.specie.urls')),
+    path('tracks/', include('app.genetic_element.urls')),
+    path('species/', include('app.specie.urls')),
     path('contact', include('app.contact.urls')),
     path('workspace/', include('app.workspace.urls')),
     path('constructs/', include('app.construct.urls')),

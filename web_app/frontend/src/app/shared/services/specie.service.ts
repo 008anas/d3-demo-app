@@ -18,7 +18,7 @@ export class SpecieService {
 
   /** Gets a specie by id provided */
   getAll(): Observable<Specie[]> {
-    return this.http.get<Specie[]>(`${this.url}`).pipe();
+    return this.http.get<Specie[]>(`${this.url}/`).pipe();
   }
 
   /** Gets a specie by id provided */

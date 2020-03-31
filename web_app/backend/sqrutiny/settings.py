@@ -39,6 +39,8 @@ LOGGING_DIR = os.path.join(BASE_DIR, 'logs')
 
 ALLOWED_HOSTS = ['*']
 
+APPEND_SLASH = True
+
 # Application definition
 
 INSTALLED_APPS = [

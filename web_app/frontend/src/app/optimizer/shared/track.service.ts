@@ -18,7 +18,7 @@ export class TrackService {
 
   /** Gets a track by id provided */
   getAll(): Observable<Track[]> {
-    return this.http.get<Track[]>(`${this.url}`).pipe();
+    return this.http.get<Track[]>(`${this.url}/`).pipe();
   }
 
   getByCategories(): Observable<any[]> {
