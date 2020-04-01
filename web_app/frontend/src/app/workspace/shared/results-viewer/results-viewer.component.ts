@@ -349,14 +349,12 @@ export class ResultsViewerComponent implements AfterViewInit {
     this.options.find(o => o.alias === alias).type = type;
   }
 
-  // TODO: get by score type
-  //   getByScoreType(type)
-  // {
-  //   this._data.results.find(r => r.alias === alias).scores.map((s: any) => {
-  //     return {
-  //       pos: s.start,
-  //       score: type === 'raw' ? s.raw_score : s.norm_score
-  //     }
-  //   });
-  // }
+  getByScoreType(alias: string, type: string) {
+    this._data.results.find(r => r.alias === alias).scores.map((s: any) => {
+      return {
+        pos: s.start,
+        score: type === 'raw' ? s.raw_score : s.norm_score
+      }
+    });
+  }
 }
