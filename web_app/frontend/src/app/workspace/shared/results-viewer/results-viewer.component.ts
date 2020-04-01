@@ -59,6 +59,7 @@ export class ResultsViewerComponent implements AfterViewInit {
         color: this.getRandomColor()
       });
     });
+    this.init();
   }
 
   isVisible = false;
@@ -129,7 +130,7 @@ export class ResultsViewerComponent implements AfterViewInit {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
-      this.dnaSeq.nativeElement.click(); // Fix init issue. Simulate click to show data.
+      this.dnaSeq.nativeElement.click(); // Fix init issue. Simulate click to trigger zoom events.
     }
   }
 

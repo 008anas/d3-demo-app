@@ -334,7 +334,7 @@
           </div>
         </div>
         <div class="eight column row">
-          <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="hoveredName=e.name" (mouseout)="hoveredName=null" (click)="e.selected = !e.selected">
+          <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="hoveredName=e.type" (mouseout)="hoveredName=null" (click)="e.selected = !e.selected">
             <a class="floating ui blue label" *ngIf="e.selected">
               ✓
             </a>

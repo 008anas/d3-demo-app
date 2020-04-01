@@ -21,7 +21,7 @@ environ.Env.read_env()  # reading .env file
 SECRET_KEY = env('SECRET_KEY', default='mncl3yc&l&a4@6c_)9*n!tn+p@8o7zs^i19w38zfsk6t%f0r65')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool('DEBUG', default=True)
 
 APP_URL = env('APP_URL', default='localhost')
 

@@ -120,30 +120,7 @@ export class VectorComponent implements OnInit, OnDestroy {
             cutsThisManyTimes: 1
           }
         ],
-        allRestrictionEnzymes: {
-          aatii: {
-            name: 'AatII',
-            site: 'gacgtc',
-            forwardRegex: 'gacgtc',
-            reverseRegex: 'gacgtc',
-            topSnipOffset: 5,
-            bottomSnipOffset: 1,
-            usForward: 0,
-            usReverse: 0,
-            color: '#059369'
-          },
-          acci: {
-            name: 'AccI',
-            site: 'gtmkac',
-            forwardRegex: 'gt[acm][gkt]ac',
-            reverseRegex: 'gt[acm][gkt]ac',
-            topSnipOffset: 2,
-            bottomSnipOffset: 4,
-            usForward: 0,
-            usReverse: 0,
-            color: '#0d994a'
-          }
-        }
+        allRestrictionEnzymes: {}
       },
       selectedAnnotations: {
         idMap: {},
