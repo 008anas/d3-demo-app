@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/browser';
 import { environment as env } from '@env/environment';
 
 Sentry.init({
-  enabled: env.production,
+  // enabled: env.production,
   dsn: env.sentry.dsn
 });
 

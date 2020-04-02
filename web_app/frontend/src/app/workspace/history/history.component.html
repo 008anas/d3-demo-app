@@ -33,7 +33,7 @@
 
               <div class="column txt-r">
 
-                <a class="m-4" (click)="getJob()">
+                <a class="m-4" *ngIf="history.isActive()" (click)="getJob()">
                   <i class="sync icon"></i>
                   Refresh content
                 </a>

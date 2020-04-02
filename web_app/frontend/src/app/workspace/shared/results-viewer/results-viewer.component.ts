@@ -44,7 +44,7 @@ export class ResultsViewerComponent implements AfterViewInit {
     if (!this._data.results || !this._data.construct || !this._data.results.length) {
       return;
     }
-    this._data.results.forEach((r) => {
+    this._data.results.forEach(r => {
       this.options.push({
         name: r.name,
         alias: r.alias,
@@ -59,7 +59,6 @@ export class ResultsViewerComponent implements AfterViewInit {
         color: this.getRandomColor()
       });
     });
-    this.init();
   }
 
   isVisible = false;
