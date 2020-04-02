@@ -33,8 +33,7 @@ export class VectorComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    setTimeout(()=> this.loadEditor(), 50000)
-    // this.loadEditor();
+    this.loadEditor();
     if (this.route.snapshot.data.history) {
       this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
       this.historyId = this.history.id;
@@ -55,7 +54,6 @@ export class VectorComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.history = new UserHistory().deserialize(data);
         this.historyId = this.history.id;
-        setTimeout(()=> this.loadConstructInEditor(), 50000)
         this.loadConstructInEditor();
       },
         err => this.response = err);
