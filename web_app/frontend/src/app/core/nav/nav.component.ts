@@ -39,4 +39,10 @@ export class NavComponent implements OnInit, OnDestroy {
       .subscribe(data => this.count = Number.parseInt(data.count));
   }
 
+  getCountParam() {
+    if (this.count > 0) {
+      return { picker: true };
+    }
+  }
+
 }

@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: rts.home, component: HomeComponent, data: { title: 'Home' } },
   { path: rts.workspace.root, loadChildren: () => import('./workspace/workspace.module').then(m => m.WorkspaceModule) },
   { path: rts.optimize.root, loadChildren: () => import('./optimizer/optimizer.module').then(m => m.OptimizerModule) },
-  { path: rts.editor.root, loadChildren: () => import('./vector-editor/vector-editor.module').then(m => m.VectorEditorModule) },
+  { path: rts.vector.root, loadChildren: () => import('./vector-editor/vector-editor.module').then(m => m.VectorEditorModule) },
   { path: rts.contact, component: ContactComponent, data: { title: 'Contact us' } },
   { path: rts.error404, component: Error404Component, data: { title: 'Page not found' } },
   { path: rts.error500, component: Error500Component, data: { title: 'Internal Server Error' } },

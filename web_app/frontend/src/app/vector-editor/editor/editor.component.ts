@@ -1,62 +1,64 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { finalize } from 'rxjs/operators';
+
+import { NzModalService } from 'ng-zorro-antd/modal';
+
+import { TitleService } from '@services/title.service';
+import { UserHistory } from 'app/workspace/shared/user-history';
+import { HistoryPickerComponent } from '../shared/history-picker/history-picker.component';
 
 declare var createVectorEditor: any;
 
-import { UserHistory } from 'app/workspace/shared/user-history';
-import { HistoryService } from 'app/workspace/shared/history.service';
-import { TitleService } from '@services/title.service';
-import { LoaderService } from '@services/loader.service';
-import Utils from 'app/shared/utils';
-
 @Component({
-  selector: 'sqy-vector',
-  templateUrl: './vector.component.html',
-  styleUrls: ['./vector.component.scss']
+  selector: 'sqy-editor',
+  templateUrl: './editor.component.html',
+  styleUrls: ['./editor.component.scss']
 })
-export class VectorComponent implements OnInit, OnDestroy {
+export class EditorComponent implements OnInit, OnDestroy {
 
   sub: Subscription;
   history: UserHistory = null;
-  historyId: string;
   editor: any = null;
   response: any = null;
-  uuidRegex = Utils.uuidRegex;
 
   constructor(
     private route: ActivatedRoute,
-    private historySrvc: HistoryService,
     private titleSrvc: TitleService,
-    private loader: LoaderService
-  ) { }
+    private modal: NzModalService,
+    private router: Router
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadEditor();
     if (this.route.snapshot.data.history) {
       this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
-      this.historyId = this.history.id;
       this.titleSrvc.setTitle(this.history.name);
       this.loadConstructInEditor();
+    } else {
+      this.modal.create({
+        nzTitle: 'Choose a history to load in the editor',
+        nzContent: HistoryPickerComponent,
+        nzCancelText: 'Go to editor without loading construct',
+        nzOkText: 'Load',
+        nzOnOk: (data: HistoryPickerComponent) => {
+          if (data.selected) {
+            this.history = data.selected;
+            this.loadConstructInEditor();
+          }else{
+            this.loadEditor();
+          }
+        },
+        nzClassName: 'center-modal-scroll'
+      });
     }
   }
 
+
   ngOnDestroy() {
     if (this.sub) { this.sub.unsubscribe(); }
-  }
-
-  getHistory() {
-    this.loader.startLoading();
-    this.response = null;
-    this.historySrvc.getByIdNot404(this.historyId)
-      .pipe(finalize(() => this.loader.stopLoading()))
-      .subscribe(data => {
-        this.history = new UserHistory().deserialize(data);
-        this.historyId = this.history.id;
-        this.loadConstructInEditor();
-      },
-        err => this.response = err);
   }
 
   loadEditor() {
@@ -170,4 +172,5 @@ export class VectorComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 }

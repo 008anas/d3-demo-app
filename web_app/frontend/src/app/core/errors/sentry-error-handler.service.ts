@@ -5,7 +5,6 @@ import * as Sentry from '@sentry/browser';
 import { environment as env } from '@env/environment';
 
 Sentry.init({
-  // enabled: env.production,
   dsn: env.sentry.dsn
 });
 
@@ -17,6 +16,10 @@ export class SentryErrorHandler implements ErrorHandler {
   constructor() { }
 
   handleError(error: { originalError: any; }) {
-    Sentry.captureException(error.originalError || error);
+    if (env.production) {
+      Sentry.captureException(error.originalError || error);
+    } else {
+      console.error(error.originalError || error);
+    }
   }
 }

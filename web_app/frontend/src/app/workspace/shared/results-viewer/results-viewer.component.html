@@ -30,6 +30,12 @@
       </nz-select>
     </div>
 
+    <div class="column">
+      <p>
+        <i class="zoom icon"></i> Use <strong>Ctrl + scroll</strong> to zoom
+      </p>
+    </div>
+
   </div>
 
   <div class="one column row">
@@ -40,20 +46,12 @@
         <div class="ui very padded grid graphs">
 
           <div class="one column row">
-            <div class="column">
+
+            <div class="column mb-4">
               <protvista-navigation length="100000" class="protvista"></protvista-navigation>
-            </div>
-
-            <div class="column">
-              <protvista-sequence class="protvista" highlight-event="onmouseover" #dnaSeq></protvista-sequence>
-            </div>
-
-            <div class="column">
-              <protvista-sequence class="protvista" highlight-event="onmouseover" #proteinSeq></protvista-sequence>
-            </div>
-
-            <div class="column">
-              <protvista-interpro-track class="protvista" shape="roundRectangle" highlight-event="onmouseover" #tracksView></protvista-interpro-track>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #dnaSeq></protvista-sequence>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #proteinSeq></protvista-sequence>
+              <protvista-interpro-track class="protvista" shape="roundRectangle" use-ctrl-to-zoom highlight-event="onmouseover" #tracksView></protvista-interpro-track>
             </div>
 
             <div class="column">
@@ -233,7 +231,7 @@
 
               </div>
 
-              <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60"></sqrutiny-matrix>
+              <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60" use-ctrl-to-zoom></sqrutiny-matrix>
             </div>
           </div>
 

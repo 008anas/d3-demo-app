@@ -1,0 +1,12 @@
+::ng-deep .center-modal-scroll {
+  width: 90% !important;
+
+  .ant-modal {
+    top: 0;
+
+    .ant-modal-body {
+      max-height: calc(90vh - 5em);
+      overflow: auto;
+    }
+  }
+}
