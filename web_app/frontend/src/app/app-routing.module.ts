@@ -6,7 +6,6 @@ import { HomeComponent } from './home/home.component';
 import { ContactComponent } from './contact/contact.component';
 import { Error404Component } from './core/errors/error404/error404.component';
 import { Error500Component } from './core/errors/error500/error500.component';
-import { ConstructResolver } from '@resolvers/construct.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: '/', pathMatch: 'full' },
@@ -27,7 +26,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, {
     onSameUrlNavigation: 'reload'
   })],
-  exports: [RouterModule],
-  providers: [ConstructResolver]
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }
