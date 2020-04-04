@@ -1,3 +1,5 @@
+$zoom-transition: .5s;
+
 a.non-active {
   color: currentColor;
   opacity: 0.5;
@@ -15,5 +17,16 @@ a.non-active {
   .ui.dropdown .scrolling.menu,
   .ui.scrolling.dropdown .menu {
     max-height: 25.57142857rem;
+  }
+}
+
+p {
+  -webkit-transition: font-size $zoom-transition ease-out;
+  -moz-transition: font-size $zoom-transition ease-out;
+  -o-transition: font-size $zoom-transition ease-out;
+  transition: font-size $zoom-transition ease-out;
+
+  &.notice {
+    font-size: 15px;
   }
 }

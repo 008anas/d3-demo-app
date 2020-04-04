@@ -103,7 +103,8 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   @ViewChild('dnaSeq') dnaSeq: ElementRef<HTMLElement>;
   @ViewChild('proteinSeq') proteinSeq: ElementRef<HTMLElement>;
-  @ViewChild('tracksView') tracksComponent: ElementRef<HTMLElement>;
+  @ViewChild('tracksView') tracksElem: ElementRef<HTMLElement>;
+  @ViewChild('zoomIns') zoomIns: ElementRef<HTMLElement>;
 
   constructor(
     private sqSrvc: SqrutinyService,
@@ -124,7 +125,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
       this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
-      this.tracksComponent.nativeElement['data'] = ResultsViewerComponent.getTrackView(this._data.construct.tracks);
+      this.tracksElem.nativeElement['data'] = ResultsViewerComponent.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
@@ -316,10 +317,6 @@ export class ResultsViewerComponent implements AfterViewInit {
     return color;
   }
 
-  getByAlias(data: any[], alias: string): any {
-    return data.find(o => o.alias === alias);
-  }
-
   exportThreshold(key?: string) {
     if (key) {
       const filter = this.filters.filter(f => f.key === key);
@@ -347,6 +344,18 @@ export class ResultsViewerComponent implements AfterViewInit {
       };
     });
     this.options.find(o => o.alias === alias).type = type;
+  }
+
+  noticeZoom(){
+    document.getElementById('zoom-ins').classList.add('notice');
+  }
+
+  unnoticeZoom(){
+    document.getElementById('zoom-ins').classList.remove('notice');
+  }
+
+  getByAlias(data: any[], alias: string): any {
+    return data.find(o => o.alias === alias);
   }
 
   getByScoreType(alias: string, type: string) {

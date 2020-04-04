@@ -31,7 +31,7 @@
     </div>
 
     <div class="column">
-      <p>
+      <p #zoomIns id="zoom-ins">
         <i class="zoom icon"></i> Use <strong>Ctrl + scroll</strong> to zoom
       </p>
     </div>
@@ -47,7 +47,7 @@
 
           <div class="one column row">
 
-            <div class="column mb-4">
+            <div class="column mb-4" (mouseover)="noticeZoom()" (mouseout)="unnoticeZoom()">
               <protvista-navigation length="100000" class="protvista"></protvista-navigation>
               <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #dnaSeq></protvista-sequence>
               <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #proteinSeq></protvista-sequence>
@@ -231,7 +231,7 @@
 
               </div>
 
-              <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60" use-ctrl-to-zoom></sqrutiny-matrix>
+              <sqrutiny-matrix class="protvista score-graph" (mouseover)="noticeZoom()" (mouseout)="unnoticeZoom()" id="{{op.alias}}" height="60" use-ctrl-to-zoom></sqrutiny-matrix>
             </div>
           </div>
 
