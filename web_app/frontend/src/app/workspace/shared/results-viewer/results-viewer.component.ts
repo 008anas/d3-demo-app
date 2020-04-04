@@ -354,7 +354,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       return {
         pos: s.start,
         score: type === 'raw' ? s.raw_score : s.norm_score
-      }
+      };
     });
   }
 }

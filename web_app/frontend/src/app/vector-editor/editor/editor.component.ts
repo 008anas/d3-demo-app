@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { finalize } from 'rxjs/operators';
 
 import { NzModalService } from 'ng-zorro-antd/modal';
+declare var createVectorEditor: any;
 
 import { TitleService } from '@services/title.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import { HistoryPickerComponent } from '../shared/history-picker/history-picker.component';
-
-declare var createVectorEditor: any;
+import { HistoryService } from 'app/workspace/shared/history.service';
 
 @Component({
   selector: 'sqy-editor',
@@ -21,44 +22,56 @@ export class EditorComponent implements OnInit, OnDestroy {
   history: UserHistory = null;
   editor: any = null;
   response: any = null;
+  isLoading = false;
+  historyModal = null;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private titleSrvc: TitleService,
     private modal: NzModalService,
-    private router: Router
+    private historySrvc: HistoryService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.loadEditor();
     if (this.route.snapshot.data.history) {
       this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
       this.titleSrvc.setTitle(this.history.name);
       this.loadConstructInEditor();
     } else {
-      this.modal.create({
-        nzTitle: 'Choose a history to load in the editor',
-        nzContent: HistoryPickerComponent,
-        nzCancelText: 'Go to editor without loading construct',
-        nzOkText: 'Load',
-        nzOnOk: (data: HistoryPickerComponent) => {
-          if (data.selected) {
-            this.history = data.selected;
-            this.loadConstructInEditor();
-          }else{
-            this.loadEditor();
-          }
-        },
-        nzClassName: 'center-modal-scroll'
-      });
+      this.getHistoriesCount();
     }
   }
 
-
   ngOnDestroy() {
     if (this.sub) { this.sub.unsubscribe(); }
+    if (this.historyModal) { this.historyModal.close(); }
+  }
+
+  getHistoriesCount() {
+    this.historySrvc.getCount()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(data => {
+        if (Number.parseInt(data.count || 0) > 0) {
+          this.historyModal = this.modal.create({
+            nzTitle: 'Choose a history to load in the editor',
+            nzContent: HistoryPickerComponent,
+            nzCancelText: 'Go to editor without loading construct',
+            nzOkText: 'Load',
+            nzOnOk: (picker: HistoryPickerComponent) => {
+              if (picker.selected) {
+                this.history = Object.assign(UserHistory, picker.selected);
+                this.loadConstructInEditor();
+              }
+            },
+            nzClassName: 'center-modal-scroll'
+          });
+        }
+      });
   }
 
   loadEditor() {

@@ -335,7 +335,6 @@ export default class Utils {
     let fastaString = '';
     data.forEach((c: any) => {
       if (c.sequence) {
-        console.log(c.sequence);
         fastaString += `>${c.name || 'Untitled Sequence'}`;
         fastaString += `|${c.sequence.length}`;
         fastaString += c.description ? '|' + c.description : '';

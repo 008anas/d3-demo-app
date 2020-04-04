@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { finalize } from 'rxjs/operators';
 
 import { HistoryService } from 'app/workspace/shared/history.service';
 import { NavService } from '@services/nav.service';
@@ -12,7 +11,6 @@ import { NavService } from '@services/nav.service';
 })
 export class NavComponent implements OnInit, OnDestroy {
 
-  isLoading = false;
   count = 0;
   sub: Subscription;
 
@@ -35,14 +33,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   getHistoriesCount() {
     this.historySrvc.getCount()
-      .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => this.count = Number.parseInt(data.count));
-  }
-
-  getCountParam() {
-    if (this.count > 0) {
-      return { picker: true };
-    }
   }
 
 }

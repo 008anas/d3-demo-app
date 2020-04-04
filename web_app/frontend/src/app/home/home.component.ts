@@ -77,9 +77,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         .pipe(finalize(() => this.isRetriving = false))
         .subscribe(
           (data: UserHistory) => this.router.navigate(['/workspace', data.id]),
-          err => {
-            console.log(err)
-            this.response = err});
+          err => this.response = err);
     }
   }
 

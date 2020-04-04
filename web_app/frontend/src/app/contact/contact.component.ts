@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
+import { NzMessageService } from 'ng-zorro-antd/message';
+
 import { main } from '@config/main';
 import { Contact } from '@models/contact';
 import { SqrutinyService } from '@services/sqrutiny.service';
@@ -16,7 +18,10 @@ export class ContactComponent {
   contact: Contact = new Contact();
   email = '';
 
-  constructor(private sqrutinySrvc: SqrutinyService) {
+  constructor(
+    private sqrutinySrvc: SqrutinyService,
+    private notify: NzMessageService
+  ) {
     this.email = main.email;
   }
 
@@ -26,10 +31,8 @@ export class ContactComponent {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         () => {
-          console.log('POST call successful value returned in body');
+          // console.log('POST call successful value returned in body');
         },
-        () => {
-          console.log('POST call in error');
-        });
+        err => this.notify.error(err));
   }
 }
