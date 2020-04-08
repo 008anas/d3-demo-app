@@ -64,7 +64,7 @@ export class EditorComponent implements OnInit, OnDestroy {
             nzOkText: 'Load',
             nzOnOk: (picker: HistoryPickerComponent) => {
               if (picker.selected) {
-                this.history = Object.assign(UserHistory, picker.selected);
+                this.history = Object.assign({}, picker.selected);
                 this.loadConstructInEditor();
               }
             },

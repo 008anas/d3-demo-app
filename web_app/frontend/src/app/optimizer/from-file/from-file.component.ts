@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpResponse, HttpEvent, HttpEventType, HttpRequest } from '@angular/common/http';
@@ -27,7 +27,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   response: any = null;
   sub: Subscription;
-  specie: Specie = null;
+  specie: Specie = new Specie();
   species: Specie[] = [];
   isLoading = false;
   construct: Construct = null;
@@ -38,10 +38,10 @@ export class FromFileComponent implements OnInit, OnDestroy {
   view = true;
   search: string;
   isSubmitting = false;
+  allowedExt = ['.gb', '.gbk', '.genbank'];
 
   customReq = (item: UploadXHRArgs) => {
     this.loader.startLoading();
-    this.fileList = [item.file];
     const formData = new FormData();
     formData.append('file', item.file as any);
     const req = new HttpRequest('POST', item.action!, formData, {
@@ -70,6 +70,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
+  @ViewChild('nzUploader') uploader: any;
+
   constructor(
     private route: ActivatedRoute,
     private specieSrvc: SpecieService,
@@ -86,10 +88,11 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.route.queryParams.subscribe(params => {
-      if (params.specie) { this.specie = new Specie(); }
-      this.specie.slug = params.specie || null;
+      if (params.specie) {
+        this.specie.slug = params.specie || null;
+        this.getSpecie();
+      }
     });
-    if (this.specie) { this.getSpecie(); }
     this.getSpecies();
   }
 
@@ -131,7 +134,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
             const data = new Blob([ev.target.result]);
             const arrayOfBlob = new Array<Blob>();
             arrayOfBlob.push(data);
-            this.fileList = [new File(arrayOfBlob, result.url.split('/').slice(-1)[0])];
+            this.uploader.uploadComp.uploadFiles([new File(arrayOfBlob, result.url.split('/').slice(-1)[0])]);
           }
         };
       },

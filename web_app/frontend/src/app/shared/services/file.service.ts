@@ -28,7 +28,7 @@ export class FileService {
       wb.Sheets[d.name] = ws;
     });
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    this.saveFileAs(excelBuffer, EXCEL_TYPE, `${main.appName}_${fileName}_export${EXCEL_EXTENSION}`);
+    this.saveFileAs(excelBuffer, EXCEL_TYPE, `${main.appName}_${fileName}${EXCEL_EXTENSION}`);
   }
 
   public saveFileAs(buffer: any, type: string, fileName: string): void {

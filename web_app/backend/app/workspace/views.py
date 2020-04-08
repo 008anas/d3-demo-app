@@ -65,6 +65,7 @@ class ClearHistoryView(APIView):
 class PollJobView(APIView):
 
     def get(self, request, job_id):
+
         rq_job = django_rq.get_queue('default').fetch_job(str(job_id))
 
         if rq_job is None:
@@ -89,7 +90,7 @@ class ExportThresholdView(APIView):
             '<=': operator.le,
             '=': operator.eq,
             '>': operator.gt,
-            '>=': operator.ge,
+            '>=': operator.ge
         }
 
         if str(history_id) not in request.session.get('history', []):

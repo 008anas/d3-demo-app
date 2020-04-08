@@ -45,7 +45,7 @@
             </div>
 
             <div class="column comment" *ngIf="specie?.comment">
-              <nz-alert nzType="warning" [nzMessage]="specie.comment" nzShowIcon></nz-alert>
+              <span class="meta"> <i class="info icon"></i> {{specie.comment}}</span>
             </div>
 
           </div>
@@ -70,8 +70,8 @@
               <h3 class="ui header"><a class="action" [ngClass]="{'disabled': !specie}" (click)="goTo('upload')">Upload a file <i class="right arrow icon"></i> </a></h3>
             </div>
 
-            <div class="column comment">
-              <nz-alert nzType="warning" [hidden]="!specie?.comment" [nzMessage]="specie.comment" nzShowIcon></nz-alert>
+            <div class="column comment" *ngIf="specie?.comment">
+              <span class="meta"> <i class="info icon"></i> {{specie.comment}}</span>
             </div>
 
           </div>

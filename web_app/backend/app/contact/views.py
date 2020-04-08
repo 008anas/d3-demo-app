@@ -9,20 +9,14 @@ from .serializers import ContactSerializer
 class ContactCreateView(generics.CreateAPIView):
 
     def post(self, request):
-        comment = ContactSerializer(data=request.data)
+        contact = ContactSerializer(data=request.data)
 
-        if not comment.is_valid():
-            return Response({'serializer': comment})
+        contact.is_valid(raise_exception=True)
 
-        form_subject = comment.data['subject']
-        form_email = comment.data['email']
-        form_message = comment.data['message']
-        form_name = comment.data['name']
-
-        send_mail(form_subject,
-                  form_message,
-                  form_email,
+        send_mail(contact.data.get('subject', ''),
+                  contact.data.get('message'),
+                  contact.data.get('email'),
                   [settings.EMAIL_HOST_USER],
                   fail_silently=False
                   )
-        return Response(comment.data, status=status.HTTP_201_CREATED)
+        return Response(dict(msg='Ok'), status=status.HTTP_201_CREATED)

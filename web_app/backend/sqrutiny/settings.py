@@ -26,7 +26,7 @@ DEBUG = env.bool('DEBUG', default=True)
 APP_URL = env('APP_URL', default='localhost')
 
 # EMAIL
-EMAIL_HOST_USER = env('EMAIL_USER', default='')
+EMAIL_HOST_USER = env('EMAIL_USER', default='sqrutiny.crg.es')
 EMAIL_HOST_PASSWORD = ''
 
 LOGGING_DIR = os.path.join(BASE_DIR, 'logs')

@@ -1,4 +1,6 @@
 <!-- User history picker modal-->
+<div class="ui loading segment" *ngIf="isLoading"></div>
+
 <div class="ui padded grid" *ngIf="!isLoading">
 
   <div class="sixteen wide column" *ngIf="!histories.length">

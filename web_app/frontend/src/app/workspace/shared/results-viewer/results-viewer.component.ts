@@ -283,15 +283,21 @@ export class ResultsViewerComponent implements AfterViewInit {
       const op = this.getByAlias(this.options, key);
       data = [{ name: op.name, data: op.data }];
     } else {
-      data = this.options.map(op => {
+      data = this._data.results.map(v => {
         return {
-          name: op.name,
-          data: op.data
+          name: v.name,
+          data: v.scores.map(s => {
+            return {
+              position: s.start,
+              raw_score: s.raw_score,
+              norm_score: s.norm_score
+            }
+          })
         };
       });
     }
     if (data) {
-      this.fileSrvc.exportAsExcelFile(data, key || 'All export');
+      this.fileSrvc.exportAsExcelFile(data, key || 'export_all');
       this.notify.success('Exported! Your download is about to start.');
     } else {
       this.notify.error('Unable to export.');
@@ -344,14 +350,6 @@ export class ResultsViewerComponent implements AfterViewInit {
       };
     });
     this.options.find(o => o.alias === alias).type = type;
-  }
-
-  noticeZoom(){
-    document.getElementById('zoom-ins').classList.add('notice');
-  }
-
-  unnoticeZoom(){
-    document.getElementById('zoom-ins').classList.remove('notice');
   }
 
   getByAlias(data: any[], alias: string): any {

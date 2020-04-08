@@ -16,7 +16,8 @@ from tools import checker
 class GeneticElementAdmin(ModelAdmin):
     fieldsets = (
         ('Information',
-         {'fields': ('name', 'alias', 'specie', 'genome_min', 'genome_max', 'genetic_element', 'matrix_file')}),
+         {'fields': (
+             'name', 'alias', 'specie', 'genome_min', 'genome_max', 'genetic_element', 'description', 'matrix_file')}),
         ('Actions', {'fields': ('active',)})
     )
     add_fieldsets = (
@@ -44,5 +45,5 @@ class GeneticElementAdmin(ModelAdmin):
                         if not obj.genome_max:
                             obj.genome_max = max(raw)
             except ValueError:
-                raise ValidationError("Unable to calculate genome_min/genome_max. Please enter it manually.")
+                raise ValidationError("Unable to calculate genome_min/ genome_max. Please enter it manually.")
         super().save_model(request, obj, form, change)

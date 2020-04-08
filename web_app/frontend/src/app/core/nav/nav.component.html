@@ -5,8 +5,20 @@
       <a class="item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         Home
       </a>
-      <a class="item" routerLink="/optimize/sketcher" routerLinkActive="active">
-        Sketcher
+      <a class="item" nz-dropdown [nzDropdownMenu]="OpzMenu">
+        Optimize
+        <nz-dropdown-menu #OpzMenu="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item routerLink="/optimize/sketcher" routerLinkActive="active">
+              <i class="dna icon"></i>
+              Sketcher
+            </li>
+            <li nz-menu-item routerLink="/optimize/upload" routerLinkActive="active">
+              <i class="file outline icon"></i>
+              Upload file
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </a>
       <a class="item" routerLink="/editor" routerLinkActive="active">
         Vector editor

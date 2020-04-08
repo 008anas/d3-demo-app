@@ -19,6 +19,7 @@ class Parameter(models.Model):
                                    help_text='If empty it will be automatically calculated from genome file')
     genome_max = models.FloatField(blank=True, default=1,
                                    help_text='If empty it will be automatically calculated from genome file')
+    description = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True, help_text='Determine if it can be used')
     created_at = models.DateTimeField('creation date', auto_now_add=True, editable=False)
     updated_at = models.DateTimeField('last update', auto_now=True, editable=False)

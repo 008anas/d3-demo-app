@@ -123,7 +123,8 @@ class FromGenBankView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
         except:
-            raise
+            return Response(dict(msg='Error while handling. Please try with different file.'),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         tmp_file.close()
 

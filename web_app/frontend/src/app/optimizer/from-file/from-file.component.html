@@ -3,22 +3,31 @@
   <div class="ui vertical masthead center aligned">
 
     <h1 class="ui header">Upload your GenBank</h1>
-    <h2 class="ui header">Allowed extensions: <strong>.gb .gbk .genbank.</strong></h2>
+    <h2 class="ui header">Allowed extensions: <strong>{{allowedExt.toString()}}.</strong></h2>
 
     <p>Upload a valid GenBank file. Note that such file must include at least one <strong>CDS feature</strong>. All others features will be filled with <strong>Dummy feature</strong>.</p>
 
-    <div class="ui two column centered padded grid">
+    <div class="ui two column centered grid">
 
       <div class="column">
         <sqy-errors-list [errors]="response"></sqy-errors-list>
       </div>
 
-      <div class="one column row">
-        <div class="column right aligned">
-          <a class="disabled" (click)="loadExample()">Load example file</a>
+      <div class="two column row">
+        <div class="column">
+          <label for="construct_specie">Upload file for organism:</label>
+          <nz-select [(ngModel)]="specie.tax_id" name="construct-specie" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
+            <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
+          </nz-select>
         </div>
-        <div class="ui column">
-          <nz-upload nzType="drag" [nzCustomRequest]="customReq" [nzFileList]="fileList" [nzAction]="endpoint">
+        <div class="column right aligned" style="padding: 1em">
+          <a class="disabled" (click)="loadExample()">Load model file</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="sixteen wide column">
+          <nz-upload nzType="drag" #nzUploader [nzCustomRequest]="customReq" [nzFileList]="fileList" [nzAccept]="allowedExt" [nzAction]="endpoint">
             <div class="p-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="45" height="46" viewBox="0 0 63 64">
                 <g fill="#3B454F" fill-rule="nonzero">
@@ -37,7 +46,7 @@
                 Only a single file can be uploaded.
               </p>
               <p class="ant-upload-hint">
-                In case of error hover file to get error details.
+                <strong>Allowed extensions:</strong> {{allowedExt.toString()}}
               </p>
             </div>
           </nz-upload>

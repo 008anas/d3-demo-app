@@ -26,7 +26,7 @@ export class SqrutinyService {
   }
 
   contact(contact: any) {
-    return this.http.post<any[]>(`${env.endpoints.api}/contact/`, contact).pipe();
+    return this.http.post<any[]>(`${env.endpoints.api}/contact`, contact).pipe();
   }
 
 }

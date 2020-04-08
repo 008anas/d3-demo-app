@@ -2,7 +2,11 @@
 
   <div class="one column row">
 
-    <div class="column">
+    <div class="column" *ngIf="sent">
+
+    </div>
+
+    <div class="column" *ngIf="!sent">
       <form class="ui form" #contactForm="ngForm" [ngClass]="{'disabled': isLoading}" (ngSubmit)="submitForm()" autocomplete="off">
 
         <div class="field">
@@ -10,7 +14,7 @@
         </div>
 
         <div class="field">
-          <h2>Bioroboost Contact</h2>
+          <h2 class="ui centered header">Sqrutiny Contact Form</h2>
           <p>The <strong>Centre for Genomic Regulation (CRG)</strong> is an international biomedical research institute of excellence, created in December 2000. It is a non-profit foundation funded by the Catalan Government through the Departments of Business &
             Knowledge, the Spanish Ministry of Science, Innovation & Universities, the "la Caixa" Banking Foundation, and includes the participation of Pompeu Fabra University.
             The mission of the CRG is to discover and advance knowledge for the benefit of society, public health and economic prosperity.
@@ -21,34 +25,38 @@
         <h4 class="ui dividing header">Contact form</h4>
 
         <div class="field">
+          <sqy-errors-list [errors]="response"></sqy-errors-list>
+        </div>
+
+        <div class="field">
           <label>Name</label>
           <div class="field">
-            <input type="text" name="name" [(ngModel)]="contact.name" placeholder="Name">
+            <input type="text" name="contact-name" [(ngModel)]="contact.name" placeholder="Name">
           </div>
         </div>
 
         <div class="field required">
           <label>Email</label>
           <div class="field">
-            <input type="email" type="email" name="email" [(ngModel)]="contact.email" required placeholder="Email">
+            <input type="email" name="contact-email" [(ngModel)]="contact.email" required placeholder="Email">
           </div>
         </div>
 
         <div class="field">
           <label>Subject</label>
           <div class="field">
-            <input type="text" name="subject" [(ngModel)]="contact.subject" placeholder="Subject">
+            <input type="text" name="contact-subject" [(ngModel)]="contact.subject" placeholder="Subject">
           </div>
         </div>
 
         <div class="field">
-          <textarea name="body" [(ngModel)]="contact.body" required rows="15"></textarea>
+          <textarea name="contact-body" [(ngModel)]="contact.message" required rows="15" placeholder="Content..."></textarea>
         </div>
 
         <div class="ui hidden divider"></div>
 
         <div class="field">
-          <button class="ui submit fluid button" type="submit" [ngClass]="{'loading': isLoading}" [disabled]="!contactForm.dirty || contactForm.invalid || isLoading">Send</button>
+          <button class="ui submit fluid primary button" type="submit" [ngClass]="{'loading': isLoading}" [disabled]="!contactForm.dirty || contactForm.invalid || isLoading">Send</button>
         </div>
 
       </form>

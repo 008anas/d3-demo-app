@@ -3,7 +3,7 @@
 
   <div class="two column row">
     <div class="column">
-      <strong> Total score:</strong>{{values?.length}}
+      <strong> Total score:</strong>{{_values?.length}}
     </div>
     <div class="column pr-5 right aligned">
       <a class="ui simple dropdown">
@@ -26,6 +26,32 @@
           </a>
         </div>
       </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <table class="ui definition small table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Maximum value</th>
+            <th>Minimum value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="collapsing">Raw scores</td>
+            <td>{{max_raw}}</td>
+            <td>{{min_raw}}</td>
+          </tr>
+          <tr>
+            <td class="collapsing">Normalized scores</td>
+            <td>{{max_norm}}</td>
+            <td>{{min_norm}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
