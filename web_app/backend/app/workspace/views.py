@@ -120,8 +120,7 @@ class ExportThresholdView(APIView):
             # Override results
             single = next((r for r in result if r['alias'] == f['key']), None)
             if single:
-                single['scores'] = [s for s in single['scores'] if op_fn.get(f['op'])(
-                    s.get('raw_score') if f['type'] == 'raw' else s.get('norm_score'), float(f['value']))]
+                single['scores'] = [s for s in single['scores'] if op_fn.get(f['op'])(float(f['value']), s.get('raw_score') if f['type'] == 'raw' else s.get('norm_score'))]
                 result[result.index(single)] = single
 
         # Append result scores

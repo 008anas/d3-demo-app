@@ -123,7 +123,11 @@
                   </div>
 
                   <div class="field">
-                    <a [routerLink]="['/editor', history.id]">Open this construct on vector editor <i class="external link icon"></i> </a>
+                    <a routerLink="/optimize/sketcher" [queryParams]="{construct: history.construct.id}">See it on Sketcher <i class="external link icon"></i> </a>
+                  </div>
+
+                  <div class="field">
+                    <a [routerLink]="['/editor', history.id]">See it on Vector Editor <i class="external link icon"></i> </a>
                   </div>
 
                 </div>

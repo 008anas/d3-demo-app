@@ -175,24 +175,24 @@
 
               <div class="required field">
                 <label for="construct_specie">Select organism</label>
-                <nz-select [(ngModel)]="specie.tax_id" name="construct-specie" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
+                <nz-select name="construct-specie" [(ngModel)]="specie.tax_id" (ngModelChange)="saveInSession()" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
                   <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
                 </nz-select>
               </div>
 
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
                 <label for="construct_name">Enter a label</label>
-                <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
+                <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name" (ngModelChange)="saveInSession()">
               </div>
 
               <div class="inline field">
                 <label for="">Circular</label>
-                <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+                <input type="checkbox" [(ngModel)]="construct.circular" (ngModelChange)="saveInSession()" name="construct-circular">
               </div>
 
               <div class="inline field">
                 <label for="construct_description">Description</label>
-                <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
+                <textarea [(ngModel)]="construct.description" (ngModelChange)="saveInSession()" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
               </div>
 
               <div class="field">
@@ -433,10 +433,14 @@
   </ul>
 </nz-dropdown-menu>
 
-<!-- Optiones -->
+<!-- Options -->
 <nz-dropdown-menu #optionsMenu="nzDropdownMenu" tabindex="0">
   <ul nz-menu nzSelectable>
-    <li nz-menu-item [nzDisabled]="!construct.dna_seq && !construct.dna_seq.length" [sqy-clipboard]="construct.dna_seq">
+    <li nz-menu-item (click)="autoSave != autoSave">
+      <i class="save icon"></i>
+      Auto save {{autoSave ? 'enabled' : 'disabled'}}
+    </li>
+    <li nz-menu-item [nzDisabled]="!construct.dna_seq && !construct.dna_seq?.length" [sqy-clipboard]="construct.dna_seq">
       <i class="copy icon"></i>
       Copy sequence
     </li>

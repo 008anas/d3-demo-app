@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import { routes } from '@config/routes';
+import { environment as env } from '@env/environment';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -15,7 +16,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
-      this.processError(err.status);
+      if (env.production) {
+        this.processError(err.status);
+      }
       return throwError(err.error || err.error);
     }));
   }

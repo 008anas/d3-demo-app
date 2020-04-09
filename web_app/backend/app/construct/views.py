@@ -20,7 +20,7 @@ class ConstructListRetrieveView(viewsets.ModelViewSet):
 
 
 class ConstructExampleView(generics.ListCreateAPIView):
-    queryset = Construct.objects.filter(deleted=False, example=True)
+    queryset = Construct.objects.filter(deleted=False, example=True).first()
     serializer_class = ConstructRetrieveSerializer
 
 
