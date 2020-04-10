@@ -40,7 +40,7 @@
               "node_modules/protvista-zoomable/dist/protvista-zoomable.js",
               "node_modules/protvista-track/dist/protvista-track.js",
               "src/vendor/sqrutiny-matrix/dist/sqrutiny-matrix.js",
-              "node_modules/protvista-navigation/dist/protvista-navigation.js",
+              "src/vendor/protvista-navigation/dist/protvista-navigation.js",
               "node_modules/protvista-sequence/dist/protvista-sequence.js",
               "src/vendor/protvista-manager/dist/protvista-manager.js",
               "node_modules/protvista-interpro-track/dist/protvista-interpro-track.js",

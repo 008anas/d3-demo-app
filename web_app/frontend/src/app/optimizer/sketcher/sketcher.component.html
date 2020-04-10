@@ -298,7 +298,7 @@
 </div>
 
 <!-- Track SideBar -->
-<sqy-track-details (onSave)="addTrack($event)" [track]="track" (changePos)="changeTrack($event)" [max]="construct.tracks?.length" *ngIf="track"></sqy-track-details>
+<sqy-track-details (onSave)="addTrack($event)" [track]="track" (changePos)="changeTrack($event)" [max]="construct.tracks?.length"></sqy-track-details>
 
 <!-- Tracks Modal Picker -->
 <nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose tracks" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isTracksLoading" [nzOkDisabled]="!someSelected()"

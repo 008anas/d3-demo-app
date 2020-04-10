@@ -33,7 +33,6 @@
     "ngx-cookie-service": "^2.4.0",
     "open-vector-editor": "^10.1.47",
     "protvista-interpro-track": "^2.3.5",
-    "protvista-navigation": "^2.3.2",
     "protvista-saver": "^2.3.0",
     "protvista-sequence": "^2.3.5",
     "protvista-track": "^2.3.5",
@@ -67,6 +66,6 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.7.5",
-    "webpack-bundle-analyzer": "^3.6.0"
+    "webpack-bundle-analyzer": "^3.6.1"
   }
 }

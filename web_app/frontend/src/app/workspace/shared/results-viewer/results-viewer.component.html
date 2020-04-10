@@ -48,7 +48,7 @@
           <div class="one column row">
 
             <div class="column mb-4">
-              <protvista-navigation length="100000" class="protvista"></protvista-navigation>
+              <protvista-navigation #navigator class="protvista"></protvista-navigation>
               <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #dnaSeq></protvista-sequence>
               <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #proteinSeq></protvista-sequence>
               <protvista-interpro-track class="protvista" shape="roundRectangle" use-ctrl-to-zoom highlight-event="onmouseover" #tracksView></protvista-interpro-track>
@@ -224,6 +224,10 @@
                         </li>
                       </ul>
                     </nz-dropdown-menu>
+
+                    <!-- <a href="#"> -->
+                      <!-- <i class="info circle link icon"></i> -->
+                    <!-- </a> -->
 
                   </div>
 

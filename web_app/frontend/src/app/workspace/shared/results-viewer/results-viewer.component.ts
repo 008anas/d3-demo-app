@@ -44,7 +44,7 @@ export class ResultsViewerComponent implements AfterViewInit {
     if (!this._data.results || !this._data.construct || !this._data.results.length) {
       return;
     }
-    this._data.results.forEach(r => {
+    this._data.results.forEach((r: { name: any; alias: any; scores: any[]; }) => {
       this.options.push({
         name: r.name,
         alias: r.alias,
@@ -104,7 +104,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   @ViewChild('dnaSeq') dnaSeq: ElementRef<HTMLElement>;
   @ViewChild('proteinSeq') proteinSeq: ElementRef<HTMLElement>;
   @ViewChild('tracksView') tracksElem: ElementRef<HTMLElement>;
-  @ViewChild('zoomIns') zoomIns: ElementRef<HTMLElement>;
+  @ViewChild('navigator') nav: ElementRef<HTMLElement>;
 
   constructor(
     private sqSrvc: SqrutinyService,
@@ -117,11 +117,9 @@ export class ResultsViewerComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit() {
-    this.init();
-  }
-
-  private init() {
+    // Init graphs
     if (this._data && this.options) {
+      this.nav.nativeElement['length'] = this._data.construct.dna_seq.length
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
       this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
@@ -130,7 +128,6 @@ export class ResultsViewerComponent implements AfterViewInit {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
-      this.dnaSeq.nativeElement.click(); // Fix init issue. Simulate click to trigger zoom events.
     }
   }
 
