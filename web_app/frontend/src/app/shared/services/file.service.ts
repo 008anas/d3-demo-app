@@ -20,7 +20,7 @@ export class FileService {
 
   constructor() { }
 
-  public exportAsExcelFile(data: ExcelData[], fileName: string): void {
+  public exportAsExcelFile(data: ExcelData[], fileName?: string): void {
     const wb: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
     data.forEach(d => {
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(d.data);
@@ -28,7 +28,7 @@ export class FileService {
       wb.Sheets[d.name] = ws;
     });
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    this.saveFileAs(excelBuffer, EXCEL_TYPE, `${main.appName}_${fileName}${EXCEL_EXTENSION}`);
+    this.saveFileAs(excelBuffer, EXCEL_TYPE, `${main.appName}_${fileName || new Date().toString()}${EXCEL_EXTENSION}`);
   }
 
   public saveFileAs(buffer: any, type: string, fileName: string): void {

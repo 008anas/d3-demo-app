@@ -12,10 +12,10 @@ import { FileService } from '@services/file.service';
 export class DisplayValuesComponent {
 
   _values: any[];
-  max_raw: number;
-  min_raw: number;
-  max_norm: number;
-  min_norm: number;
+  maxRaw: number;
+  minRaw: number;
+  maxNorm: number;
+  minNorm: number;
 
   @Input() set values(values: any[]) {
     this._values = [];
@@ -23,10 +23,10 @@ export class DisplayValuesComponent {
       this._values = values;
       const raw = this._values.map(v => v.raw_score);
       const norm = this._values.map(v => v.norm_score);
-      this.max_raw = Math.max.apply(Math, raw);
-      this.min_raw = Math.min.apply(Math, raw);
-      this.max_norm = Math.max.apply(Math, norm);
-      this.min_norm = Math.min.apply(Math, norm);
+      this.maxRaw = Math.max.apply(Math, raw);
+      this.minRaw = Math.min.apply(Math, raw);
+      this.maxNorm = Math.max.apply(Math, norm);
+      this.minNorm = Math.min.apply(Math, norm);
     }
   }
 
@@ -37,7 +37,7 @@ export class DisplayValuesComponent {
 
   exportToExcel() {
     if (this.values) {
-      this.fileSrvc.exportAsExcelFile([{ name: 'Scores', data: this.values }], 'sample');
+      this.fileSrvc.exportAsExcelFile([{ name: 'Scores', data: this.values }]);
       this.notify.success('Exported successfully!');
     }
   }

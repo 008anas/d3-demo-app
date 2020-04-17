@@ -5,7 +5,7 @@ import {
   format,
   select,
   event as d3Event
-} from "d3";
+} from 'd3';
 
 const height = 40;
 
@@ -18,8 +18,8 @@ class ProtVistaNavigation extends HTMLElement {
   }
 
   _refreshWidth() {
-    this.style.display = "block";
-    this.style.width = "100%";
+    this.style.display = 'block';
+    this.style.width = '100%';
     this.width = this.offsetWidth;
     if (this.width > 0) {
       this._padding = 10;
@@ -28,21 +28,21 @@ class ProtVistaNavigation extends HTMLElement {
 
   connectedCallback() {
     this._refreshWidth();
-    if (this.closest("protvista-manager")) {
-      this.manager = this.closest("protvista-manager");
+    if (this.closest('protvista-manager')) {
+      this.manager = this.closest('protvista-manager');
       this.manager.register(this);
     }
-    this._displaystart = parseFloat(this.getAttribute("displaystart")) || 1;
-    this._highlightStart = parseFloat(this.getAttribute("highlightStart"));
-    this._highlightEnd = parseFloat(this.getAttribute("highlightEnd"));
+    this._displaystart = parseFloat(this.getAttribute('displaystart')) || 1;
+    this._highlightStart = parseFloat(this.getAttribute('highlightStart'));
+    this._highlightEnd = parseFloat(this.getAttribute('highlightEnd'));
     this._onResize = this._onResize.bind(this);
-    this._length = parseFloat(this.getAttribute("length"));
+    this._length = parseFloat(this.getAttribute('length'));
     this.init();
   }
 
   init() {
     this._displayend =
-      parseFloat(this.getAttribute("displayend")) || this._length;
+      parseFloat(this.getAttribute('displayend')) || this._length;
 
     if (this._length > 0) {
       this._createNavRuler();
@@ -56,17 +56,17 @@ class ProtVistaNavigation extends HTMLElement {
     if (this._ro) {
       this._ro.unobserve(this);
     }
-    window.removeEventListener("resize", this._onResize);
+    window.removeEventListener('resize', this._onResize);
   }
 
   static get observedAttributes() {
     return [
-      "length",
-      "displaystart",
-      "displayend",
-      "highlightStart",
-      "highlightEnd",
-      "width"
+      'length',
+      'displaystart',
+      'displayend',
+      'highlightStart',
+      'highlightEnd',
+      'width'
     ];
   }
 
@@ -95,30 +95,30 @@ class ProtVistaNavigation extends HTMLElement {
     this._x.domain([1, this._length]);
 
     this._svg = select(this)
-      .append("div")
-      .attr("class", "")
-      .append("svg")
-      .attr("id", "")
-      .attr("width", this.width)
-      .attr("height", height);
+      .append('div')
+      .attr('class', 'navigator')
+      .append('svg')
+      .attr('id', 'nav-svg')
+      .attr('width', this.width)
+      .attr('height', height);
 
     this._xAxis = axisBottom(this._x);
 
     this._displaystartLabel = this._svg
-      .append("text")
-      .attr("class", "start-label")
-      .attr("x", 0)
-      .attr("y", height - this._padding);
+      .append('text')
+      .attr('class', 'start-label')
+      .attr('x', 0)
+      .attr('y', height - this._padding);
 
     this._displayendLabel = this._svg
-      .append("text")
-      .attr("class", "end-label")
-      .attr("x", this.width)
-      .attr("y", height - this._padding)
-      .attr("text-anchor", "end");
+      .append('text')
+      .attr('class', 'end-label')
+      .attr('x', this.width)
+      .attr('y', height - this._padding)
+      .attr('text-anchor', 'end');
     this._axis = this._svg
-      .append("g")
-      .attr("class", "x axis")
+      .append('g')
+      .attr('class', 'x axis')
       .call(this._xAxis);
 
     this._viewport = brushX()
@@ -126,15 +126,15 @@ class ProtVistaNavigation extends HTMLElement {
         [this._padding, 0],
         [this.width - this._padding, height * 0.51]
       ])
-      .on("brush", () => {
+      .on('brush', () => {
         if (d3Event.selection) {
-          this._displaystart = format("d")(
+          this._displaystart = format('d')(
             this._x.invert(d3Event.selection[0])
           );
-          this._displayend = format("d")(this._x.invert(d3Event.selection[1]));
+          this._displayend = format('d')(this._x.invert(d3Event.selection[1]));
           if (!this.dontDispatch)
             this.dispatchEvent(
-              new CustomEvent("change", {
+              new CustomEvent('change', {
                 detail: {
                   displayend: this._displayend,
                   displaystart: this._displaystart,
@@ -152,8 +152,8 @@ class ProtVistaNavigation extends HTMLElement {
       });
 
     this._brushG = this._svg
-      .append("g")
-      .attr("class", "brush")
+      .append('g')
+      .attr('class', 'brush')
       .call(this._viewport);
 
     this._brushG.call(this._viewport.move, [
@@ -162,23 +162,23 @@ class ProtVistaNavigation extends HTMLElement {
     ]);
 
     this.polygon = this._svg
-      .append("polygon")
-      .attr("class", "zoom-polygon")
-      .attr("fill", "#777")
-      .attr("fill-opacity", "0.3");
+      .append('polygon')
+      .attr('class', 'zoom-polygon')
+      .attr('fill', '#777')
+      .attr('fill-opacity', '0.3');
     this._updateNavRuler();
 
-    if ("ResizeObserver" in window) {
+    if ('ResizeObserver' in window) {
       this._ro = new ResizeObserver(this._onResize);
       this._ro.observe(this);
     }
-    window.addEventListener("resize", this._onResize);
+    window.addEventListener('resize', this._onResize);
   }
 
   _onResize() {
     this._refreshWidth();
     this._x = this._x.range([this._padding, this.width - this._padding]);
-    this._svg.attr("width", this.width);
+    this._svg.attr('width', this.width);
     this._viewport.extent([
       [this._padding, 0],
       [this.width - this._padding, height * 0.51]
@@ -208,13 +208,13 @@ class ProtVistaNavigation extends HTMLElement {
     if (this._displaystartLabel)
       this._displaystartLabel.text(this._displaystart);
     if (this._displayendLabel)
-      this._displayendLabel.attr("x", this.width).text(this._displayend);
+      this._displayendLabel.attr('x', this.width).text(this._displayend);
   }
 
   _updatePolygon() {
     if (this.polygon)
       this.polygon.attr(
-        "points",
+        'points',
         `${this._x(this._displaystart)},${height / 2}
         ${this._x(this._displayend)},${height / 2}
         ${this.width},${height}

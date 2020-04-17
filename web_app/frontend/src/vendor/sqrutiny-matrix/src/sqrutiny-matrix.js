@@ -1,4 +1,4 @@
-import ProtvistaTrack from "protvista-track";
+import ProtvistaTrack from 'protvista-track';
 import {
   scaleLinear,
   line,
@@ -6,7 +6,7 @@ import {
   select,
   max,
   extent
-} from "d3";
+} from 'd3';
 
 class SqrutinyMatrix extends ProtvistaTrack {
 
@@ -22,9 +22,9 @@ class SqrutinyMatrix extends ProtvistaTrack {
   connectedCallback() {
     super.connectedCallback();
 
-    this._height = parseInt(this.getAttribute("height")) || 40;
-    this._color = this.getAttribute("color") || 'darkgrey';
-    this._cutoffs = this.getAttribute("cutoffs") || [];
+    this._height = parseInt(this.getAttribute('height')) || 40;
+    this._color = this.getAttribute('color') || 'darkgrey';
+    this._cutoffs = this.getAttribute('cutoffs') || [];
     this._yScale = scaleLinear();
     this._xExtent;
     this._yExtent;

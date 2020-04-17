@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from .optimize.OptimizeSequence import SearchMotifView, \
-    OptimizeSequenceSkectherView
+    OptimizeSequenceView
 
 urlpatterns = [
     path('tracks/', include('app.genetic_element.urls')),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('contact', include('app.contact.urls')),
     path('workspace/', include('app.workspace.urls')),
     path('constructs/', include('app.construct.urls')),
-    path('optimize_seq/from-sketch', OptimizeSequenceSkectherView.as_view(), name='Optimize sequence'),
+    path('features/', include('app.parameter.urls')),
+    path('optimize_seq/from-sketch', OptimizeSequenceView.as_view(), name='Optimize sequence'),
     path('search-motif', SearchMotifView.as_view(), name='Search motif in sequence')
 ]

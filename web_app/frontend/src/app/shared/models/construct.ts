@@ -13,4 +13,5 @@ export class Construct extends Deserializable {
   specie_tax_id: number;
   tracks: Track[];
   n_tracks: number;
+  from_file: boolean;
 }

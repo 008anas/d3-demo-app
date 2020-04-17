@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpResponse, HttpEvent, HttpEventType, HttpRequest } from '@angular/common/http';
@@ -70,8 +70,6 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
-  @ViewChild('nzUploader') uploader: any;
-
   constructor(
     private route: ActivatedRoute,
     private specieSrvc: SpecieService,
@@ -123,29 +121,11 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
-
-  loadExample() {
-    this.http.get(this.exampleFile, { observe: 'response', responseType: 'blob' })
-      .subscribe((result: HttpResponse<Blob>) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(result.body);
-        reader.onloadend = (ev) => {
-          if (ev.target.readyState === window.FileReader.DONE) {
-            const data = new Blob([ev.target.result]);
-            const arrayOfBlob = new Array<Blob>();
-            arrayOfBlob.push(data);
-            this.uploader.uploadComp.uploadFiles([new File(arrayOfBlob, result.url.split('/').slice(-1)[0])]);
-          }
-        };
-      },
-        () => this.notify.warning('Unable to load example file')
-      );
-  }
-
   submit() {
     this.response = null;
     this.isSubmitting = true;
     this.construct.specie_tax_id = this.specie.tax_id;
+    this.construct['from_file'] = true;
     this.sqrutinySrvc.fromSketch(this.construct)
       .subscribe(
         (data: UserHistory) => {
@@ -166,7 +146,6 @@ export class FromFileComponent implements OnInit, OnDestroy {
   textModal(str: string) {
     this.modal.create({
       nzContent: TextModalComponent,
-      nzWrapClassName: 'center-modal',
       nzComponentParams: {
         txt: str
       },

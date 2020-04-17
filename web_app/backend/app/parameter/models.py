@@ -34,5 +34,5 @@ class Parameter(models.Model):
     def to_dict_by_id(ids):
         params = Parameter.objects.filter(id__in=ids)
         return {
-            entry.alias: dict(name=entry.name, min=entry.genome_min or 0, max=entry.genome_max or 1,
+            entry.alias: dict(min=entry.genome_min or 0, max=entry.genome_max or 1,
                               matrix=entry.matrix_file.path if entry.matrix_file else '') for entry in params}

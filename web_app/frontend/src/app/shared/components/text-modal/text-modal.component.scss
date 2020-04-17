@@ -1,15 +1,8 @@
-::ng-deep .center-modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+::ng-deep .ant-modal {
+  width: 1000px !important;
 
-  .ant-modal {
-    width: 1000px !important;
-    top: 0;
-
-    .ant-modal-body {
-      max-height: calc(90vh - 5em);
-      overflow: auto;
-    }
+  .ant-modal-body {
+    max-height: calc(90vh - 5em);
+    overflow: auto;
   }
 }

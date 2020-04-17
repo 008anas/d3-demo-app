@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -28,13 +27,7 @@ class Command(BaseCommand):
         for s in json_data:
             count += 1
             try:
-                Specie(id=s.get('id'), name=s.get('name'), comment=s.get('comment', None),
-                       genome_gbk=s.get('genome_gbk', None), slug=s.get('slug'), tax_id=s.get('tax_id'),
-                       tax_link=s.get('tax_link'),
-                       gc_content=s.get('gc_content'), codon_table=s.get('codon_table'), default=s.get('default', None),
-                       visible=s.get('visible'),
-                       created_at=s.get('created_at', datetime.now()),
-                       updated_at=s.get('updated_at', datetime.now())).save()
+                Specie(**s).save()
             except Exception as e:
                 raise CommandError('Error while feeding: ' + str(e))
 
@@ -47,8 +40,7 @@ class Command(BaseCommand):
         for c in json_data:
             count += 1
             try:
-                Category(id=c.get('id'), name=c.get('name'), created_at=c.get('created_at', datetime.now()),
-                         updated_at=c.get('updated_at', datetime.now())).save()
+                Category(**c).save()
             except Exception as e:
                 raise CommandError('Error while feeding: ' + str(e))
 
@@ -59,17 +51,12 @@ class Command(BaseCommand):
         count = 0
         json_data = self.open_json_file(os.path.join(self.path, '../../data/genetic_elements.json'))
 
-        for e in json_data:
+        for ge in json_data:
             count += 1
             try:
-                GeneticElement(id=e.get('id'), role=e.get('role'), name=e.get('name'),
-                               glyph_thumbnail=e.get('glyph_thumbnail'),
-                               order=e.get('order'), visible=e.get('visible'),
-                               default=e.get('default'),
-                               category_id=e.get('category'), created_at=e.get('created_at', datetime.now()),
-                               updated_at=e.get('updated_at', datetime.now())).save()
+                GeneticElement(**ge).save()
             except Exception as e:
-                raise CommandError('Error while feeding: ' + str(e))
+                raise CommandError('Error while feeding: ' + str(ge))
 
         self.stdout.write(
             self.style.SUCCESS('Genetic Elements table was feeded successfully. ' + str(count) + ' records added.'))
@@ -77,17 +64,12 @@ class Command(BaseCommand):
     def feed_parameters(self):
         count = 0
         json_data = self.open_json_file(os.path.join(self.path, '../../data/parameters.json'))
-        for m in json_data:
+        for p in json_data:
             count += 1
             try:
-                Parameter(id=m.get('id'), name=m.get('name'), alias=m.get('alias'), specie_id=m.get('specie'),
-                          genetic_element_id=m.get('genetic_element'),
-                          matrix_file=m.get('matrix_file'), genome_min=m.get('genome_min'),
-                          genome_max=m.get('genome_max'), active=m.get('active'),
-                          created_at=m.get('created_at', datetime.now()),
-                          updated_at=m.get('updated_at', datetime.now())).save()
+                Parameter(**p).save()
             except Exception as e:
-                raise CommandError('Error while feeding: ' + str(e))
+                raise CommandError('Error while feeding: ' + str(p))
 
         self.stdout.write(
             self.style.SUCCESS('Parameter table was feeded successfully. ' + str(count) + ' records added.'))
@@ -99,7 +81,8 @@ class Command(BaseCommand):
         self.feed_genetic_elements()
         self.feed_parameters()
         self.stdout.write(
-            self.style.SUCCESS('Database was successfully feeded.'))
+            self.style.SUCCESS('Database was successfully feeded.')
+        )
 
     def handle(self, *args, **options):
         try:

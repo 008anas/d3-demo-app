@@ -58,7 +58,9 @@ export class TrackDetailsComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: import('@angular/core').SimpleChanges): void {
-    if (changes.track && changes.track.currentValue) { this.updateTrackForm(changes.track.currentValue); }
+    if (changes.track && changes.track.currentValue) {
+      this.updateTrackForm(changes.track.currentValue);
+    }
   }
 
   ngOnDestroy() {
@@ -92,16 +94,12 @@ export class TrackDetailsComponent implements OnChanges, OnDestroy {
     this.trackForm.value.color = color;
   }
 
-  onSubmit() {
-    this.onSave.emit(this._track);
-    this.display = false;
-  }
-
   updateTrack() {
     this._track.label = this.label.value;
     this._track.color = this.color.value;
     this._track.sequence = this.sequence.value;
     this.onSave.emit(this._track);
+    this.display = false;
   }
 
   change(pos: number) {

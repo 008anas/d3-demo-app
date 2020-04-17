@@ -20,7 +20,7 @@ export class ContactComponent {
   subjectOp = [
     'Bug',
     'Feature request'
-  ]
+  ];
 
   constructor(
     private sqrutinySrvc: SqrutinyService

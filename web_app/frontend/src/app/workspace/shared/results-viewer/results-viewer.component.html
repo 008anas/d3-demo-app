@@ -10,10 +10,9 @@
     </div>
 
     <div class="column">
-      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="exMenu">
+      <a (click)="exportModal()">
         <i class="download icon"></i>
         Export
-        <i class="dropdown icon"></i>
       </a>
     </div>
 
@@ -47,7 +46,7 @@
 
           <div class="one column row">
 
-            <div class="column mb-4">
+            <div class="column mb-3">
               <protvista-navigation #navigator class="protvista"></protvista-navigation>
               <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #dnaSeq></protvista-sequence>
               <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #proteinSeq></protvista-sequence>
@@ -55,40 +54,31 @@
             </div>
 
             <div class="column">
+              <p class="meta">Click on each feature to show or hide</p>
+            </div>
+
+            <div class="column">
 
               <div class="ui top attached menu">
 
                 <div class="item">
-                  <a (click)="isVisible = true">
-                    <i class="filter icon"></i>
-                    Threshold
+                  <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="graphsMenu">
+                    <i class="cogs icon"></i>
+                    Graphs
+                    <i class="dropdown icon"></i>
                   </a>
                 </div>
 
-                <div class="item">
-                  <a (click)="changeColors()">
-                    <i class="sync icon"></i>
-                    Change colors
-                  </a>
-                </div>
-
-                <div class="right menu">
-
-                  <div class="item">
-                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="vsMenu">
-                      <i class="eye icon"></i>
-                      Visibility
-                      <i class="dropdown icon"></i>
-                    </a>
-                  </div>
-
-                </div>
+                <a class="item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
+                  <i class="circle icon" [style.color]="o.color"></i>
+                  <p class="feat-label">{{o.name}}</p>
+                </a>
 
               </div>
 
             </div>
 
-            <div class="column pt-5" [hidden]="!op.display" *ngFor="let op of options; let i = index">
+            <div class="column pt-4" [hidden]="!op.display" *ngFor="let op of options; let i = index">
 
               <div class="ui padded grid">
 
@@ -113,95 +103,71 @@
                       Export
                       <i class="dropdown icon"></i>
                     </a>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="cutMenu">
+                      Cutoff
+                      <i class="dropdown icon"></i>
+                    </a>
 
                     <!-- Action -->
                     <nz-dropdown-menu #acMenu="nzDropdownMenu">
-                      <div class="ui floating multiple dropdown">
-                        <div class="menu transition visible">
-                          <div class="header">
-                            Graph options
-                          </div>
-                          <div class="divider"></div>
-                          <a class="item" (click)="changeColors(op.alias)">
-                            Change color
-                          </a>
-                          <a class="item" [ngClass]="{'disabled': i < 1 || options.length < 2}" (click)="move(i, -1)">
-                            <i class="up arrow icon"></i>
-                            Move up
-                          </a>
-                          <a class="item" [ngClass]="{'disabled': i === options.length - 1 || options.length < 2}" (click)="move(i, 1)">
-                            <i class="down arrow icon"></i>
-                            Move down
-                          </a>
-                          <a class="item" (click)="op.display = false">
-                            <i class="eye slash icon"></i>
-                            Hide
-                          </a>
-                          <div class="header">
-                            Threshold
-                          </div>
-                          <a class="item" (click)="clearThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
-                            Clear
-                          </a>
-                        </div>
-                      </div>
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="changeColors(op.alias)">
+                          <i class="sync icon"></i>
+                          Change color
+                        </li>
+                        <li nz-menu-item (click)="op.display = false">
+                          <i class="eye slash icon"></i>
+                          Hide
+                        </li>
+                      </ul>
                     </nz-dropdown-menu>
 
                     <!-- Data -->
                     <nz-dropdown-menu #dataMenu="nzDropdownMenu">
-                      <div class="ui floating multiple dropdown">
-                        <div class="menu transition visible">
-                          <div class="header">
-                            Display
-                          </div>
-                          <div class="divider"></div>
-                          <a class="item" (click)="valuesModal(op.alias)">
-                            Scores
-                          </a>
-                          <a class="item" [ngClass]="{'disabled': !op.cutoffs}" (click)="thresholdModal(op.alias)">
-                            Threshold positions
-                          </a>
-                        </div>
-                      </div>
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="valuesModal(op.alias)">
+                          <i class="eye icon"></i>
+                          Display all scores
+                        </li>
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="valuesModal(op.cutoffs)">
+                          <i class="eye icon"></i>
+                          Display cutoffs positions
+                        </li>
+                      </ul>
                     </nz-dropdown-menu>
 
                     <!-- Single Graph Export -->
                     <nz-dropdown-menu #sExMenu="nzDropdownMenu">
-                      <div class="ui floating multiple dropdown">
-                        <div class="menu transition visible">
-                          <div class="header">
-                            Export
-                          </div>
-                          <div class="divider"></div>
-                          <div class="header">
-                            Scores
-                          </div>
-                          <a class="item" (click)="exportToExcel(op.alias)">
-                            <i class="file excel outline icon"></i>
-                            Excel
-                          </a>
-                          <!-- <a class="item" (click)="bulk = false;export([])">
-                            <i class="dna icon"></i>
-                            GenBank
-                          </a> -->
-                          <div class="header">
-                            Current threshold
-                          </div>
-                          <a class="item" (click)="exportThreshold(op.alias)" [ngClass]="{'disabled': !op.cutoffs}">
-                            <i class="dna icon"></i>
-                            GenBank
-                          </a>
-                          <a class="item" [ngClass]="{'disabled': !op.cutoffs}">
-                            <i class="file excel outline icon"></i>
-                            Excel
-                          </a>
-                        </div>
-                      </div>
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="exportToExcel(op.alias)">
+                          <i class="file excel outline icon"></i>
+                          Excel
+                        </li>
+                        <li nz-menu-item (click)="exportToGb({key: op.alias})">
+                          <i class="dna icon"></i>
+                          GenBank
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                    <!-- Cutoff -->
+                    <nz-dropdown-menu #cutMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="cutoffModal(op.alias)">
+                          Set cutoff
+                        </li>
+                        <li nz-menu-item>
+                          Set cutoff for minimum
+                        </li>
+                        <li nz-menu-item>
+                          Set cutoff for maximum
+                        </li>
+                      </ul>
                     </nz-dropdown-menu>
 
                   </div>
 
-                  <div class="column txt-c" id="cutoffRes{{op.alias}}" style="visibility: hidden">
+                  <div class="column txt-c cutoff" id="cutoffRes{{op.alias}}" style="visibility: hidden">
                     <p></p>
                   </div>
 
@@ -216,18 +182,16 @@
                     <!-- Values -->
                     <nz-dropdown-menu #vlMenu="nzDropdownMenu">
                       <ul nz-menu nzSelectable>
-                        <li nz-menu-item (click)="switchValues('raw', op.alias)">
+                        <li nz-menu-item (click)="switchScore(op.alias, 'raw')">
                           Raw <i [hidden]="op.type !== 'raw'" class="check small icon"></i>
                         </li>
-                        <li nz-menu-item (click)="switchValues('norm', op.alias)">
+                        <li nz-menu-item (click)="switchScore(op.alias, 'norm')">
                           Normalized <i [hidden]="op.type !== 'norm'" class="check small icon"></i>
                         </li>
                       </ul>
                     </nz-dropdown-menu>
 
-                    <!-- <a href="#"> -->
-                      <!-- <i class="info circle link icon"></i> -->
-                    <!-- </a> -->
+                    <sqy-info-popup [content]="op.description"></sqy-info-popup>
 
                   </div>
 
@@ -248,131 +212,30 @@
 
 </div>
 
-<nz-modal [nzWidth]="800" [(nzVisible)]="isVisible" nzTitle="Threshold" [nzOkDisabled]="filters.length < 1" nzOkText="Apply" (nzOnCancel)="isVisible = false" (nzOnOk)="applyFilters()">
-
-  <form class="ui very padded form">
-
-    <div class="field">
-      <h1 class="ui header" style="font-weight: normal">
-        <i class="filter icon"></i> Set threshold for graphs
-      </h1>
-    </div>
-
-    <div class="fields" *ngFor="let f of filters; let in = index">
-
-      <div class="required four wide field field">
-        <nz-select [(ngModel)]="f.key" name="filter-{{f.key}}" nzPlaceHolder="Graph">
-          <nz-option *ngFor="let op of options" [nzLabel]="op.name" [nzValue]="op.alias" [nzDisabled]="f.disabled"></nz-option>
-        </nz-select>
-      </div>
-
-      <div class="required four wide field field">
-        <nz-select [(ngModel)]="f.type" name="filter-type" nzPlaceHolder="Type">
-          <nz-option nzValue="norm" nzLabel="Normalized value"></nz-option>
-          <nz-option nzValue="raw" nzLabel="Raw value"></nz-option>
-        </nz-select>
-      </div>
-
-      <div class="required four wide field field">
-        <nz-select [(ngModel)]="f.op" name="filter-operator" nzPlaceHolder="Operator">
-          <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
-        </nz-select>
-      </div>
-
-      <div class="required four wide field field">
-        <input type="number" [(ngModel)]="f.value" name="filter-score" placeholder="Score" />
-      </div>
-
-      <div class="one wide field txt-c">
-        <i class="x red link large icon" (click)="filters.splice(in, 1)"></i>
-      </div>
-
-    </div>
-
-    <div class="ui placeholder segment" [hidden]="filters.length">
-      <div class="ui icon header">
-        <i class="inbox icon"></i>
-        There is no threshold setted
-      </div>
-      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length >= options.length">
-        <i class="plus icon"></i>
-        Add threshold
-      </button>
-    </div>
-
-    <div class="field" [hidden]="!filters.length">
-      <button type="button" class="ui fluid primary button" (click)="addFilter()" [disabled]="filters?.length >= options.length">
-        <i class="plus icon"></i>
-        Add threshold
-      </button>
-    </div>
-
-  </form>
-
-</nz-modal>
-
 <!-- Menus -->
 
 <!-- Visibility -->
-<nz-dropdown-menu #vsMenu="nzDropdownMenu">
-  <div class="ui floating multiple dropdown">
-    <div class="scrolling menu transition visible">
-      <div class="header">
-        Click to Show or Hide
-      </div>
-      <div class="divider"></div>
-      <a class="item" (click)="displayAll()">
-        <i class="eye icon"></i>
-        Display all
-      </a>
-      <a class="item" (click)="hideAll()">
-        <i class="eye slash icon"></i>
-        Hide all
-      </a>
-      <div class="divider"></div>
-      <a class="ant-badge ant-badge-status ant-badge-not-a-wrapper item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
-        <span class="ant-badge-status-dot" [style.background-color]="o.color"></span>
-        <span class="ant-badge-status-text">{{o.name}}</span>
-      </a>
-    </div>
-  </div>
-</nz-dropdown-menu>
-
-<!-- General Export -->
-<nz-dropdown-menu #exMenu="nzDropdownMenu">
-  <div class="ui floating multiple dropdown">
-    <div class="menu transition visible">
-      <div class="header">
-        Download as
-      </div>
-      <div class="divider"></div>
-      <a class="item" (click)="exportToExcel()">
-        <i class="file excel outline icon"></i>
-        Excel
-      </a>
-      <div class="divider"></div>
-      <div class="header">
-        GenBank
-      </div>
-      <a class="item" (click)="bulk = false;export([])">
-        <i class="file outline icon"></i>
-        Only tracks
-      </a>
-      <a class="item" (click)="bulk = true;export([])">
-        <i class="file outline icon"></i>
-        With all scores
-        <div class="description">
-          (heavy)
-        </div>
-      </a>
-    </div>
-  </div>
+<nz-dropdown-menu #graphsMenu="nzDropdownMenu">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item (click)="displayAll()">
+      <i class="eye icon"></i>
+      Display all
+    </li>
+    <li nz-menu-item (click)="hideAll()">
+      <i class="eye icon"></i>
+      Hide all
+    </li>
+    <li nz-menu-item (click)="changeColors()">
+      <i class="sync icon"></i>
+      Change colors
+    </li>
+  </ul>
 </nz-dropdown-menu>
 
 <!-- Highlight -->
 <nz-dropdown-menu #hgMenu="nzDropdownMenu">
   <ul nz-menu nzSelectable>
-    <li nz-menu-item nz-popover nzType="primary" nzPopoverTitle="Set highlight positions" [nzPopoverContent]="contentTemplate">
+    <li nz-menu-item nz-popover nzType="primary" nzPopoverTrigger="click" nzPopoverTitle="Set highlight by positions" [nzPopoverContent]="hgTmplt">
       <i class="crosshairs icon"></i>
       Set highlight
     </li>
@@ -383,6 +246,7 @@
   </ul>
 </nz-dropdown-menu>
 
-<ng-template #contentTemplate>
+<!-- Popover templates -->
+<ng-template #hgTmplt>
   <sqy-set-highlight [max]="_data.construct.dna_seq.length" (onSet)="setHighlight($event)"></sqy-set-highlight>
 </ng-template>

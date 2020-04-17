@@ -16,6 +16,8 @@ import { Construct } from '@models/construct';
 import { SqrutinyService } from '@services/sqrutiny.service';
 import { FileService } from '@services/file.service';
 import { NavService } from '@services/nav.service';
+import { FeatureService } from '../shared/feature.service';
+import { Feature } from '../shared/feature';
 
 const NAME_IN_SESSION = 'sqy_construct';
 
@@ -40,6 +42,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   response: any = null;
   categories: Category[] = [];
   specie: Specie = new Specie();
+  features: Feature[] = [];
   species: Specie[] = [];
   submitted = false;
   showPicker = false;
@@ -53,6 +56,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   search: string;
   sketcherLoading = false;
   autoSave = true;
+  featuresArray: string[];
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +64,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private trackSrvc: TrackService,
     private constructSrvc: ConstructService,
     private sqrutinySrvc: SqrutinyService,
+    private featureSrvc: FeatureService,
     private fileSrvc: FileService,
     private router: Router,
     private notify: NzMessageService,
@@ -77,6 +82,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
     this.getTracks();
     this.getSpecies();
+    this.getFeatures();
   }
 
   ngOnDestroy() {
@@ -92,9 +98,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   isConstructEmpty() {
-    for (var key in this.construct) {
-      if (this.construct[key] && this.construct[key] !== null && this.construct[key] != '')
+    for (const key in this.construct) {
+      if (this.construct[key] && this.construct[key] !== null && this.construct[key] !== '') {
         return false;
+      }
     }
   }
 
@@ -130,7 +137,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
           if (data.length > 0) {
             this.construct = new Construct().deserialize(data[0]);
             this.saveInSession();
-          } else { this.notify.warning('Unable to load model construct') }
+          } else { this.notify.warning('Unable to load model construct'); }
         },
         err => this.notify.warning(err || 'Unable to load model construct')
       );
@@ -170,6 +177,22 @@ export class SketcherComponent implements OnInit, OnDestroy {
         this.tracks = data;
         this.new();
       });
+  }
+
+  getFeatures() {
+    this.isLoading = true;
+    this.featureSrvc
+      .getAll()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(data => {
+        this.features = data.map((e: any) => new Feature().deserialize(e));
+        this.featuresArray = Object.assign([], this.features.map(f => f.alias));
+      }
+      );
+  }
+
+  featChange(alias: string, isChecked: boolean) {
+    isChecked ? this.featuresArray.push(alias) : this.featuresArray = this.featuresArray.filter(f => f !== alias);
   }
 
   new() {
@@ -249,7 +272,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.response = null;
       this.sketcherLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
-      this.sqrutinySrvc.fromSketch(this.construct)
+      this.sqrutinySrvc.fromSketch(this.construct, this.featuresArray.length > 0 ? this.featuresArray : null)
         .pipe(finalize(() => this.sketcherLoading = false))
         .subscribe(
           (data: UserHistory) => {
@@ -278,11 +301,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   addTrack(track: Track) {
     if (track.pos > -1) {
+      const seq_length = this.construct.dna_seq.length;
       this.construct.tracks[track.pos] = track;
-      this.construct.tracks[track.pos].start =
-        this.construct.dna_seq.length + 1;
-      this.construct.tracks[track.pos].end =
-        this.construct.dna_seq.length + track.sequence.length;
+      this.construct.tracks[track.pos].start = seq_length + 1;
+      this.construct.tracks[track.pos].end = seq_length + track.sequence.length;
       this.construct.dna_seq += track.sequence;
       document.getElementById('track' + track.pos).classList.remove('invalid'); // Now is valid
       this.saveInSession();

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment as env } from '@env/environment';
 import { Specie } from '@models/specie';
 
-const URL_ENV = '/species';
+const URL_ENV = '/species/';
 
 @Injectable({ providedIn: 'root' })
 export class SpecieService {
@@ -18,12 +18,12 @@ export class SpecieService {
 
   /** Gets a specie by id provided */
   getAll(): Observable<Specie[]> {
-    return this.http.get<Specie[]>(`${this.url}/`).pipe();
+    return this.http.get<Specie[]>(`${this.url}`).pipe();
   }
 
   /** Gets a specie by id provided */
   getBySlug(specie: Specie): Observable<Specie> {
-    return this.http.get<Specie>(`${this.url}/${specie.slug}`).pipe();
+    return this.http.get<Specie>(`${this.url}${specie.slug}`).pipe();
   }
 
 }

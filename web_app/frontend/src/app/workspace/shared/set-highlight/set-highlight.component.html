@@ -1,5 +1,9 @@
 <form class="ui tiny form" [formGroup]="highlightForm" (ngSubmit)="set()">
 
+  <div class="field">
+    <span class="meta">Enter positions to define highlight area.</span>
+  </div>
+
   <div class="fields">
 
     <div class="field" [ngClass]="{'error': from.invalid && (from.dirty || from.touched)}">

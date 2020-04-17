@@ -16,17 +16,24 @@ from sqrutiny.settings import BASE_DIR
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
 
+TOOL_NAME = 'SQrutiny '
 
-TOOL_NAME = 'SQrutiny - '
 
-
-class OptimizeSequenceSkectherView(LoggingMixin, APIView):
+class OptimizeSequenceView(LoggingMixin, APIView):
 
     def post(self, request):
-        serializer = ConstructCreateSerializer(data=request.data)
+
+        data = request.data
+
+        serializer = data.get('construct', None)
+
+        if serializer is None:
+            return Response(dict(msg='No construct was found.'), status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ConstructCreateSerializer(data=serializer)
 
         if not serializer.is_valid(raise_exception=True):
-            return Response(dict(msg='Invalid construct.'), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(msg='Invalid parameters.'), status=status.HTTP_400_BAD_REQUEST)
 
         tax_id = serializer.validated_data.get('specie_tax_id', None)
 
@@ -36,9 +43,21 @@ class OptimizeSequenceSkectherView(LoggingMixin, APIView):
             return Response(dict(msg='Specie with ncbi tax id ' + str(tax_id) + ' was not found'),
                             status=status.HTTP_404_NOT_FOUND)
 
-        construct = serializer.save(specie=specie)
+        construct = serializer.save(
+            specie=specie,
+            from_file=serializer.validated_data.get('from_file', False)
+        )
 
-        parameters = Parameter.objects.filter(active=True, specie=specie).values_list('id', flat=True)
+        features = request.data.get('features', [])
+        parameters = []
+
+        if type(features) is list and len(features):
+            alias = set(Parameter.objects.filter(active=True, specie=specie).values_list('alias', flat=True))
+            for f in features:
+                if f in alias:
+                    parameters.append(Parameter.objects.get(active=True, specie=specie, alias=f).id)
+        else:
+            parameters = Parameter.objects.filter(active=True, specie=specie).values_list('id', flat=True)
 
         if not parameters:
             return Response(dict(msg='Sorry but it was not possible to perform action. Please try later'),

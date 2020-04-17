@@ -48,7 +48,7 @@
 
   <div class="row canvas">
 
-    <div class="twelve wide column p-0">
+    <div class="eleven wide column p-0">
 
       <div class="ui internally celled grid m-0">
 
@@ -81,6 +81,10 @@
 
                 <div class="inline field txt-c" *ngIf="!locked">
                   <i class="pencil alternate icon"></i> Write mode
+                </div>
+
+                <div class="inline field txt-c">
+                  <i class="save icon"></i> <span class="meta">{{autoSave ? 'Enabled': 'Disabled'}}</span>
                 </div>
 
                 <div class="inline field txt-c">
@@ -143,7 +147,7 @@
 
     </div>
 
-    <div class="four wide column">
+    <div class="five wide column">
 
       <div class="ui grid">
 
@@ -180,13 +184,26 @@
                 </nz-select>
               </div>
 
+              <div class="grouped required fields">
+                <label>Select the what features to check</label>
+                <div class="field" *ngFor="let f of features">
+                  <div class="ui checkbox">
+                    <input type="checkbox" name="features" required checked (change)="featChange(f.alias, $event.target.checked)">
+                    <label>
+                      {{f.name}}
+                      <sqy-info-popup [content]="f.description"></sqy-info-popup>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
                 <label for="construct_name">Enter a label</label>
                 <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name" (ngModelChange)="saveInSession()">
               </div>
 
               <div class="inline field">
-                <label for="">Circular</label>
+                <label>Circular</label>
                 <input type="checkbox" [(ngModel)]="construct.circular" (ngModelChange)="saveInSession()" name="construct-circular">
               </div>
 
@@ -436,7 +453,7 @@
 <!-- Options -->
 <nz-dropdown-menu #optionsMenu="nzDropdownMenu" tabindex="0">
   <ul nz-menu nzSelectable>
-    <li nz-menu-item (click)="autoSave != autoSave">
+    <li nz-menu-item (click)="autoSave = !autoSave">
       <i class="save icon"></i>
       Auto save {{autoSave ? 'enabled' : 'disabled'}}
     </li>

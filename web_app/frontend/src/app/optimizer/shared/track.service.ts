@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment as env } from '@env/environment';
 import { Track } from './track';
 
-const URL_ENV = '/tracks';
+const URL_ENV = '/tracks/';
 
 @Injectable({ providedIn: 'root' })
 export class TrackService {
@@ -18,11 +18,11 @@ export class TrackService {
 
   /** Gets a track by id provided */
   getAll(): Observable<Track[]> {
-    return this.http.get<Track[]>(`${this.url}/`).pipe();
+    return this.http.get<Track[]>(`${this.url}`).pipe();
   }
 
   getByCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/categories`).pipe();
+    return this.http.get<any[]>(`${this.url}categories`).pipe();
   }
 
 }

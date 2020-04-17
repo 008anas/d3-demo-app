@@ -6,29 +6,28 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { SqrutinyService } from '@services/sqrutiny.service';
-import Utils from 'app/shared/utils';
 import { Track } from 'app/optimizer/shared/track';
 import { DisplayValuesComponent } from '../display-values/display-values.component';
 import { HistoryService } from '../history.service';
 import { FileService } from '@services/file.service';
 import { LoaderService } from '@services/loader.service';
 import { DisplayThresholdComponent } from '../display-threshold/display-threshold.component';
+import { ExportModalComponent } from '../export-modal/export-modal.component';
+import { FeatureService } from 'app/optimizer/shared/feature.service';
+import { Feature } from 'app/optimizer/shared/feature';
+import { SetCutoffComponent } from '../set-cutoff/set-cutoff.component';
 
 class GraphsOptions {
-  name: string;
+  name?: string;
   alias: string;
+  description?: string;
   display: boolean;
   data: any;
+  max: number;
+  min: number;
   type: string;
   cutoffs?: number[];
   color: string;
-}
-
-class Filter {
-  op: string;
-  value?: number;
-  key: string;
-  type: string;
 }
 
 @Component({
@@ -44,30 +43,25 @@ export class ResultsViewerComponent implements AfterViewInit {
     if (!this._data.results || !this._data.construct || !this._data.results.length) {
       return;
     }
-    this._data.results.forEach((r: { name: any; alias: any; scores: any[]; }) => {
+    this.loader.startLoading();
+    this._data.results.forEach((r: any) => {
       this.options.push({
-        name: r.name,
         alias: r.alias,
         display: true,
-        data: r.scores.map((d: any) => {
-          return {
-            pos: d.start,
-            score: d.raw_score
-          };
-        }),
+        data: r.scores.map((d: any) => ({ pos: d.start, score: d.raw_score })),
+        max: Math.max.apply(Math, r.scores.map((d: any) => d.raw_score)),
+        min: Math.min.apply(Math, r.scores.map((d: any) => d.raw_score)),
         type: 'raw',
         color: this.getRandomColor()
       });
     });
+    this.getFeatures();
   }
 
-  isVisible = false;
   _data: any = null; // Original data
   isSearching = false;
   options: GraphsOptions[] = [];
   enzime: string;
-  filters: Filter[] = [];
-  bulk = false;
   colors = [
     'red',
     'blue',
@@ -113,22 +107,36 @@ export class ResultsViewerComponent implements AfterViewInit {
     private fileSrvc: FileService,
     private historySrvc: HistoryService,
     private route: ActivatedRoute,
-    private loader: LoaderService
+    private loader: LoaderService,
+    private featureSrvc: FeatureService
   ) { }
 
   ngAfterViewInit() {
     // Init graphs
     if (this._data && this.options) {
-      this.nav.nativeElement['length'] = this._data.construct.dna_seq.length
+      this.nav.nativeElement['length'] = this._data.construct.dna_seq.length;
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
-      this.proteinSeq.nativeElement['data'] = ResultsViewerComponent.proteinSeqProtvista(this._data.construct.protein_seq);
-      this.tracksElem.nativeElement['data'] = ResultsViewerComponent.getTrackView(this._data.construct.tracks);
+      this.proteinSeq.nativeElement['data'] = this.toProteinSeqVw(this._data.construct.protein_seq);
+      this.tracksElem.nativeElement['data'] = this.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
     }
+  }
+
+  private getTrackView(tracks: Track[]) {
+    return tracks.map((track: Track) => ({
+      accession: 'XXXXX',
+      start: track.start,
+      end: track.end,
+      color: track.color
+    }));
+  }
+
+  private toProteinSeqVw(val: string) {
+    return ` ${val.split('').join('  ')} `;
   }
 
   searchMotif(motif: any) {
@@ -162,16 +170,18 @@ export class ResultsViewerComponent implements AfterViewInit {
     this.options.map(x => x.display = false);
   }
 
-  move(x: number, i: number) {
-    const pos = x + i;
-    if (-1 < pos && pos <= this.options.length - 1) {
-      this.options = Utils.array_move(Object.assign([], this.options), x, pos);
+  private getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
     }
+    return color;
   }
 
-  setHighlight(positions: string) {
-    if (positions) {
-      document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = positions);
+  setHighlight(pos: string) {
+    if (pos) {
+      document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = pos);
     }
   }
 
@@ -179,77 +189,58 @@ export class ResultsViewerComponent implements AfterViewInit {
     document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
   }
 
-  setThreshold(graph: string, value: number, operator: string, type: string) {
-    if (graph && operator) {
-      const values = [];
-      this.getByAlias(this._data.results, graph).scores.map((s: any) => {
-        const score = type === 'raw' ? s.raw_score : s.norm_score;
-        if (this.operatorsFn[operator](value, score)) {
-          values.push({ pos: s.start, score });
+  setThreshold(alias: string, value: number, operator: string) {
+    if (alias && operator && value !== null) {
+      let values = [];
+      values = this.getByAlias(this.options, alias).data.filter(d => {
+        if (this.operatorsFn[operator](value, d.score)) {
+          return {
+            pos: d.pos,
+            score: d.score
+          };
         }
       });
       if (values.length) {
-        this.switchValues(type, graph);
-        this.getByAlias(this.options, graph).cutoffs = values;
-        document.getElementById(graph)['cutoffs'] = values.map((v: any) => v.pos);
-        const element = document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0];
+        this.getByAlias(this.options, alias).cutoffs = values;
+        document.getElementById(alias)['cutoffs'] = values.map((v: any) => v.pos);
+        const element = document.getElementById('cutoffRes' + alias).getElementsByTagName('p')[0];
         element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === operator).desc} ${value}`;
         element.style.visibility = 'visible';
       } else {
-        this.clearThreshold(graph);
-        this.notify.info(this.getByAlias(this.options, graph).name + ': No result was found');
+        this.clearCutoffs(alias);
+        this.notify.info(this.getByAlias(this.options, alias).name + ': No result was found');
       }
     }
   }
 
-  clearThreshold(graph: string) {
+  clearCutoffs(graph: string) {
     document.getElementById(graph)['cutoffs'] = undefined;
     this.getByAlias(this.options, graph).cutoffs = null;
-    this.filters = this.filters.filter(f => f.key !== graph);
     document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0].innerHTML = '';
     document.getElementById('cutoffRes' + graph).style.visibility = 'hidden';
   }
 
-  clearAllThreshold() {
+  clearAllCutoffs() {
     document.querySelectorAll('.score-graph').forEach((x: any) => x.cutoffs = undefined);
     this.options.map(op => op.cutoffs = null);
+    document.querySelectorAll('.cutoff').forEach((c: HTMLElement) => c.style.visibility = 'hidden');
   }
 
-  static getTrackView(tracks: Track[]) {
-    return tracks.map((track: Track) => {
-      {
-        return {
-          accession: 'XXXXX',
-          start: track.start,
-          end: track.end,
-          color: track.color
-        };
+  cutoffModal(alias: string) {
+    const op = this.getByAlias(this.options, alias);
+    this.modal.create({
+      nzTitle: 'Set cutoff for ' + op.name,
+      nzContent: SetCutoffComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        option: op
+      },
+      nzOnOk: (cmp: SetCutoffComponent) => {
+        if (cmp.op !== null && cmp.value !== null) {
+          this.setThreshold(alias, cmp.value, cmp.op);
+        }
       }
     });
-  }
-
-  static proteinSeqProtvista(val: string) {
-    return ` ${val.split('').join('  ')} `;
-  }
-
-  applyFilters() {
-    this.clearAllThreshold();
-    this.filters.map((f: Filter) => {
-      if (f.key && f.op) {
-        this.setThreshold(f.key, f.value, f.op, f.type);
-      }
-    });
-    this.isVisible = false;
-  }
-
-  addFilter() {
-    if (this.filters.length < this.options.length) {
-      this.filters.push({
-        op: this.operators[0].op,
-        key: this.options[this.filters.length].alias,
-        type: 'raw'
-      });
-    }
   }
 
   valuesModal(key: string) {
@@ -274,62 +265,70 @@ export class ResultsViewerComponent implements AfterViewInit {
     });
   }
 
-  exportToExcel(key?: string) {
-    let data = null;
-    if (key) {
-      const op = this.getByAlias(this.options, key);
-      data = [{ name: op.name, data: op.data }];
-    } else {
-      data = this._data.results.map(v => {
-        return {
-          name: v.name,
-          data: v.scores.map(s => {
-            return {
-              position: s.start,
-              raw_score: s.raw_score,
-              norm_score: s.norm_score
-            }
-          })
-        };
-      });
-    }
-    if (data) {
-      this.fileSrvc.exportAsExcelFile(data, key || 'export_all');
-      this.notify.success('Exported! Your download is about to start.');
-    } else {
-      this.notify.error('Unable to export.');
-    }
-  }
-
-  changeColors(key?: string) {
-    if (key) {
-      this.getByAlias(this.options, key).color = this.getRandomColor();
-      document.getElementById(key).setAttribute('color', this.getByAlias(this.options, key).color);
+  changeColors(alias?: string) {
+    if (alias) {
+      this.getByAlias(this.options, alias).color = this.getRandomColor();
+      document.getElementById(alias).setAttribute('color', this.getByAlias(this.options, alias).color);
     } else {
       this.options.forEach(o => o.color = this.getRandomColor());
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
     }
   }
 
-  getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+  switchScore(alias: string, type: string) {
+    const op = this.getByAlias(this._data.results, alias);
+    if (op) {
+      op.scores = op.scores.map(s => type === 'raw' ? s.raw_score : s.norm_score);
+      document.getElementById(alias)['data'] = op.scores.map((s: any) => ({
+        pos: s.start,
+        score: type === 'raw' ? s.raw_score : s.norm_score,
+        min: Math.min.apply(Math, op.scores),
+        max: Math.max.apply(Math, op.scores)
+      }));
+      this.getByAlias(this.options, alias).type = type;
     }
-    return color;
+
   }
 
-  exportThreshold(key?: string) {
-    if (key) {
-      const filter = this.filters.filter(f => f.key === key);
-      this.export(filter);
-    }
-  }
-
-  export(filters: Filter[]) {
+  getFeatures() {
     this.loader.startLoading();
-    this.historySrvc.export(this.route.snapshot.data.history.id, { filters: filters || null, bulk: this.bulk || false })
+    this.featureSrvc
+      .getAll()
+      .subscribe(data => {
+        const features = data.map((e: any) => new Feature().deserialize(e));
+        this.options.map(o => {
+          const ft = features.find(f => f.alias === o.alias);
+          if (ft) {
+            o.name = ft.name;
+            o.description = ft.description;
+          }
+        });
+        this.loader.stopLoading();
+      }
+      );
+  }
+
+  // Export
+
+  exportModal() {
+    this.modal.create({
+      nzTitle: 'Export wizard',
+      nzContent: ExportModalComponent,
+      nzComponentParams: {
+        items: this.options.map(o => ({ name: o.name, color: o.color, alias: o.alias }))
+      },
+      nzWidth: 700,
+      nzOkText: 'Export',
+      nzOnOk: (cmp: ExportModalComponent) => cmp.to === 'gb' ? this.exportToGb(cmp.list.map(l => ({ key: l })) || []) : this.exportToExcel(cmp.list || [])
+    });
+  }
+
+  exportToGb(options: any) {
+    this.loader.startLoading();
+    if (options && !Array.isArray(options)) {
+      options = [options];
+    }
+    this.historySrvc.export(this.route.snapshot.data.history.id, { options: options || null })
       .pipe(finalize(() => this.loader.stopLoading()))
       .subscribe((d: any) => {
         this.notify.success('Your download is about to start.');
@@ -339,26 +338,28 @@ export class ResultsViewerComponent implements AfterViewInit {
       );
   }
 
-  switchValues(type: string, alias: string) {
-    document.getElementById(alias)['data'] = this.getByAlias(this._data.results, alias).scores.map((s: any) => {
-      return {
-        pos: s.start,
-        score: type === 'raw' ? s.raw_score : s.norm_score
-      };
-    });
-    this.options.find(o => o.alias === alias).type = type;
+  exportToExcel(alias?: string[]) {
+    let data = [];
+    if (alias) {
+      if (!Array.isArray(alias)) {
+        alias = [alias];
+      }
+      alias.map(a => {
+        const op = this.getByAlias(this.options, a);
+        data.push({ name: op.name, data: op.data });
+      });
+    } else {
+      data = this._data.results.map(v => ({ name: v.name, data: v.scores }));
+    }
+    if (data.length > 0) {
+      this.fileSrvc.exportAsExcelFile(data, data.length === 1 ? alias[0] : 'scores');
+      this.notify.success('Exported! Your download is about to start.');
+    } else {
+      this.notify.error('Unable to export.');
+    }
   }
 
-  getByAlias(data: any[], alias: string): any {
+  private getByAlias(data: any[], alias: string): any {
     return data.find(o => o.alias === alias);
-  }
-
-  getByScoreType(alias: string, type: string) {
-    this._data.results.find(r => r.alias === alias).scores.map((s: any) => {
-      return {
-        pos: s.start,
-        score: type === 'raw' ? s.raw_score : s.norm_score
-      };
-    });
   }
 }

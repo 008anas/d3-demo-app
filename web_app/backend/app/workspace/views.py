@@ -65,7 +65,6 @@ class ClearHistoryView(APIView):
 class PollJobView(APIView):
 
     def get(self, request, job_id):
-
         rq_job = django_rq.get_queue('default').fetch_job(str(job_id))
 
         if rq_job is None:
@@ -105,24 +104,32 @@ class ExportThresholdView(APIView):
         if not record or not job:
             return Response(dict(msg='Unable to export'), status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-        result = job.result
+        job_content = job.result
+        result = []
+        options = serializer.validated_data.get('options', [])
 
-        filters = serializer.validated_data.get('filters', [])
-        bulk = serializer.validated_data.get('bulk', False)
-
-        keys = [f.get('key', '') for f in filters]
-
-        # Keep only in filters (if bulk mode)
-        if not bulk:
-            result = [r for r in result if r['alias'] in keys]
-
-        for f in filters:
-            # Override results
-            single = next((r for r in result if r['alias'] == f['key']), None)
+        for o in options:
+            single = next((r for r in job_content if r['alias'] == o.get('key', '')), None)
             if single:
-                single['scores'] = [s for s in single['scores'] if op_fn.get(f['op'])(float(f['value']), s.get('raw_score') if f['type'] == 'raw' else s.get('norm_score'))]
-                result[result.index(single)] = single
+                if o.get('filter', None):
+                    single = [s for s in single['scores']]
+                result.append(single)
 
+        # bulk = serializer.validated_data.get('bulk', False)
+        #
+        # keys = [f.get('key', '') for f in filters]
+        #
+        # # Keep only in filters (if bulk mode)
+        # if not bulk:
+        #     result = [r for r in result if r['alias'] in keys]
+        #
+        # for f in filters:
+        #     # Override results
+        #     single = next((r for r in result if r['alias'] == f['key']), None)
+        #     if single:
+        #         single['scores'] = [s for s in single['scores'] if op_fn.get(f['op'])(float(f['value']), s.get('raw_score') if f['type'] == 'raw' else s.get('norm_score'))]
+        #         result[result.index(single)] = single
+        #
         # Append result scores
         for r in result:
             for t in r.get('scores', []):
@@ -144,7 +151,7 @@ class ExportThresholdView(APIView):
         if data:
             file = dict(
                 data=data,
-                filename=history.name + '_scores_export.gb',
+                filename=history.name.strip().replace(' ', '_').replace('-', '_') + '_result_export.gb',
                 mimetype='application/genbank')
 
         return Response(file, status=status.HTTP_200_OK)

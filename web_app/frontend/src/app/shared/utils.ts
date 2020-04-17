@@ -1,42 +1,39 @@
 const nameUtils = {
 	/**
 	 * Reformat name to replaces whitespace with underscores.
-	 * @returns {String} New name.
 	 */
   reformatName: (pName: string): string => pName.toString().replace(/ /g, '_'),
 };
 const StringUtil = {
   /** Trims white space at beginning and end of string
-   * @returns {String} line
    */
   trim: (line: string): string => line.replace(/^\s+|\s+$/g, ''),
 
   /** Trims white space at beginning string
-   * @returns {String} line
    */
   ltrim: (line: string): string => line.replace(/^\s+/, ''),
 
   /** Trims white space at end of string
-   * @returns {String} line
    */
   rtrim: (line: string): string => line.replace(/\s+$/, ''),
 
   /** Pads white space at beginning of string
-   * @returns {String} line
    */
   lpad: (line: string, padString, length): string => {
     let str = line;
-    while (str.length < length) str = padString + str;
+    while (str.length < length) {
+      str = padString + str;
+    }
     return str;
   },
 
   /** Pads white space at end of string
-   * @param {String} line
-   * @returns {String} line
    */
   rpad: (line: string, padString, length): string => {
     let str = line;
-    while (str.length < length) str = str + padString;
+    while (str.length < length) {
+      str = str + padString;
+    }
     return str;
   }
 };
@@ -219,8 +216,8 @@ export default class Utils {
     let locStr = '';
 
     // for(var i=0;i<feat.locations.length;i++) {
-    //	var loc = feat.locations[i];
-    //	locStr.push((loc.start+1) + '..' + loc.end);
+    // var loc = feat.locations[i];
+    // locStr.push((loc.start+1) + '..' + loc.end);
     // }
 
     if (feat.locations && feat.locations.length > 1) {
@@ -278,7 +275,7 @@ export default class Utils {
           }
         }
         Object.keys(notes).forEach((key) => {
-          if (key === 'color' || key === 'labelColor') { return; } //we'll handle this below
+          if (key === 'color' || key === 'labelColor') { return; } // we'll handle this below
           if (notes[key] instanceof Array) {
             notes[key].forEach((value) => lines.push(Utils.featureNoteInDataToGenbankString(key, value)));
           } else {

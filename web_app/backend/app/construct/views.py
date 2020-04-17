@@ -20,7 +20,7 @@ class ConstructListRetrieveView(viewsets.ModelViewSet):
 
 
 class ConstructExampleView(generics.ListCreateAPIView):
-    queryset = Construct.objects.filter(deleted=False, example=True).first()
+    queryset = Construct.objects.filter(deleted=False, example=True)
     serializer_class = ConstructRetrieveSerializer
 
 
@@ -80,7 +80,7 @@ class FromGenBankView(APIView):
                         last_item = tracks[-1]
                         if feature.type.lower() == 'cds':
                             tracks.append(dict(
-                                label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
+                                label=record.features[0].qualifiers.get('label', ['Track ' + str(i)])[0],
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color='#4e0a77',
@@ -109,7 +109,8 @@ class FromGenBankView(APIView):
                         name=record.name,
                         dna_seq=str(record.seq),
                         description=record.annotations.get('description', None),
-                        circular=True if record.annotations.get('topology', '').lower() == 'circular' else False
+                        circular=True if record.annotations.get('topology', '').lower() == 'circular' else False,
+                        from_file=True
                     )
 
                     if len(tracks):

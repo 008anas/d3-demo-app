@@ -5,7 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzPopoverModule } from 'ng-zorro-antd/popover';
 
 import { WorkspaceRoutingModule } from './workspace-routing.module';
 import { WorkspaceComponent } from './workspace.component';
@@ -16,7 +15,8 @@ import { ResultsViewerComponent } from './shared/results-viewer/results-viewer.c
 import { DisplayValuesComponent } from './shared/display-values/display-values.component';
 import { DisplayThresholdComponent } from './shared/display-threshold/display-threshold.component';
 import { SetHighlightComponent } from './shared/set-highlight/set-highlight.component';
-
+import { ExportModalComponent } from './shared/export-modal/export-modal.component';
+import { SetCutoffComponent } from './shared/set-cutoff/set-cutoff.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +26,9 @@ import { SetHighlightComponent } from './shared/set-highlight/set-highlight.comp
     ResultsViewerComponent,
     DisplayValuesComponent,
     DisplayThresholdComponent,
-    SetHighlightComponent
+    SetHighlightComponent,
+    ExportModalComponent,
+    SetCutoffComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,6 @@ import { SetHighlightComponent } from './shared/set-highlight/set-highlight.comp
     NzModalModule,
     NzSelectModule,
     NzDropDownModule,
-    NzPopoverModule,
     ReactiveFormsModule
   ],
   schemas: [

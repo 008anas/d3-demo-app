@@ -20,9 +20,6 @@
             <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
           </nz-select>
         </div>
-        <div class="column right aligned" style="padding: 1em">
-          <a class="disabled" (click)="loadExample()">Load model file</a>
-        </div>
       </div>
 
       <div class="row">
@@ -72,7 +69,6 @@
           <form class="ui padded form" [ngClass]="{'loading disabled': isSubmitting}" #constructForm="ngForm" (ngSubmit)="submit()">
 
             <ng-container *ngIf="view">
-
               <div class="required field">
                 <label class="required-msg">Required fields are shown with</label>
               </div>

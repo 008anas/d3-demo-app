@@ -31,7 +31,8 @@ class GeneticElementAdmin(ModelAdmin):
     ordering = ('-created_at',)
 
     def save_model(self, request, obj, form, change):
-        if (not obj.genome_min or not obj.genome_max) and obj.specie.genome_gbk:
+        if (not obj.genome_min or not obj.genome_max) and (
+                not obj.genome_min == 0 or not obj.genome_max == 0) and obj.specie.genome_gbk:
             try:
                 handle = open(obj.specie.genome_gbk.path, 'rU')
                 for record in SeqIO.parse(handle, 'genbank'):

@@ -171,16 +171,14 @@ export class EditorComponent implements OnInit, OnDestroy {
         sequenceFileName: 'pj5_00001.gb',
         size: 8832,
         description: this.history.construct.description || '',
-        features: this.history.construct.tracks.map(t => {
-          return {
-            color: t.color,
-            name: t.label,
-            type: t.type,
-            start: t.start,
-            end: t.end,
-            forward: true // ie true=positive strand     false=negative strange
-          };
-        }),
+        features: this.history.construct.tracks.map(t => ({
+          color: t.color,
+          name: t.label,
+          type: t.type,
+          start: t.start,
+          end: t.end,
+          forward: true // ie true=positive strand     false=negative strange
+        })),
         fromFileUpload: false
       }
     });

@@ -400,7 +400,7 @@ def terminator_scoring(sequence, n=40, min_stem_size=3, max_stem_size=12, max_lo
             hp_energy, structure = _evaluate_hp(hp_patterns, subseq[:j])
             t_score = _tscore(subseq[j:], penalty=penalty, max_stretch_size=max_stretch_size)
             d_score = _dscore(hp_energy, j, t_score)
-            i +=1
+            i += 1
             if i in rs:
                 if d_score > rs[i]:
                     rs[i] = d_score
@@ -419,7 +419,7 @@ def checker(sequence, elements='all', parameter_dict=None, codon_table=4, circul
             indexed=True, verbose=0):
     """
     parameter_dict = dictionary to pass paths and parameters in shape:
-        {alias:{name: string, min:float, max:float, matrix:string_path}}
+        {alias:{min:float, max:float, matrix:string_path}}
     string_path can be empty for those methods that do not require matrix evaluations
 
     """
@@ -479,6 +479,5 @@ def checker(sequence, elements='all', parameter_dict=None, codon_table=4, circul
                                             residue_type=residue_type,
                                             indexed=indexed, standardize=standardize)
             if len(scores) > 0:
-                rs.append(dict(name=parameter_dict[element]['name'], alias=element,
-                               scores=scores))
+                rs.append(dict(alias=element, scores=scores))
     return rs  # TODO second dictionary is expected to be the normalized dictionary

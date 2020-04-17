@@ -17,4 +17,4 @@ class SpecieAdmin(ModelAdmin):
     )
     list_display = ('name', 'email', 'subject', 'message', 'created_at')
     search_fields = ('name', 'email', 'subject', 'message')
-    ordering = ('created_at',)
+    ordering = ('-created_at',)

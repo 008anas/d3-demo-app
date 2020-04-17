@@ -27,13 +27,16 @@ class HistorySerializer(serializers.ModelSerializer):
         return rq_job.get_status()
 
 
-class FilterSerializer(serializers.Serializer):
-    key = serializers.ChoiceField(choices=set(Parameter.objects.filter(active=True).values_list('alias', flat=True)))
+class ThresholdSerializer(serializers.Serializer):
     value = serializers.FloatField()
     op = serializers.ChoiceField(choices=['<', '<=', '=', '>', '>='])
     type = serializers.ChoiceField(choices=['raw', 'norm'])
 
 
+class OptionsSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    filter = ThresholdSerializer(required=False)
+
+
 class ExportResultsSerializer(serializers.Serializer):
-    filters = FilterSerializer(many=True, required=False)
-    bulk = serializers.BooleanField(required=False)
+    options = OptionsSerializer(many=True, required=False)
