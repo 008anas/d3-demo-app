@@ -59,7 +59,7 @@
               Information
             </a>
             <a class="item" (click)="view = false" [ngClass]="{'active': !view}">
-              Tracks
+              Tracks <label [hidden]="construct.tracks?.length < 1" class="ui circular tiny label">{{construct.tracks?.length}}</label>
             </a>
           </div>
         </div>

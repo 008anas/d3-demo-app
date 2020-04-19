@@ -250,12 +250,12 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  exampleConstruct() {
+  modelConstruct() {
     let flag = true;
     if (this.construct.tracks.length > 0) {
       if (
         !confirm(
-          'You really want to load an example construct? You\'re gonna lose all actual data. Proceed?'
+          'You really want to load a model construct? You\'re gonna lose all actual data. Proceed?'
         )
       ) {
         flag = false;

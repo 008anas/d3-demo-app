@@ -34,7 +34,6 @@ export class FromFileComponent implements OnInit, OnDestroy {
   isLoading = false;
   construct: Construct = null;
   history: UserHistory = null;
-  exampleFile = 'assets/files/NC_044937.gbk';
   fileList = [];
   endpoint: string;
   view = true;

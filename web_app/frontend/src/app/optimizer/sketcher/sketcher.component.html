@@ -160,7 +160,7 @@
                 General
               </a>
               <a class="item" (click)="view = 'tracks'" [ngClass]="{'active': view === 'tracks'}">
-                Tracks
+                Tracks <label [hidden]="construct.tracks?.length < 1" class="ui circular tiny label">{{construct.tracks?.length}}</label>
               </a>
             </div>
           </div>
@@ -461,9 +461,9 @@
       <i class="copy icon"></i>
       Copy sequence
     </li>
-    <li nz-menu-item [nzDisabled]="locked" (click)="exampleConstruct()">
+    <li nz-menu-item [nzDisabled]="locked" (click)="modelConstruct()">
       <i class="database icon"></i>
-      Load example construct
+      Load model construct
     </li>
     <li nz-menu-item (click)="clear()" [nzDisabled]="!construct.tracks?.length || locked">
       <i class="eraser icon"></i>

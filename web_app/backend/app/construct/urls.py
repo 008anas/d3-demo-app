@@ -7,7 +7,7 @@ router = routers.DefaultRouter()
 router.register(r'', ConstructListRetrieveView, basename='Construct')
 
 urlpatterns = [
-    path('example', ConstructExampleView.as_view()),
+    path('model', ConstructExampleView.as_view()),
     path('from-genbank', FromGenBankView.as_view()),
     path('', include(router.urls))
 ]

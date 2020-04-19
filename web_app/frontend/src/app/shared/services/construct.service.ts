@@ -26,7 +26,7 @@ export class ConstructService {
   }
 
   getExample(): Observable<Construct[]> {
-    return this.http.get<Construct[]>(`${this.url}example`).pipe();
+    return this.http.get<Construct[]>(`${this.url}model`).pipe();
   }
 
 }

@@ -12,7 +12,7 @@ import { FileService } from '@services/file.service';
 export class DisplayValuesComponent {
 
   @Input() headers: string[] = [];
-  @Input() values: number[] = [];
+  @Input() values: any[] = [];
   @Input() min: number;
   @Input() max: number;
   @Input() title: string;

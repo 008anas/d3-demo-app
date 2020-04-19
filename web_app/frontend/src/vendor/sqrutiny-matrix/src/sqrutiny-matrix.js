@@ -14,7 +14,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
     super();
     this._line = line()
       .defined(d => !isNaN(d.y))
-      .x(d => this.getXFromSeqPosition(d.x))
+      .x(d => (this.getXFromSeqPosition(d.x) + this.getXFromSeqPosition(d.x + 1)) / 2)
       .y(d => this._yScale(d.y))
       .curve(curveMonotoneX);
   }
@@ -101,8 +101,8 @@ class SqrutinyMatrix extends ProtvistaTrack {
         .style('stroke', 'rgb(0, 0, 255)')
         .style('stroke-dasharray', '5px')
         .style('stroke-width', '1.5px')
-        .attr('x1', d => this.getXFromSeqPosition(d))
-        .attr('x2', d => this.getXFromSeqPosition(d))
+        .attr('x1', d => (this.getXFromSeqPosition(d) + this.getXFromSeqPosition(d + 1)) / 2)
+        .attr('x2', d => (this.getXFromSeqPosition(d) + this.getXFromSeqPosition(d + 1)) / 2)
         .attr('y1', 0)
         .attr('y2', this._height);
     }
