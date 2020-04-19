@@ -37,20 +37,21 @@ class Filter {
 }
 
 @Component({
-  selector: 'sqy-results-viewer',
-  templateUrl: './results-viewer.component.html',
-  styleUrls: ['./results-viewer.component.scss']
+  selector: 'sqy-result-viewer',
+  templateUrl: './result-viewer.component.html',
+  styleUrls: ['./result-viewer.component.scss']
 })
-export class ResultsViewerComponent implements AfterViewInit {
+export class ResultViewerComponent implements AfterViewInit {
 
   @Input() set data(data: any) {
-    this._data = data;
+    this._data = [];
     this.options = [];
-    if (!this._data.results || !this._data.construct || !this._data.results.length) {
+    if (!data.result || !data.construct || !data.result.length) {
       return;
     }
+    this._data = data;
     this.loader.startLoading();
-    this._data.results.forEach((r: any) => {
+    this._data.result.map((r: any) => {
       this.options.push({
         alias: r.alias,
         display: true,
@@ -186,26 +187,29 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   cutoffModal(alias: string) {
     const op = this.getByAlias(this.options, alias);
-    this.modal.create({
-      nzTitle: 'Set cutoff for ' + op.name,
-      nzContent: SetCutoffComponent,
-      nzWidth: 450,
-      nzWrapClassName: 'center-modal',
-      nzComponentParams: {
-        option: op
-      },
-      nzOnOk: (cmp: SetCutoffComponent) => {
-        if (cmp.op !== null && cmp.value !== null && !Number.isNaN(cmp.value)) {
-          this.setThreshold({ alias, value: cmp.value, op: cmp.op, type: op.type });
+    if (op) {
+      this.modal.create({
+        nzTitle: 'Set cutoff for ' + op.name,
+        nzContent: SetCutoffComponent,
+        nzWidth: 450,
+        nzWrapClassName: 'center-modal',
+        nzComponentParams: {
+          option: op
+        },
+        nzOnOk: (cmp: SetCutoffComponent) => {
+          if (cmp.op !== null && cmp.value !== null && !Number.isNaN(cmp.value)) {
+            this.setThreshold({ alias, value: cmp.value, op: cmp.op, type: op.type });
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   private setThreshold(filter: Filter) {
     if (filter.alias && filter.op && filter.value !== null) {
       let values = [];
-      values = this.getByAlias(this.options, filter.alias).data.filter(d => {
+      const op = this.getByAlias(this.options, filter.alias);
+      values = op.data.filter((d: any) => {
         if (this.operatorsFn[filter.op](filter.value, d.score)) {
           return {
             pos: d.pos,
@@ -213,24 +217,25 @@ export class ResultsViewerComponent implements AfterViewInit {
           };
         }
       });
+      const operator = this.operators.find(o => o.op === filter.op);
       if (values.length) {
-        this.getByAlias(this.options, filter.alias).cutoffs = values;
+        op.cutoffs = values;
         this.filters.push(filter);
         /* tslint:disable:no-string-literal */
         document.getElementById(filter.alias)['cutoffs'] = values.map((v: any) => v.pos);
         /* tslint:enable:no-string-literal */
         const element = document.getElementById('cutoffRes' + filter.alias).getElementsByTagName('p')[0];
-        element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === filter.op).desc} ${filter.value}`;
+        element.innerHTML = `<i class="filter icon"></i> ${operator.desc} ${filter.value}`;
         element.style.visibility = 'visible';
       } else {
         this.clearCutoffs(filter.alias);
-        this.notify.info(this.getByAlias(this.options, filter.alias).name + ': No result was found');
+        this.notify.info(`No results found for: ${operator.desc} ${filter.value} in ${op.name}`);
       }
     }
   }
 
   displayScore(alias: string) {
-    const data = this.getByAlias(this._data.results, alias);
+    const data = this.getByAlias(this._data.result, alias);
     this.valuesModal(data.scores, ['Start', 'End', 'Raw values', 'Normalized values'], this.getByAlias(this.options, alias).name + ' data');
   }
 
@@ -254,8 +259,9 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   changeColors(alias?: string) {
     if (alias) {
-      this.getByAlias(this.options, alias).color = this.getRandomColor();
-      document.getElementById(alias).setAttribute('color', this.getByAlias(this.options, alias).color);
+      const op = this.getByAlias(this.options, alias);
+      op.color = this.getRandomColor();
+      document.getElementById(alias).setAttribute('color', op.color);
     } else {
       this.options.forEach(o => o.color = this.getRandomColor());
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
@@ -263,20 +269,19 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   switchScore(alias: string, type: string) {
-    const op = this.getByAlias(this._data.results, alias);
-    if (op) {
-      op.scores = op.scores.map(s => type === 'raw' ? s.raw_score : s.norm_score);
-      /* tslint:disable:no-string-literal */
-      document.getElementById(alias)['data'] = op.scores.map((s: any) => ({
+    const data = this.getByAlias(this._data.result, alias);
+    if (data) {
+      const op = this.getByAlias(this.options, alias);
+      this.clearCutoffs(op.alias);
+      op.data = data.scores.map((s: any) => ({
         pos: s.start,
-        score: type === 'raw' ? s.raw_score : s.norm_score,
-        min: Math.min.apply(Math, op.scores),
-        max: Math.max.apply(Math, op.scores)
+        score: type === 'raw' ? s.raw_score : s.norm_score
       }));
-      /* tslint:enable:no-string-literal */
-      this.getByAlias(this.options, alias).type = type;
+      // /* tslint:disable:no-string-literal */
+      document.getElementById(alias)['data'] = op.data;
+      // /* tslint:enable:no-string-literal */
+      op.type = type;
     }
-
   }
 
   searchMotif(motif: any) {
@@ -387,11 +392,11 @@ export class ResultsViewerComponent implements AfterViewInit {
         alias = [alias];
       }
       alias.map(a => {
-        const op = this.getByAlias(this._data.results, a);
+        const op = this.getByAlias(this._data.result, a);
         data.push({ name: op.alias, data: op.scores });
       });
     } else {
-      data = this._data.results.map((v: any) => ({ name: v.alias, data: v.scores }));
+      data = this._data.result.map((v: any) => ({ name: v.alias, data: v.scores }));
     }
     if (data.length > 0) {
       this.fileSrvc.exportAsExcelFile(data, data.length === 1 ? alias[0] : 'scores');

@@ -31,7 +31,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   isSearching = false;
   msg: string = null;
   seq: string = null;
-  resultData: { construct: Construct; results: any };
+  resultData: { construct: Construct; result: any[] };
   trackHovered: Track = null;
   interval: any;
   attempts = 0;
@@ -74,10 +74,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             if (this.interval) {
               clearInterval(this.interval);
             }
-            this.resultData = {
-              construct: this.history.construct,
-              results: this.history.job.result
-            };
+            this.resultData = { construct: this.history.construct, result: this.history.job.result };
           } else if (this.history.isActive()) {
             if (!this.interval) {
               this.interval = setInterval(() => this.getJob(), RETRY_IN);

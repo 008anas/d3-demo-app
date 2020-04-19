@@ -11,7 +11,7 @@ import { WorkspaceComponent } from './workspace.component';
 import { HistoryComponent } from './history/history.component';
 import { HistoryLoadingComponent } from './shared/history-loading/history-loading.component';
 import { SharedModule } from '../shared/shared.module';
-import { ResultsViewerComponent } from './shared/results-viewer/results-viewer.component';
+import { ResultViewerComponent } from './shared/result-viewer/result-viewer.component';
 import { DisplayValuesComponent } from './shared/display-values/display-values.component';
 import { SetHighlightComponent } from './shared/set-highlight/set-highlight.component';
 import { ExportModalComponent } from './shared/export-modal/export-modal.component';
@@ -22,7 +22,7 @@ import { SetCutoffComponent } from './shared/set-cutoff/set-cutoff.component';
     WorkspaceComponent,
     HistoryComponent,
     HistoryLoadingComponent,
-    ResultsViewerComponent,
+    ResultViewerComponent,
     DisplayValuesComponent,
     SetHighlightComponent,
     ExportModalComponent,
