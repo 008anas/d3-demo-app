@@ -28,7 +28,9 @@ export class FileService {
       wb.Sheets[d.name] = ws;
     });
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    this.saveFileAs(excelBuffer, EXCEL_TYPE, `${main.appName}_${fileName || new Date().toString()}${EXCEL_EXTENSION}`);
+    const today = new Date();
+    const date = `${today.getFullYear()}_${(today.getMonth() + 1)}_${today.getDate()}`;
+    this.saveFileAs(excelBuffer, EXCEL_TYPE, `${main.appName}_${fileName || '' + date}${EXCEL_EXTENSION}`);
   }
 
   public saveFileAs(buffer: any, type: string, fileName: string): void {

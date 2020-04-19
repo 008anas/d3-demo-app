@@ -11,13 +11,12 @@ import { DisplayValuesComponent } from '../display-values/display-values.compone
 import { HistoryService } from '../history.service';
 import { FileService } from '@services/file.service';
 import { LoaderService } from '@services/loader.service';
-import { DisplayThresholdComponent } from '../display-threshold/display-threshold.component';
 import { ExportModalComponent } from '../export-modal/export-modal.component';
 import { FeatureService } from 'app/optimizer/shared/feature.service';
 import { Feature } from 'app/optimizer/shared/feature';
 import { SetCutoffComponent } from '../set-cutoff/set-cutoff.component';
 
-class GraphsOptions {
+class GraphsOption {
   name?: string;
   alias: string;
   description?: string;
@@ -28,6 +27,13 @@ class GraphsOptions {
   type: string;
   cutoffs?: number[];
   color: string;
+}
+
+class Filter {
+  alias: string;
+  value: number;
+  op: string;
+  type: string;
 }
 
 @Component({
@@ -60,16 +66,9 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   _data: any = null; // Original data
   isSearching = false;
-  options: GraphsOptions[] = [];
+  options: GraphsOption[] = [];
+  filters: Filter[] = [];
   enzime: string;
-  colors = [
-    'red',
-    'blue',
-    'black',
-    'green',
-    'orange',
-    'purple'
-  ];
   enzimes = [
     'GAATTC',
     'CTTAAG',
@@ -82,15 +81,15 @@ export class ResultsViewerComponent implements AfterViewInit {
   ];
   operators = [
     { desc: 'Greater or equal than', op: '<=' },
-    { desc: 'Greater than', op: '>' },
-    { desc: 'Equal', op: '=' },
+    { desc: 'Greater than', op: '<' },
+    { desc: 'Equal to', op: '=' },
     { desc: 'Lower or equal than', op: '>=' },
-    { desc: 'Lower than', op: '<' }
+    { desc: 'Lower than', op: '>' }
   ];
   operatorsFn = {
     '<': (a: number, b: number) => a < b,
     '<=': (a: number, b: number) => a <= b,
-    '=': (a: number, b: number) => a == b,
+    '=': (a: number, b: number) => a === b,
     '>': (a: number, b: number) => a > b,
     '>=': (a: number, b: number) => a >= b,
   };
@@ -114,6 +113,7 @@ export class ResultsViewerComponent implements AfterViewInit {
   ngAfterViewInit() {
     // Init graphs
     if (this._data && this.options) {
+      /* tslint:disable:no-string-literal */
       this.nav.nativeElement['length'] = this._data.construct.dna_seq.length;
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
       this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
@@ -123,6 +123,7 @@ export class ResultsViewerComponent implements AfterViewInit {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
+      /* tslint:enable:no-string-literal */
     }
   }
 
@@ -137,6 +138,145 @@ export class ResultsViewerComponent implements AfterViewInit {
 
   private toProteinSeqVw(val: string) {
     return ` ${val.split('').join('  ')} `;
+  }
+
+  private getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  displayAll() {
+    this.options.map(x => x.display = true);
+  }
+
+  hideAll() {
+    this.options.map(x => x.display = false);
+  }
+
+  setHighlight(pos: string) {
+    if (pos) {
+      document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = pos);
+    }
+  }
+
+  clearHighlight() {
+    document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
+  }
+
+  clearCutoffs(alias: string) {
+    /* tslint:disable:no-string-literal */
+    document.getElementById(alias)['cutoffs'] = undefined;
+    this.getByAlias(this.options, alias).cutoffs = null;
+    this.filters = this.filters.filter(f => f.alias !== alias);
+    document.getElementById('cutoffRes' + alias).getElementsByTagName('p')[0].innerHTML = '';
+    document.getElementById('cutoffRes' + alias).style.visibility = 'hidden';
+    /* tslint:enable:no-string-literal */
+  }
+
+  clearAllCutoffs() {
+    document.querySelectorAll('.score-graph').forEach((x: any) => x.cutoffs = undefined);
+    this.options.map(op => op.cutoffs = null);
+    this.filters = [];
+    document.querySelectorAll('.cutoff').forEach((c: HTMLElement) => c.style.visibility = 'hidden');
+  }
+
+  cutoffModal(alias: string) {
+    const op = this.getByAlias(this.options, alias);
+    this.modal.create({
+      nzTitle: 'Set cutoff for ' + op.name,
+      nzContent: SetCutoffComponent,
+      nzWidth: 450,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        option: op
+      },
+      nzOnOk: (cmp: SetCutoffComponent) => {
+        if (cmp.op !== null && cmp.value !== null && !Number.isNaN(cmp.value)) {
+          this.setThreshold({ alias, value: cmp.value, op: cmp.op, type: op.type });
+        }
+      }
+    });
+  }
+
+  private setThreshold(filter: Filter) {
+    if (filter.alias && filter.op && filter.value !== null) {
+      let values = [];
+      values = this.getByAlias(this.options, filter.alias).data.filter(d => {
+        if (this.operatorsFn[filter.op](filter.value, d.score)) {
+          return {
+            pos: d.pos,
+            score: d.score
+          };
+        }
+      });
+      if (values.length) {
+        this.getByAlias(this.options, filter.alias).cutoffs = values;
+        this.filters.push(filter);
+        /* tslint:disable:no-string-literal */
+        document.getElementById(filter.alias)['cutoffs'] = values.map((v: any) => v.pos);
+        /* tslint:enable:no-string-literal */
+        const element = document.getElementById('cutoffRes' + filter.alias).getElementsByTagName('p')[0];
+        element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === filter.op).desc} ${filter.value}`;
+        element.style.visibility = 'visible';
+      } else {
+        this.clearCutoffs(filter.alias);
+        this.notify.info(this.getByAlias(this.options, filter.alias).name + ': No result was found');
+      }
+    }
+  }
+
+  displayScore(alias: string) {
+    const data = this.getByAlias(this._data.results, alias);
+    this.valuesModal(data.scores, ['Start', 'End', 'Raw values', 'Normalized values'], this.getByAlias(this.options, alias).name + ' data');
+  }
+
+  displayCutoffs(alias: string) {
+    const op = this.getByAlias(this.options, alias);
+    this.valuesModal(op.cutoffs, ['Position', 'Score'], op.name + ' cutoff positions');
+  }
+
+  private valuesModal(values: any[], headers: string[], title?: string) {
+    this.modal.create({
+      nzContent: DisplayValuesComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        headers,
+        values,
+        title
+      },
+      nzFooter: null
+    });
+  }
+
+  changeColors(alias?: string) {
+    if (alias) {
+      this.getByAlias(this.options, alias).color = this.getRandomColor();
+      document.getElementById(alias).setAttribute('color', this.getByAlias(this.options, alias).color);
+    } else {
+      this.options.forEach(o => o.color = this.getRandomColor());
+      document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
+    }
+  }
+
+  switchScore(alias: string, type: string) {
+    const op = this.getByAlias(this._data.results, alias);
+    if (op) {
+      op.scores = op.scores.map(s => type === 'raw' ? s.raw_score : s.norm_score);
+      /* tslint:disable:no-string-literal */
+      document.getElementById(alias)['data'] = op.scores.map((s: any) => ({
+        pos: s.start,
+        score: type === 'raw' ? s.raw_score : s.norm_score,
+        min: Math.min.apply(Math, op.scores),
+        max: Math.max.apply(Math, op.scores)
+      }));
+      /* tslint:enable:no-string-literal */
+      this.getByAlias(this.options, alias).type = type;
+    }
+
   }
 
   searchMotif(motif: any) {
@@ -162,135 +302,7 @@ export class ResultsViewerComponent implements AfterViewInit {
     }
   }
 
-  displayAll() {
-    this.options.map(x => x.display = true);
-  }
-
-  hideAll() {
-    this.options.map(x => x.display = false);
-  }
-
-  private getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
-  setHighlight(pos: string) {
-    if (pos) {
-      document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = pos);
-    }
-  }
-
-  clearHighlight() {
-    document.querySelectorAll('.protvista').forEach((x: any) => x.fixedHighlight = undefined);
-  }
-
-  setThreshold(alias: string, value: number, operator: string) {
-    if (alias && operator && value !== null) {
-      let values = [];
-      values = this.getByAlias(this.options, alias).data.filter(d => {
-        if (this.operatorsFn[operator](value, d.score)) {
-          return {
-            pos: d.pos,
-            score: d.score
-          };
-        }
-      });
-      if (values.length) {
-        this.getByAlias(this.options, alias).cutoffs = values;
-        document.getElementById(alias)['cutoffs'] = values.map((v: any) => v.pos);
-        const element = document.getElementById('cutoffRes' + alias).getElementsByTagName('p')[0];
-        element.innerHTML = `<i class="filter icon"></i> ${this.operators.find(o => o.op === operator).desc} ${value}`;
-        element.style.visibility = 'visible';
-      } else {
-        this.clearCutoffs(alias);
-        this.notify.info(this.getByAlias(this.options, alias).name + ': No result was found');
-      }
-    }
-  }
-
-  clearCutoffs(graph: string) {
-    document.getElementById(graph)['cutoffs'] = undefined;
-    this.getByAlias(this.options, graph).cutoffs = null;
-    document.getElementById('cutoffRes' + graph).getElementsByTagName('p')[0].innerHTML = '';
-    document.getElementById('cutoffRes' + graph).style.visibility = 'hidden';
-  }
-
-  clearAllCutoffs() {
-    document.querySelectorAll('.score-graph').forEach((x: any) => x.cutoffs = undefined);
-    this.options.map(op => op.cutoffs = null);
-    document.querySelectorAll('.cutoff').forEach((c: HTMLElement) => c.style.visibility = 'hidden');
-  }
-
-  cutoffModal(alias: string) {
-    const op = this.getByAlias(this.options, alias);
-    this.modal.create({
-      nzTitle: 'Set cutoff for ' + op.name,
-      nzContent: SetCutoffComponent,
-      nzWrapClassName: 'center-modal',
-      nzComponentParams: {
-        option: op
-      },
-      nzOnOk: (cmp: SetCutoffComponent) => {
-        if (cmp.op !== null && cmp.value !== null) {
-          this.setThreshold(alias, cmp.value, cmp.op);
-        }
-      }
-    });
-  }
-
-  valuesModal(key: string) {
-    this.modal.create({
-      nzContent: DisplayValuesComponent,
-      nzWrapClassName: 'center-modal',
-      nzComponentParams: {
-        values: this._data.results.find(r => r.alias === key).scores
-      },
-      nzFooter: null
-    });
-  }
-
-  thresholdModal(key: string) {
-    this.modal.create({
-      nzContent: DisplayThresholdComponent,
-      nzWrapClassName: 'center-modal',
-      nzComponentParams: {
-        values: this.options.find(r => r.alias === key).cutoffs
-      },
-      nzFooter: null
-    });
-  }
-
-  changeColors(alias?: string) {
-    if (alias) {
-      this.getByAlias(this.options, alias).color = this.getRandomColor();
-      document.getElementById(alias).setAttribute('color', this.getByAlias(this.options, alias).color);
-    } else {
-      this.options.forEach(o => o.color = this.getRandomColor());
-      document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
-    }
-  }
-
-  switchScore(alias: string, type: string) {
-    const op = this.getByAlias(this._data.results, alias);
-    if (op) {
-      op.scores = op.scores.map(s => type === 'raw' ? s.raw_score : s.norm_score);
-      document.getElementById(alias)['data'] = op.scores.map((s: any) => ({
-        pos: s.start,
-        score: type === 'raw' ? s.raw_score : s.norm_score,
-        min: Math.min.apply(Math, op.scores),
-        max: Math.max.apply(Math, op.scores)
-      }));
-      this.getByAlias(this.options, alias).type = type;
-    }
-
-  }
-
-  getFeatures() {
+  private getFeatures() {
     this.loader.startLoading();
     this.featureSrvc
       .getAll()
@@ -309,6 +321,13 @@ export class ResultsViewerComponent implements AfterViewInit {
   }
 
   // Export
+
+  exportCutoffToGb(alias: string) {
+    const filter = this.getByAlias(this.filters, alias);
+    if (filter) {
+      this.exportToGb([{ key: alias, filter }]);
+    }
+  }
 
   exportModal() {
     this.modal.create({
@@ -338,7 +357,7 @@ export class ResultsViewerComponent implements AfterViewInit {
       );
   }
 
-  exportToExcel(alias?: string[]) {
+  exportCutoffToExcel(alias?: string[]) {
     let data = [];
     if (alias) {
       if (!Array.isArray(alias)) {
@@ -346,10 +365,33 @@ export class ResultsViewerComponent implements AfterViewInit {
       }
       alias.map(a => {
         const op = this.getByAlias(this.options, a);
-        data.push({ name: op.name, data: op.data });
+        if (op.cutoffs) {
+          data = [{ name: op.name, data: op.cutoffs }];
+        }
       });
     } else {
-      data = this._data.results.map(v => ({ name: v.name, data: v.scores }));
+      data = this.options.filter((o: GraphsOption) => !o.cutoffs);
+    }
+    if (data.length > 0) {
+      this.fileSrvc.exportAsExcelFile(data, data.length === 1 ? alias[0] : 'scores');
+      this.notify.success('Exported! Your download is about to start.');
+    } else {
+      this.notify.error('Unable to export.');
+    }
+  }
+
+  exportToExcel(alias?: string[]) {
+    let data = [];
+    if (alias) {
+      if (!Array.isArray(alias)) {
+        alias = [alias];
+      }
+      alias.map(a => {
+        const op = this.getByAlias(this._data.results, a);
+        data.push({ name: op.alias, data: op.scores });
+      });
+    } else {
+      data = this._data.results.map((v: any) => ({ name: v.alias, data: v.scores }));
     }
     if (data.length > 0) {
       this.fileSrvc.exportAsExcelFile(data, data.length === 1 ? alias[0] : 'scores');

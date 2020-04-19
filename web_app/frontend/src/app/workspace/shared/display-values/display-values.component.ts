@@ -11,24 +11,13 @@ import { FileService } from '@services/file.service';
 })
 export class DisplayValuesComponent {
 
-  _values: any[];
-  maxRaw: number;
-  minRaw: number;
-  maxNorm: number;
-  minNorm: number;
+  @Input() headers: string[] = [];
+  @Input() values: number[] = [];
+  @Input() min: number;
+  @Input() max: number;
+  @Input() title: string;
 
-  @Input() set values(values: any[]) {
-    this._values = [];
-    if (values) {
-      this._values = values;
-      const raw = this._values.map(v => v.raw_score);
-      const norm = this._values.map(v => v.norm_score);
-      this.maxRaw = Math.max.apply(Math, raw);
-      this.minRaw = Math.min.apply(Math, raw);
-      this.maxNorm = Math.max.apply(Math, norm);
-      this.minNorm = Math.min.apply(Math, norm);
-    }
-  }
+  objectKeys = Object.keys;
 
   constructor(
     private fileSrvc: FileService,

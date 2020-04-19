@@ -5,7 +5,7 @@
       <a class="item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         Home
       </a>
-      <a class="item" nz-dropdown [nzDropdownMenu]="OpzMenu">
+      <a class="item" routerLink="/optimize" routerLinkActive="active" nz-dropdown [nzDropdownMenu]="OpzMenu">
         Optimize
         <nz-dropdown-menu #OpzMenu="nzDropdownMenu">
           <ul nz-menu nzSelectable>

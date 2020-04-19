@@ -42,7 +42,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
   response: any = null;
   categories: Category[] = [];
   specie: Specie = new Specie();
-  features: Feature[] = [];
   species: Specie[] = [];
   submitted = false;
   showPicker = false;
@@ -56,6 +55,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   search: string;
   sketcherLoading = false;
   autoSave = true;
+  features: Feature[] = [];
   featuresArray: string[];
 
   constructor(
@@ -91,13 +91,13 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  initConstruct() {
+  private initConstruct() {
     if (this.getFromSession()) {
       this.construct = this.getFromSession();
     }
   }
 
-  isConstructEmpty() {
+  private isConstructEmpty() {
     for (const key in this.construct) {
       if (this.construct[key] && this.construct[key] !== null && this.construct[key] !== '') {
         return false;
@@ -105,7 +105,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  getSpecie() {
+  private getSpecie() {
     this.isLoading = true;
     this.specieSrvc
       .getBySlug(this.specie)
@@ -113,7 +113,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       .subscribe(data => this.specie.deserialize(data));
   }
 
-  getConstruct(id: any) {
+  private getConstruct(id: any) {
     if (id) {
       this.sketcherLoading = true;
       this.constructSrvc
@@ -179,7 +179,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       });
   }
 
-  getFeatures() {
+  private getFeatures() {
     this.isLoading = true;
     this.featureSrvc
       .getAll()
@@ -272,7 +272,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
       this.response = null;
       this.sketcherLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
-      this.sqrutinySrvc.fromSketch(this.construct, this.featuresArray.length > 0 ? this.featuresArray : null)
+      this.sqrutinySrvc.fromConstruct(this.construct, this.featuresArray.length > 0 ? this.featuresArray : null)
         .pipe(finalize(() => this.sketcherLoading = false))
         .subscribe(
           (data: UserHistory) => {
@@ -301,10 +301,10 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   addTrack(track: Track) {
     if (track.pos > -1) {
-      const seq_length = this.construct.dna_seq.length;
+      const length = this.construct.dna_seq.length;
       this.construct.tracks[track.pos] = track;
-      this.construct.tracks[track.pos].start = seq_length + 1;
-      this.construct.tracks[track.pos].end = seq_length + track.sequence.length;
+      this.construct.tracks[track.pos].start = length + 1;
+      this.construct.tracks[track.pos].end = length + track.sequence.length;
       this.construct.dna_seq += track.sequence;
       document.getElementById('track' + track.pos).classList.remove('invalid'); // Now is valid
       this.saveInSession();
@@ -380,7 +380,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   // Session storage manage
-  getFromSession() {
+  private getFromSession() {
     return JSON.parse(sessionStorage.getItem(NAME_IN_SESSION)) || null;
   }
 
@@ -390,7 +390,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeFromSession() {
+  private removeFromSession() {
     sessionStorage.removeItem(NAME_IN_SESSION);
   }
 }

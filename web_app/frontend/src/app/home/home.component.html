@@ -92,8 +92,8 @@
 
                 <div class="field" [ngClass]="{'error': historyID.errors?.pattern && (historyID.dirty || historyID.touched)}">
                   <div class="ui big action fluid input" [ngClass]="{'loading': isRetriving}">
-                    <input type="text" name="id" [(ngModel)]="history_id" required [pattern]="uuidRegex" #historyID="ngModel" placeholder="history id...">
-                    <button type="submit" [disabled]="retrieveHistory.invalid || !history_id" class="ui primary right labeled icon button">
+                    <input type="text" name="id" [(ngModel)]="historyId" required [pattern]="uuidRegex" #historyID="ngModel" placeholder="history id...">
+                    <button type="submit" [disabled]="retrieveHistory.invalid || !historyId" class="ui primary right labeled icon button">
                       Retrieve <i class="right arrow icon"></i>
                     </button>
                   </div>

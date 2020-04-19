@@ -112,24 +112,13 @@ class ExportThresholdView(APIView):
             single = next((r for r in job_content if r['alias'] == o.get('key', '')), None)
             if single:
                 if o.get('filter', None):
-                    single = [s for s in single['scores']]
+                    f = o.get('filter')
+                    if f.get('value', None) is not None and f.get('op', None) and f.get('type', None):
+                        single['scores'] = [s for s in single['scores']
+                                            if op_fn.get(f['op'])(float(f['value']), s.get('raw_score')
+                            if f['type'] == 'raw' else s.get('norm_score'))]
                 result.append(single)
 
-        # bulk = serializer.validated_data.get('bulk', False)
-        #
-        # keys = [f.get('key', '') for f in filters]
-        #
-        # # Keep only in filters (if bulk mode)
-        # if not bulk:
-        #     result = [r for r in result if r['alias'] in keys]
-        #
-        # for f in filters:
-        #     # Override results
-        #     single = next((r for r in result if r['alias'] == f['key']), None)
-        #     if single:
-        #         single['scores'] = [s for s in single['scores'] if op_fn.get(f['op'])(float(f['value']), s.get('raw_score') if f['type'] == 'raw' else s.get('norm_score'))]
-        #         result[result.index(single)] = single
-        #
         # Append result scores
         for r in result:
             for t in r.get('scores', []):

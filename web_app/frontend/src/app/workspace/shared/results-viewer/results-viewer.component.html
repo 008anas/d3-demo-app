@@ -1,4 +1,4 @@
-<div class="ui vertically divided grid">
+<div class="ui vertically divided grid" style="min-height: 900px">
 
   <div class="equal width center aligned middle aligned row" style="padding: 0em">
 
@@ -125,11 +125,11 @@
                     <!-- Data -->
                     <nz-dropdown-menu #dataMenu="nzDropdownMenu">
                       <ul nz-menu nzSelectable>
-                        <li nz-menu-item (click)="valuesModal(op.alias)">
+                        <li nz-menu-item (click)="displayScore(op.alias)">
                           <i class="eye icon"></i>
                           Display all scores
                         </li>
-                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="valuesModal(op.cutoffs)">
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="displayCutoffs(op.alias)">
                           <i class="eye icon"></i>
                           Display cutoffs positions
                         </li>
@@ -156,11 +156,28 @@
                         <li nz-menu-item (click)="cutoffModal(op.alias)">
                           Set cutoff
                         </li>
-                        <li nz-menu-item>
+                        <!-- <li nz-menu-item>
                           Set cutoff for minimum
                         </li>
                         <li nz-menu-item>
                           Set cutoff for maximum
+                        </li> -->
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="displayCutoffs(op.alias)">
+                          <i class="eye icon"></i>
+                          Display cutoffs positions
+                        </li>
+                        <li nz-submenu nzTitle="Download current threshold" [nzDisabled]="!op.cutoffs">
+                          <ul>
+                            <li nz-menu-item (click)="exportCutoffToGb(op.alias)">
+                              <i class="dna icon"></i> Download as GenBank
+                            </li>
+                            <li nz-menu-item (click)="exportCutoffToExcel(op.alias)">
+                              <i class="file excel outline icon"></i> Download as Excel
+                            </li>
+                          </ul>
+                        </li>
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="clearCutoffs(op.alias)">
+                          <i class="eraser icon"></i> Clear cutoffs positions
                         </li>
                       </ul>
                     </nz-dropdown-menu>
@@ -200,6 +217,22 @@
               </div>
 
               <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60" use-ctrl-to-zoom></sqrutiny-matrix>
+
+              <div class="ui two column grid">
+
+                <div class="column">
+                  <span class="meta" style="font-size: .9em !important;">
+                    Min: <strong>{{op.min}}</strong>
+                  </span>
+                </div>
+
+                <div class="column right aligned">
+                  <span class="meta" style="font-size: .9em !important;">
+                    Max: <strong>{{op.max}}</strong>
+                  </span>
+                </div>
+
+              </div>
             </div>
           </div>
 

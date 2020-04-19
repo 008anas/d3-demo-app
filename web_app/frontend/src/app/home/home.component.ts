@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   sub: Subscription;
   specie: Specie = null;
   species: Specie[] = [];
-  history_id: string = null;
+  historyId: string = null;
   isLoading = false;
   response: any = null;
   isRetriving = false;
@@ -70,10 +70,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getHistory() {
-    if (this.history_id) {
+    if (this.historyId) {
       this.isRetriving = true;
       this.response = null;
-      this.historySrvc.getByIdNot404(this.history_id)
+      this.historySrvc.getByIdNot404(this.historyId)
         .pipe(finalize(() => this.isRetriving = false))
         .subscribe(
           (data: UserHistory) => this.router.navigate(['/workspace', data.id]),

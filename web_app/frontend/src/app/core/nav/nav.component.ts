@@ -33,7 +33,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   getHistoriesCount() {
     this.historySrvc.getCount()
-      .subscribe(data => this.count = Number.parseInt(data.count));
+      .subscribe(data => this.count = Number.parseInt(data.count, 10));
   }
 
 }

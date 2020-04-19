@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpResponse, HttpEvent, HttpEventType, HttpRequest } from '@angular/common/http';
@@ -17,6 +17,8 @@ import { TextModalComponent } from '@components/text-modal/text-modal.component'
 import { SqrutinyService } from '@services/sqrutiny.service';
 import { LoaderService } from '@services/loader.service';
 import { NavService } from '@services/nav.service';
+import { FeatureService } from '../shared/feature.service';
+import { Feature } from '../shared/feature';
 
 @Component({
   selector: 'sqy-from-file',
@@ -39,6 +41,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
   search: string;
   isSubmitting = false;
   allowedExt = ['.gb', '.gbk', '.genbank'];
+  features: Feature[] = [];
+  featuresArray: string[];
 
   customReq = (item: UploadXHRArgs) => {
     this.loader.startLoading();
@@ -79,7 +83,8 @@ export class FromFileComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private modal: NzModalService,
     private loader: LoaderService,
-    private navSrvc: NavService
+    private navSrvc: NavService,
+    private featureSrvc: FeatureService
   ) {
     this.endpoint = env.endpoints.api + '/constructs/from-genbank';
   }
@@ -92,6 +97,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
       }
     });
     this.getSpecies();
+    this.getFeatures();
   }
 
   ngOnDestroy() {
@@ -121,12 +127,23 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
+  getFeatures() {
+    this.isLoading = true;
+    this.featureSrvc
+      .getAll()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(data => {
+        this.features = data.map((e: any) => new Feature().deserialize(e));
+        this.featuresArray = Object.assign([], this.features.map(f => f.alias));
+      }
+      );
+  }
+
   submit() {
     this.response = null;
     this.isSubmitting = true;
     this.construct.specie_tax_id = this.specie.tax_id;
-    this.construct['from_file'] = true;
-    this.sqrutinySrvc.fromSketch(this.construct)
+    this.sqrutinySrvc.fromConstruct(this.construct, this.featuresArray.length > 0 ? this.featuresArray : null)
       .subscribe(
         (data: UserHistory) => {
           this.navSrvc.updateBadge();
@@ -141,6 +158,10 @@ export class FromFileComponent implements OnInit, OnDestroy {
           this.notify.error(err);
         }
       );
+  }
+
+  featChange(alias: string, isChecked: boolean) {
+    isChecked ? this.featuresArray.push(alias) : this.featuresArray = this.featuresArray.filter(f => f !== alias);
   }
 
   textModal(str: string) {

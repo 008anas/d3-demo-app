@@ -56,7 +56,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.historySrvc.getCount()
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
-        if (Number.parseInt(data.count || 0) > 0) {
+        if (Number.parseInt(data.count || 0, 10) > 0) {
           this.historyModal = this.modal.create({
             nzTitle: 'Choose a history to load in the editor',
             nzContent: HistoryPickerComponent,

@@ -15,10 +15,8 @@ class Parameter(models.Model):
     specie = models.ForeignKey(Specie, on_delete=models.CASCADE)
     genetic_element = models.ForeignKey(GeneticElement, on_delete=models.CASCADE)
     matrix_file = models.FileField(null=True, blank=True, upload_to=species_dir, help_text='Matrix file')
-    genome_min = models.FloatField(blank=True, default=0,
-                                   help_text='If empty it will be automatically calculated from genome file')
-    genome_max = models.FloatField(blank=True, default=1,
-                                   help_text='If empty it will be automatically calculated from genome file')
+    genome_min = models.FloatField(default=0)
+    genome_max = models.FloatField(default=1)
     description = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True, help_text='Determine if it can be used')
     created_at = models.DateTimeField('creation date', auto_now_add=True, editable=False)

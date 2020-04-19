@@ -13,8 +13,8 @@
         <sqy-errors-list [errors]="response"></sqy-errors-list>
       </div>
 
-      <div class="two column row">
-        <div class="column">
+      <div class="row">
+        <div class="sixteen wide column">
           <label for="construct_specie">Upload file for organism:</label>
           <nz-select [(ngModel)]="specie.tax_id" name="construct-specie" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
             <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
@@ -66,7 +66,7 @@
 
         <div class="column">
 
-          <form class="ui padded form" [ngClass]="{'loading disabled': isSubmitting}" #constructForm="ngForm" (ngSubmit)="submit()">
+          <form class="ui form" [ngClass]="{'loading disabled': isSubmitting}" #constructForm="ngForm" (ngSubmit)="submit()">
 
             <ng-container *ngIf="view">
               <div class="required field">
@@ -78,6 +78,19 @@
                 <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
                   <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
                 </select>
+              </div>
+
+              <div class="grouped required fields">
+                <label>Select the what features to check</label>
+                <div class="field" *ngFor="let f of features">
+                  <div class="ui checkbox">
+                    <input type="checkbox" name="features" required checked (change)="featChange(f.alias, $event.target.checked)">
+                    <label>
+                      {{f.name}}
+                      <sqy-info-popup [content]="f.description"></sqy-info-popup>
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">

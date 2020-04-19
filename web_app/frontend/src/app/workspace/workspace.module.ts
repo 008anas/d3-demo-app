@@ -13,7 +13,6 @@ import { HistoryLoadingComponent } from './shared/history-loading/history-loadin
 import { SharedModule } from '../shared/shared.module';
 import { ResultsViewerComponent } from './shared/results-viewer/results-viewer.component';
 import { DisplayValuesComponent } from './shared/display-values/display-values.component';
-import { DisplayThresholdComponent } from './shared/display-threshold/display-threshold.component';
 import { SetHighlightComponent } from './shared/set-highlight/set-highlight.component';
 import { ExportModalComponent } from './shared/export-modal/export-modal.component';
 import { SetCutoffComponent } from './shared/set-cutoff/set-cutoff.component';
@@ -25,7 +24,6 @@ import { SetCutoffComponent } from './shared/set-cutoff/set-cutoff.component';
     HistoryLoadingComponent,
     ResultsViewerComponent,
     DisplayValuesComponent,
-    DisplayThresholdComponent,
     SetHighlightComponent,
     ExportModalComponent,
     SetCutoffComponent

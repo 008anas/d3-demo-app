@@ -9,7 +9,8 @@ import { main } from '@config/main';
       <h1 class="main-500">500</h1>
       <h2 class="second-h">Internal Server Error</h2>
       <p>Something goes wrong in the server, please try again later.</p>
-      <p>If problem persist please contact us thru <a routerLink="/contact">contact section</a> or email us to <strong>{{email}}</strong> to get support.</p>
+      <p>If problem persist please contact us thru <a routerLink="/contact">contact section</a>
+      or email us to <strong>{{email}}</strong> to get support.</p>
       <a href="/" class="ui primary button">Return to Homepage</a>
     </div>
   </div>`,

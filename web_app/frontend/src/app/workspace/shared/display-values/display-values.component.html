@@ -1,96 +1,45 @@
 <!-- Values viewer modal-->
 <div class="ui padded grid">
 
+  <div class="row" [hidden]="!title">
+    <div class="column">
+      <h2 class="ui header no-bold">{{title}}</h2>
+    </div>
+  </div>
+
   <div class="two column row">
+
     <div class="column">
-      <strong> Total score:</strong> {{_values?.length}}
+      <strong> Total score:</strong> {{values?.length}}
     </div>
+
     <div class="column pr-5 right aligned">
-      <a class="ui simple dropdown">
-        <div class="text">
-          <i class="download icon"></i>
-          Export
-        </div>
-        <i class="dropdown icon"></i>
-        <div class="menu">
-          <div class="header">
-            Export As
-          </div>
-          <a class="item" (click)="exportToExcel()">
-            <i class="file excel icon"></i>
-            Excel
-          </a>
-          <a class="item">
-            <i class="dna icon"></i>
-            GenBank
-          </a>
-        </div>
-      </a>
+      <button type="button" name="download" class="ui primary right labeled icon button" (click)="exportToExcel()">
+        Download as Excel
+        <i class="download icon"></i>
+      </button>
     </div>
+
   </div>
 
-  <div class="row">
-    <div class="column">
-      <table class="ui definition small table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Maximum value</th>
-            <th>Minimum value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="collapsing">Raw scores</td>
-            <td>{{maxRaw}}</td>
-            <td>{{minRaw}}</td>
-          </tr>
-          <tr>
-            <td class="collapsing">Normalized scores</td>
-            <td>{{maxNorm}}</td>
-            <td>{{minNorm}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="row">
+  <div class="row" style="height: 600px; overflow-x: auto">
 
     <div class="column">
-      <table class="ui selectable small table">
+      <table class="ui selectable small compact table">
 
         <thead>
           <tr>
-            <th>
-              Start
-            </th>
-            <th>
-              End
-            </th>
-            <th>
-              Raw values
-            </th>
-            <th>
-              Normalized values
+            <th *ngFor="let h of headers">
+              {{h}}
             </th>
           </tr>
         </thead>
 
         <tbody>
 
-          <tr *ngFor="let v of _values">
-            <td>
-              {{v.start}}
-            </td>
-            <td>
-              {{v.end}}
-            </td>
-            <td>
-              {{v.raw_score}}
-            </td>
-            <td>
-              {{v.norm_score}}
+          <tr *ngFor="let value of values">
+            <td *ngFor="let key of objectKeys(value)">
+              {{value[key]}}
             </td>
           </tr>
 

@@ -1,7 +1,6 @@
 import django_rq
 from rest_framework import serializers
 
-from app.parameter.models import Parameter
 from .models import History
 from ..construct.serializers import ConstructRetrieveSerializer
 
@@ -27,7 +26,7 @@ class HistorySerializer(serializers.ModelSerializer):
         return rq_job.get_status()
 
 
-class ThresholdSerializer(serializers.Serializer):
+class CutoffSerializer(serializers.Serializer):
     value = serializers.FloatField()
     op = serializers.ChoiceField(choices=['<', '<=', '=', '>', '>='])
     type = serializers.ChoiceField(choices=['raw', 'norm'])
@@ -35,7 +34,7 @@ class ThresholdSerializer(serializers.Serializer):
 
 class OptionsSerializer(serializers.Serializer):
     key = serializers.CharField()
-    filter = ThresholdSerializer(required=False)
+    filter = CutoffSerializer(required=False)
 
 
 class ExportResultsSerializer(serializers.Serializer):
