@@ -22,3 +22,20 @@ a.non-active {
   font-size: 12px;
   margin-left: .5em;
 }
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: steelblue;
+}
+
+.tooltip {
+  fill: none;
+}
+
+.value {
+  font-weight: bold;
+}

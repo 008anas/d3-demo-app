@@ -16,7 +16,7 @@ from sqrutiny.settings import BASE_DIR
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
 
-TOOL_NAME = 'SQrutiny '
+TOOL_NAME = 'SQrutiny - '
 
 
 class OptimizeSequenceView(LoggingMixin, APIView):
