@@ -250,8 +250,10 @@ def codon_adaptation_scoring(sequence, matrix, circular=False, residue_type='DNA
 
 def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA', start_codons=None,
                 indexed=True, standardize=[0, 1]):
-    """Detects the presence of ribosome binding site motif upstream of any stop codons in the sequence.
-    Returns a score for each RBS corresponding to its hybridization energy to the anti-motif.
+    """Detects the presence of ribosome binding site motif upstream of any start codons in the sequence.
+    Returns a score for each RBS corresponding to its the opposite of hybridization energy to the anti-motif,
+    i.e. that the score is always positive, with 0 being no hybridization energy, and positive score
+    score indicating negative hybridization energy in kcal/mol.
 
     Note: The rs dictionary only contains an entry for the positions with a detected RBS.
     """
@@ -260,19 +262,19 @@ def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA
         start_codons = ['ATG', 'GTG', 'TTG']
     pattern = '(' + '|'.join(start_codons) + ')'
     rs = dict()
-    RBSs = []
+    # RBSs = []
     for m in re.finditer(pattern, sequence):
         start = m.start()
         energy, rbs_start, fold = \
             compute_RBS_affinity(motif, sequence, start_codon_position=start, spacer_range=[5, 11],
                                  include_internal_motif_around_start_codon=False, verbose=0)
-        if not rbs_start is None:
+        if rbs_start is not None:
             rbs_start = int(rbs_start)
             # very small threshold to consider the motif as a RBS
             if energy < -0.5:
                 for i in range(len(motif)):
-                    rs[rbs_start + i] = energy
-                RBSs.append((rbs_start, energy))
+                    rs[rbs_start + i] = -energy
+                # RBSs.append((rbs_start, energy))
 
     print('\RBS_scoring: finished.\n\n')
     return check_outhandle(rs, len(motif), standardize[0], standardize[1])  # window len not defined
