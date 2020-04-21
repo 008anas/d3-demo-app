@@ -41,7 +41,7 @@
       font-weight: normal;
     }
 
-    p:not(.comment) {
+    p:not(.comment), .ui.list > .item{
       font-size: 1.3em;
     }
 

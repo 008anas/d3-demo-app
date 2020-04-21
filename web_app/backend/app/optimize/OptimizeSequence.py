@@ -4,11 +4,11 @@ import django_rq
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_tracking.mixins import LoggingMixin
 
 from app.construct.serializers import ConstructCreateSerializer
-from app.matrix.models import Matrix
+from app.parameter.models import Parameter
 from app.specie.models import Specie
-from app.utils import *
 from app.workspace.models import History
 from app.workspace.serializers import HistorySerializer
 from sqrutiny.settings import BASE_DIR
@@ -16,33 +16,57 @@ from sqrutiny.settings import BASE_DIR
 sys.path.insert(0, BASE_DIR + '/../../dev')
 from tools import checker, is_dna_seq_valid, match_sequence
 
-TOOL_NAME = 'SQrutiny - Optimize Sequence - '
+TOOL_NAME = 'SQrutiny - '
 
 
-class OptimizeSequenceSkectherView(APIView):
+class OptimizeSequenceView(LoggingMixin, APIView):
 
     def post(self, request):
-        serializer = ConstructCreateSerializer(data=request.data)
+
+        data = request.data
+
+        serializer = data.get('construct', None)
+
+        if serializer is None:
+            return Response(dict(msg='No construct was found.'), status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ConstructCreateSerializer(data=serializer)
 
         if not serializer.is_valid(raise_exception=True):
-            return Response(dict(msg='Invalid construct.'), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(msg='Invalid parameters.'), status=status.HTTP_400_BAD_REQUEST)
 
-        specie = Specie.objects.filter(tax_id=serializer.validated_data.get('specie_tax_id', None)).first()
+        tax_id = serializer.validated_data.get('specie_tax_id', None)
+
+        specie = Specie.objects.filter(tax_id=tax_id).first()
 
         if specie is None:
-            return Response({'msg': 'Specie with ncbi tax id ' + str(
-                serializer.validated_data['specie_tax_id']) + ' was not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(dict(msg='Specie with ncbi tax id ' + str(tax_id) + ' was not found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
-        construct = serializer.save(specie=specie)
+        construct = serializer.save(
+            specie=specie,
+            from_file=serializer.validated_data.get('from_file', False)
+        )
 
-        matrix = Matrix.objects.filter(active=True, specie=specie)
+        features = request.data.get('features', [])
+        parameters = []
 
-        if not matrix:
-            return Response({'msg': 'Sorry but it was not possible to perform action. Please try later'},
+        if type(features) is list and len(features):
+            alias = set(Parameter.objects.filter(active=True, specie=specie).values_list('alias', flat=True))
+            for f in features:
+                if f in alias:
+                    parameters.append(Parameter.objects.get(active=True, specie=specie, alias=f).id)
+        else:
+            parameters = Parameter.objects.filter(active=True, specie=specie).values_list('id', flat=True)
+
+        if not parameters:
+            return Response(dict(msg='Sorry but it was not possible to perform action. Please try later'),
                             status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-        job = django_rq.enqueue(checker, sequence=construct.dna_seq, matrix_dict=self.matrix_to_dict(matrix),
-                                circular=construct.circular, codon_table=specie.codon_table, result_ttl=-1)
+        job = django_rq.enqueue(checker, sequence=construct.dna_seq,
+                                parameter_dict=Parameter.to_dict_by_id(ids=parameters),
+                                circular=construct.circular,
+                                codon_table=specie.codon_table, result_ttl=-1)
 
         if job.get_status() == 'failed':
             return Response(dict(msg='Sorry There has been a problem. Please try later'),
@@ -50,22 +74,17 @@ class OptimizeSequenceSkectherView(APIView):
 
         history = History.objects.create(
             name=TOOL_NAME + construct.name,
-            construct=construct, job_id=job.id,
-            request_ip=get_request_ip(request) or None
+            construct=construct, job_id=job.id
         )
 
-        # Save history in current session
-        self.request.session.setdefault('history', [])
-        self.request.session['history'].append(str(history.uuid))
-        self.request.session.modified = True
+        # save the current history in session
+        request.session.setdefault('history', [])
+        request.session['history'].append(str(history.uuid))
+        request.session.modified = True
 
         serializer = HistorySerializer(instance=history, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    @staticmethod
-    def matrix_to_dict(matrix):
-        return {entry.alias: entry.matrix_file.path for entry in matrix}
 
 
 class SearchMotifView(APIView):

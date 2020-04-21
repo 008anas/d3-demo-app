@@ -11,6 +11,9 @@ from app.construct.serializers import ConstructRetrieveSerializer
 from app.serializers import GenBankSerializer
 
 FEATURE_PREFIX = 'SQY_BOX'
+CDS_COLOR = '#4e0a77'
+FEATURES_COLOR = '#f0ca68'
+DUMMY_COLOR = '#62382f'
 
 
 class ConstructListRetrieveView(viewsets.ModelViewSet):
@@ -69,6 +72,7 @@ class FromGenBankView(APIView):
                         label=record.features[0].qualifiers.get('locus_tag', ['Track 1'])[0],
                         type='CDS' if record.features[0].type.lower() == 'cds' else 'Dummy',
                         sequence=str(record.features[0].extract(record.seq)),
+                        color=CDS_COLOR,
                         start=record.features[0].location.nofuzzy_start,
                         end=record.features[0].location.nofuzzy_end
                     ))
@@ -83,7 +87,7 @@ class FromGenBankView(APIView):
                                 label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
-                                color='#4e0a77',
+                                color=CDS_COLOR,
                                 start=feature.location.nofuzzy_start,
                                 end=feature.location.nofuzzy_end))
                         elif feature.type.upper() == FEATURE_PREFIX:
@@ -91,6 +95,7 @@ class FromGenBankView(APIView):
                                 label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
+                                color=FEATURES_COLOR,
                                 start=feature.location.nofuzzy_start,
                                 end=feature.location.nofuzzy_end))
                         else:
@@ -99,8 +104,9 @@ class FromGenBankView(APIView):
                                     label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
                                     type='Dummy',
                                     sequence=str(feature.extract(record.seq)),
-                                    start=feature.location.nofuzzy_start,
-                                    end=feature.location.nofuzzy_end))
+                                    color=DUMMY_COLOR,
+                                    start=last_item['start'],
+                                    end=last_item['end']))
                             else:
                                 tracks[-1]['end'] = feature.location.nofuzzy_end
                         i += 1
@@ -109,7 +115,8 @@ class FromGenBankView(APIView):
                         name=record.name,
                         dna_seq=str(record.seq),
                         description=record.annotations.get('description', None),
-                        circular=True if record.annotations.get('topology', '').lower() == 'circular' else False
+                        circular=True if record.annotations.get('topology', '').lower() == 'circular' else False,
+                        from_file=True
                     )
 
                     if len(tracks):
@@ -123,7 +130,8 @@ class FromGenBankView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
         except:
-            raise
+            return Response(dict(msg='Error while handling. Please try with different file.'),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         tmp_file.close()
 

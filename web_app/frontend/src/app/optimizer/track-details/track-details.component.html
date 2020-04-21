@@ -3,7 +3,7 @@
   <form class="ui form" [formGroup]="trackForm" (ngSubmit)="updateTrack()">
 
     <div class="field">
-      <img [src]="_track.glyph_thumbnail" class="ui medium circular centered image">
+      <img [src]="_track?.glyph_thumbnail" class="ui medium circular centered image">
     </div>
 
     <div class="field">
@@ -23,8 +23,8 @@
 
         <tbody>
           <tr>
-            <td>{{_track.type | titlecase}}</td>
-            <td>#{{_track['pos']+1}}</td>
+            <td>{{_track?.type | titlecase}}</td>
+            <td>#{{_track?.pos+1}}</td>
           </tr>
         </tbody>
 
@@ -41,7 +41,14 @@
 
       <div class="seven wide field">
         <label>Color</label>
-        <sqy-color-picker [color]="_track.color" [heading]="'Color'" (event)="setColor($event)"></sqy-color-picker>
+        <nz-select nzShowSearch nzPlaceHolder="Select color" name="track-color" formControlName="color" [nzCustomTemplate]="custom">
+          <nz-option *ngFor="let c of colors" nzCustomContent [nzLabel]="c" [nzValue]="c">
+            <i class="circle icon" [style.color]="c"></i> {{c}}
+          </nz-option>
+        </nz-select>
+        <ng-template #custom let-selected>
+          <span><i class="circle icon" [style.color]="selected.nzValue"></i> {{ selected.nzValue }}</span>
+        </ng-template>
       </div>
 
     </div>
@@ -55,7 +62,7 @@
     <div class="bottom three fields">
 
       <div class="field">
-        <button class="ui left labeled icon primary fluid button" name="action" type="button" (click)="change(_track['pos']-1)" [disabled]="_track['pos']+1 < 2">
+        <button class="ui left labeled icon primary fluid button" name="action" type="button" (click)="change(_track?.pos-1)" [disabled]="_track?.pos+1 < 2">
           <i class="left arrow icon"></i>
           Previous
         </button>
@@ -69,7 +76,7 @@
       </div>
 
       <div class="field">
-        <button class="ui right labeled icon primary fluid button" name="action" type="button" (click)="change(_track['pos']+1)" [disabled]="_track['pos']+1 === max">
+        <button class="ui right labeled icon primary fluid button" name="action" type="button" (click)="change(_track?.pos+1)" [disabled]="_track?.pos+1 === max">
           <i class="right arrow icon"></i>
           Next
         </button>

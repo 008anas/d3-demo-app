@@ -9,7 +9,7 @@ from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('admin/django-rq', include('django_rq.urls')),
+    path('django-rq/', include('django_rq.urls')),
     path('api/v1/', include('app.urls'))
 ]
 

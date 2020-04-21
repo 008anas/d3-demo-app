@@ -28,6 +28,11 @@ a {
   text-decoration: none !important;
 }
 
+label.sqy.label{
+  font-weight: bold;
+  margin-right: 1em;
+}
+
 .icon.disabled,
 a.disabled {
   pointer-events: none;
@@ -136,17 +141,15 @@ span.ui.error {
 }
 /* SEMANTIC OVERRIDE */
 /* Form */
-form.ui.form {
-  &.padded {
-    .field {
-      margin-top: 2em;
-    }
+form.ui.form.padded {
+  & > .field:not(:first-child),
+  .fields:not(:first-child) {
+    margin-top: 2em;
   }
 
-  &.very.padded {
-    .field {
-      margin-top: 3em;
-    }
+  &.very > .field:not(:first-child),
+  .field:not(:first-child) {
+    margin-top: 3em;
   }
 }
 /* Button */
@@ -169,6 +172,10 @@ button.ui.button:not(.circular) {
   height: 0.75em;
 }
 /* Header */
+.ui.header.no-bold {
+  font-weight: normal !important;
+}
+
 .sub.header {
   display: block;
   font-weight: 400;

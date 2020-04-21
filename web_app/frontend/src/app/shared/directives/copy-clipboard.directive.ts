@@ -3,11 +3,11 @@ import { Directive, Input, HostListener } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Directive({
-  selector: '[clipboard]'
+  selector: '[sqy-clipboard]'
 })
 export class CopyClipboardDirective {
 
-  @Input('clipboard')
+  @Input('sqy-clipboard')
   public payload: string;
 
   @Input()

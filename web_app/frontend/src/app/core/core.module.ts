@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { CookieService } from 'ngx-cookie-service';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { FooterComponent } from './footer/footer.component';
@@ -20,7 +21,8 @@ import { Error500Component } from './errors/error500/error500.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    NzDropDownModule
   ],
   exports: [
     FooterComponent,

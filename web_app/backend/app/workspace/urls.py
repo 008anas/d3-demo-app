@@ -10,9 +10,9 @@ router.register(r'', HistoryViewSet, basename='History')
 
 urlpatterns = [
     path('all', ClearHistoryView.as_view(), name='Clear user history'),
-    path('count', HistoryCountView.as_view(), name="User workspace history count"),
+    path('count', HistoryCountView.as_view(), name='User workspace history count'),
     path('job/<uuid:job_id>', PollJobView.as_view()),
     path('history/<uuid:history_id>', HistoryRetrieveView.as_view()), # Retrieve history without throwing 404 error
-    path('export/<uuid:history_id>', ExportThresholdView.as_view()),  # Retrieve history without throwing 404 error
+    path('export/<uuid:history_id>', ExportThresholdView.as_view()),
     path('', include(router.urls))
 ]

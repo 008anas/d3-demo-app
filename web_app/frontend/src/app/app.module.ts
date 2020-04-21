@@ -8,7 +8,6 @@ import { NgProgressHttpModule } from '@ngx-progressbar/http';
 import { NZ_I18N, en_US } from 'ng-zorro-antd';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageModule } from 'ng-zorro-antd/message';
-import { NzAlertModule } from 'ng-zorro-antd/alert';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,14 +18,17 @@ import { SharedModule } from './shared/shared.module';
 import { ErrorInterceptor } from './core/errors/error.interceptor';
 import { AppHttpInterceptor } from './core/app.interceptor';
 import { SentryErrorHandler } from './core/errors/sentry-error-handler.service';
-import { VectorEditorComponent } from './vector-editor/vector-editor.component';
+import { LoaderComponent } from '@components/loader/loader.component';
+import { VectorEditorModule } from './vector-editor/vector-editor.module';
+import { SuccessComponent } from './contact/success/success.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ContactComponent,
-    VectorEditorComponent
+    LoaderComponent,
+    SuccessComponent
   ],
   imports: [
     BrowserModule,
@@ -41,13 +43,13 @@ import { VectorEditorComponent } from './vector-editor/vector-editor.component';
     SharedModule,
     NzSelectModule,
     NzMessageModule,
-    NzAlertModule
+    VectorEditorModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AppHttpInterceptor, multi: true },
-    // { provide: ErrorHandler, useClass: SentryErrorHandler }
+    { provide: ErrorHandler, useClass: SentryErrorHandler }
   ],
   bootstrap: [AppComponent]
 })

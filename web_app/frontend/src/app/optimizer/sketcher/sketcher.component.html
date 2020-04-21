@@ -13,36 +13,20 @@
         </div>
 
         <div class="column">
-          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Load example construct" data-position="bottom center" [disabled]="locked" (click)="exampleConstruct()">
-            <i class="database icon"></i>
+          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Options" data-position="bottom center" nz-dropdown [nzDropdownMenu]="optionsMenu" nzTrigger="click" nzPlacement="bottomCenter">
+            <i class="sliders horizontal icon"></i>
           </button>
-        </div>
-
-        <div class="column">
-          <button class="ui circular icon primary button" data-inverted="" data-tooltip="Clear construct" data-position="bottom center" (click)="clear()" [disabled]="!construct.tracks?.length || locked">
-            <i class="eraser icon"></i>
-          </button>
-        </div>
-
-        <div class="column">
-          <button class="ui circular icon primary button" nz-dropdown [nzDropdownMenu]="settingsMenu" [nzClickHide]="false" nzTrigger="click" nzOverlayClassName="ui settings dropdown" nzPlacement="bottomCenter" [disabled]="isTracksLoading">
-            <i class="eye icon"></i>
-          </button>
-          <nz-dropdown-menu #settingsMenu="nzDropdownMenu" tabindex="0">
-            <div class="ui vertical menu transition visible" tabindex="-1" style="display: block !important;">
-              <div class="item">
-                Show/Hide indexes
-                <div class="description">
-                  <input type="checkbox" [(ngModel)]="showIndexes">
-                </div>
-              </div>
-            </div>
-          </nz-dropdown-menu>
         </div>
 
         <div class="column">
           <button class="ui circular icon primary button" data-inverted="" data-tooltip="Add tracks" data-position="bottom center" (click)="showPicker = true" [disabled]="isTracksLoading || locked">
             <i class="plus icon"></i>
+          </button>
+        </div>
+
+        <div class="column">
+          <button class="ui circular icon primary button" nz-dropdown [nzDropdownMenu]="settingsMenu" nzTrigger="click" nzPlacement="bottomCenter" [disabled]="isTracksLoading">
+            <i class="cogs icon"></i>
           </button>
         </div>
 
@@ -53,31 +37,8 @@
         </div>
 
         <div class="column">
-          <button class="ui primary right labeled icon button simple dropdown" type="button" [disabled]="!construct.tracks?.length">
-            Export as
-            <i class="dropdown icon"></i>
-            <div class="menu">
-              <a class="item disabled">
-                <i class="file icon"></i>
-                PNG/JPG
-              </a>
-              <a class="item disabled" (click)="downloadAs('GenBank')">
-                <i class="dna icon"></i>
-                GenBank
-              </a>
-              <a class="item" (click)="downloadAs('Fasta')">
-                <i class="dna icon"></i>
-                Fasta
-              </a>
-              <a class="item disabled">
-                <i class="pdf file outline icon"></i>
-                PDF
-              </a>
-              <a class="item" (click)="downloadAs('Json')">
-                <i class="file code icon"></i>
-                JSON
-              </a>
-            </div>
+          <button class="ui circular icon primary button" nz-dropdown nzTrigger="click" [nzDropdownMenu]="downMenu" nzPlacement="bottomCenter">
+            <i class="download icon"></i>
           </button>
         </div>
 
@@ -87,7 +48,7 @@
 
   <div class="row canvas">
 
-    <div class="twelve wide column p-0">
+    <div class="eleven wide column p-0">
 
       <div class="ui internally celled grid m-0">
 
@@ -98,12 +59,9 @@
             <div class="ui form">
 
               <div class="inline four fields m-0">
-                <div class="inline field txt-c">
-                  <label>Total tracks:</label> {{construct.tracks?.length}}
-                </div>
 
                 <div class="inline field txt-c">
-                  <label>Total length:</label> {{construct.sequence?.length}} bps
+                  <label>Total length:</label> {{construct.dna_seq?.length}} bps
                 </div>
 
                 <div class="inline field txt-c">
@@ -123,6 +81,14 @@
 
                 <div class="inline field txt-c" *ngIf="!locked">
                   <i class="pencil alternate icon"></i> Write mode
+                </div>
+
+                <div class="inline field txt-c">
+                  <i class="save icon"></i> <span class="meta">{{autoSave ? 'Enabled': 'Disabled'}}</span>
+                </div>
+
+                <div class="inline field txt-c">
+                  <span class="meta">{{construct.tracks?.length}} tracks</span>
                 </div>
               </div>
 
@@ -147,7 +113,7 @@
 
             <div class="strand" [hidden]="!construct.tracks?.length || isLoading">
 
-              <div class="track" [style.width]="zoom/5.5+'rem'" [ngClass]="{'invalid': t.invalid}" *ngFor="let t of construct.tracks; let i = index" (mouseover)="trackHovered=t" (mouseout)="trackHovered=null">
+              <div class="track" id="track{{i}}" [style.width]="zoom/5.5+'rem'" *ngFor="let t of construct.tracks; let i = index" (mouseover)="trackHovered=t" (mouseout)="trackHovered=null">
                 <div class="header">
                   <div class="ui fluid transparent large input" [ngClass]="{'show': t.label}">
                     <input type="text" name="track-label" placeholder="(label)" #trackLabel="ngModel" [(ngModel)]="t.label" [disabled]="locked">
@@ -181,7 +147,7 @@
 
     </div>
 
-    <div class="four wide column">
+    <div class="five wide column">
 
       <div class="ui grid">
 
@@ -194,7 +160,7 @@
                 General
               </a>
               <a class="item" (click)="view = 'tracks'" [ngClass]="{'active': view === 'tracks'}">
-                Tracks
+                Tracks <label [hidden]="construct.tracks?.length < 1" class="ui circular tiny label">{{construct.tracks?.length}}</label>
               </a>
             </div>
           </div>
@@ -213,28 +179,41 @@
 
               <div class="required field">
                 <label for="construct_specie">Select organism</label>
-                <nz-select [(ngModel)]="specie.tax_id" name="construct-specie" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
+                <nz-select name="construct-specie" [(ngModel)]="specie.tax_id" (ngModelChange)="saveInSession()" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
                   <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
                 </nz-select>
               </div>
 
+              <div class="grouped required fields">
+                <label>Select the what features to check</label>
+                <div class="field" *ngFor="let f of features">
+                  <div class="ui checkbox">
+                    <input type="checkbox" name="features" required checked (change)="featChange(f.alias, $event.target.checked)">
+                    <label>
+                      {{f.name}}
+                      <sqy-info-popup [content]="f.description"></sqy-info-popup>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
                 <label for="construct_name">Enter a label</label>
-                <input type="text" class="transparent" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name">
+                <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name" (ngModelChange)="saveInSession()">
               </div>
 
               <div class="inline field">
-                <label for="">Circular</label>
-                <input type="checkbox" [(ngModel)]="construct.circular" name="construct-circular">
+                <label>Circular</label>
+                <input type="checkbox" [(ngModel)]="construct.circular" (ngModelChange)="saveInSession()" name="construct-circular">
               </div>
 
               <div class="inline field">
                 <label for="construct_description">Description</label>
-                <textarea [(ngModel)]="construct.description" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
+                <textarea [(ngModel)]="construct.description" (ngModelChange)="saveInSession()" id="construct_description" name="construct-description" rows="8" cols="80"></textarea>
               </div>
 
               <div class="field">
-                <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
+                <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid || (featuresArray && featuresArray.length < 1)" type="submit">
                   Submit
                   <i class="angle right icon"></i>
                 </button>
@@ -336,13 +315,13 @@
 </div>
 
 <!-- Track SideBar -->
-<sqy-track-details (onSave)="addTrack($event)" [track]="track" (changePos)="changeTrack($event)" [max]="construct.tracks?.length" *ngIf="track"></sqy-track-details>
+<sqy-track-details (onSave)="addTrack($event)" [track]="track" (changePos)="changeTrack($event)" [max]="construct.tracks?.length"></sqy-track-details>
 
 <!-- Tracks Modal Picker -->
-<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose tracks" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isLoading" [nzOkDisabled]="!someSelected()" (nzOnCancel)="showPicker = false"
-  (nzOnOk)="addTracks()">
+<nz-modal nzWrapClassName="vertical-center-modal" nzTitle="Choose tracks" nzOkText="Add" [(nzVisible)]="showPicker" (nzAfterOpen)="getTracksByCategories()" [nzOkLoading]="isTracksLoading" [nzOkDisabled]="!someSelected()"
+  (nzOnCancel)="showPicker = false" (nzOnOk)="addTracks()">
   <ng-container *ngIf="showPicker">
-    <div class="ui basic segment one column grid track-picker mt-0" [ngClass]="{'loading': isLoading}">
+    <div class="ui basic segment one column grid track-picker mt-0" [ngClass]="{'loading': isTracksLoading}">
       <div class="column">
         <div class="ui message">
           <div class="header">
@@ -372,7 +351,7 @@
           </div>
         </div>
         <div class="eight column row">
-          <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="hoveredName=e.name" (mouseout)="hoveredName=null" (click)="e.selected = !e.selected">
+          <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="hoveredName=e.type" (mouseout)="hoveredName=null" (click)="e.selected = !e.selected">
             <a class="floating ui blue label" *ngIf="e.selected">
               ✓
             </a>
@@ -442,3 +421,53 @@
   </div>
 
 </nz-modal>
+
+<!-- Download -->
+<nz-dropdown-menu #downMenu="nzDropdownMenu">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item (click)="downloadAs('Fasta')">
+      <i class="dna icon"></i>
+      Download as Fasta
+    </li>
+    <!-- <li nz-menu-item (click)="downloadAs('Excel')">
+      <i class="file excel outline icon"></i>
+      Download as Excel
+    </li> -->
+    <li nz-menu-item (click)="downloadAs('Json')">
+      <i class="file code outline icon"></i>
+      Download as JSON
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!-- Visibility -->
+<nz-dropdown-menu #settingsMenu="nzDropdownMenu" tabindex="0">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item (click)="showIndexes = !showIndexes">
+      Show/Hide indexes
+      <i class="check small icon" [hidden]="!showIndexes"></i>
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!-- Options -->
+<nz-dropdown-menu #optionsMenu="nzDropdownMenu" tabindex="0">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item (click)="autoSave = !autoSave">
+      <i class="save icon"></i>
+      Auto save {{autoSave ? 'enabled' : 'disabled'}}
+    </li>
+    <li nz-menu-item [nzDisabled]="!construct.dna_seq && !construct.dna_seq?.length" [sqy-clipboard]="construct.dna_seq">
+      <i class="copy icon"></i>
+      Copy sequence
+    </li>
+    <li nz-menu-item [nzDisabled]="locked" (click)="modelConstruct()">
+      <i class="database icon"></i>
+      Load model construct
+    </li>
+    <li nz-menu-item (click)="clear()" [nzDisabled]="!construct.tracks?.length || locked">
+      <i class="eraser icon"></i>
+      Clear construct
+    </li>
+  </ul>
+</nz-dropdown-menu>

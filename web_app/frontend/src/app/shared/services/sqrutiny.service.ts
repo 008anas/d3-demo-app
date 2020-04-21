@@ -15,8 +15,8 @@ export class SqrutinyService {
     this.url = env.endpoints.api;
   }
 
-  fromSketch(construct: Construct): Observable<UserHistory> {
-    return this.http.post<UserHistory>(`${this.url}/optimize_seq/from-sketch`, construct).pipe();
+  fromConstruct(construct: Construct, features?: string[]): Observable<UserHistory> {
+    return this.http.post<UserHistory>(`${this.url}/optimize_seq/construct`, { construct, features: features || null }).pipe();
   }
 
   motifInSeq(sequence: string, motif: string): Observable<any> {
@@ -26,7 +26,7 @@ export class SqrutinyService {
   }
 
   contact(contact: any) {
-    return this.http.post<any[]>(`${env.endpoints.api}/contact/`, contact).pipe();
+    return this.http.post<any[]>(`${env.endpoints.api}/contact`, contact).pipe();
   }
 
 }

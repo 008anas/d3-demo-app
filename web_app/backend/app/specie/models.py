@@ -14,7 +14,7 @@ def upload_genome_gbk(instance, filename):
 
 class Specie(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    comment = models.TextField(blank=True, null=True, help_text='Short comment to display near name')
+    comment = models.TextField(blank=True, null=True, max_length=75, help_text='Short comment to display near name')
     slug = models.CharField(max_length=255, unique=True, help_text='Short name displayed in the url')
     tax_id = models.IntegerField(unique=True)
     tax_link = models.URLField(unique=True)

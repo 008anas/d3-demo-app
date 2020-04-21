@@ -33,7 +33,7 @@
 
               <div class="column txt-r">
 
-                <a class="m-4" (click)="getJob()">
+                <a class="m-4" *ngIf="history.isActive()" (click)="getJob()">
                   <i class="sync icon"></i>
                   Refresh content
                 </a>
@@ -45,11 +45,6 @@
 
               </div>
 
-            </div>
-
-            <div class="column">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
 
             <div class="eleven wide column">
@@ -74,7 +69,7 @@
             <div class="five wide column right aligned">
               <div class="ui action fluid input">
                 <input type="text" [value]="history.id" name="history-id">
-                <button type="button" class="ui right labeled icon primary button" name="copy" [clipboard]="history.id">
+                <button type="button" class="ui right labeled icon primary button" name="copy" [sqy-clipboard]="history.id">
                   Copy <i class="copy icon"></i>
                 </button>
               </div>
@@ -128,7 +123,11 @@
                   </div>
 
                   <div class="field">
-                    <a [routerLink]="['/editor', history.construct.id]">See this construct on vector editor <i class="external link icon"></i> </a>
+                    <a routerLink="/optimize/sketcher" [queryParams]="{construct: history.construct.id}">See it on Sketcher <i class="external link icon"></i> </a>
+                  </div>
+
+                  <div class="field">
+                    <a [routerLink]="['/editor', history.id]">See it on Vector Editor <i class="external link icon"></i> </a>
                   </div>
 
                 </div>
@@ -286,14 +285,14 @@
               <div class="ui placeholder segment" *ngIf="history.isActive()">
                 <div class="ui icon header">
                   <i class="spinner loading icon"></i>
-                  The results are being calculated please be patient...
+                  The results are processing please be patient...
                 </div>
                 <button class="ui primary right labeled icon button" (click)="getJob()" [disabled]="isJobLoading" type="button" name="refresh">
                   Refresh <i class="sync icon"></i>
                 </button>
               </div>
 
-              <sqy-results-viewer [data]="resultData" *ngIf="history.isDone()"></sqy-results-viewer>
+              <sqy-result-viewer [data]="resultData" *ngIf="history.isDone()"></sqy-result-viewer>
 
             </div>
 

@@ -11,6 +11,10 @@ export const routes = {
     root: 'workspace',
     detail: ':history'
   },
+  vector: {
+    root: 'editor',
+    withHistory: ':history'
+  },
   documentation: 'documentation',
   home: 'home',
   contact: 'contact',

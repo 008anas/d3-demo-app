@@ -3,18 +3,28 @@
   <div class="ui vertical masthead center aligned">
 
     <h1 class="ui header">Upload your GenBank</h1>
-    <h2 class="ui header">Allowed extensions: <strong>.gb .gbk .genbank.</strong></h2>
+    <h2 class="ui header">Allowed extensions: <strong>{{allowedExt.toString()}}.</strong></h2>
 
     <p>Upload a valid GenBank file. Note that such file must include at least one <strong>CDS feature</strong>. All others features will be filled with <strong>Dummy feature</strong>.</p>
 
-    <div class="ui two column centered padded grid">
+    <div class="ui two column centered grid">
 
-      <div class="one column row">
-        <div class="column right aligned">
-          <a class="disabled" (click)="loadExample()">Load example file</a>
+      <div class="column">
+        <sqy-errors-list [errors]="response"></sqy-errors-list>
+      </div>
+
+      <div class="row">
+        <div class="sixteen wide column">
+          <label for="construct_specie">Upload file for organism:</label>
+          <nz-select [(ngModel)]="specie.tax_id" name="construct-specie" required [nzLoading]="isLoading" [nzDisabled]="isLoading" nzShowSearch>
+            <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
+          </nz-select>
         </div>
-        <div class="ui column">
-          <nz-upload nzType="drag" [nzCustomRequest]="customReq" [nzFileList]="fileList" [nzAction]="endpoint">
+      </div>
+
+      <div class="row">
+        <div class="sixteen wide column">
+          <nz-upload nzType="drag" #nzUploader [nzCustomRequest]="customReq" [nzFileList]="fileList" [nzAccept]="allowedExt" [nzAction]="endpoint">
             <div class="p-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="45" height="46" viewBox="0 0 63 64">
                 <g fill="#3B454F" fill-rule="nonzero">
@@ -33,7 +43,7 @@
                 Only a single file can be uploaded.
               </p>
               <p class="ant-upload-hint">
-                In case of error hover file to get error details.
+                <strong>Allowed extensions:</strong> {{allowedExt.toString()}}
               </p>
             </div>
           </nz-upload>
@@ -49,17 +59,16 @@
               Information
             </a>
             <a class="item" (click)="view = false" [ngClass]="{'active': !view}">
-              Tracks
+              Tracks <label [hidden]="construct.tracks?.length < 1" class="ui circular tiny label">{{construct.tracks?.length}}</label>
             </a>
           </div>
         </div>
 
         <div class="column">
 
-          <form class="ui padded form" [ngClass]="{'loading disabled': isSubmitting}" #constructForm="ngForm" (ngSubmit)="submit()">
+          <form class="ui form" [ngClass]="{'loading disabled': isSubmitting}" #constructForm="ngForm" (ngSubmit)="submit()">
 
             <ng-container *ngIf="view">
-
               <div class="required field">
                 <label class="required-msg">Required fields are shown with</label>
               </div>
@@ -69,6 +78,19 @@
                 <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
                   <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
                 </select>
+              </div>
+
+              <div class="grouped required fields">
+                <label>Select the what features to check</label>
+                <div class="field" *ngFor="let f of features">
+                  <div class="ui checkbox">
+                    <input type="checkbox" name="features" required checked (change)="featChange(f.alias, $event.target.checked)">
+                    <label>
+                      {{f.name}}
+                      <sqy-info-popup [content]="f.description"></sqy-info-popup>
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
@@ -151,7 +173,7 @@
             </ng-container>
 
             <div class="field">
-              <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
+              <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid || (featuresArray && featuresArray.length < 1)" type="submit">
                 Submit
                 <i class="angle right icon"></i>
               </button>

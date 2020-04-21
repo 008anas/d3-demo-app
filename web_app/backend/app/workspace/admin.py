@@ -8,7 +8,6 @@ from .models import History
 class HistoryAdmin(ModelAdmin):
     fieldsets = (
         ('Information', {'fields': ('uuid', 'name', 'construct', 'job_id')}),
-        ('Details', {'fields': ('request_ip',)}),
         ('Actions', {'fields': ('deleted',)})
     )
     add_fieldsets = (
@@ -21,4 +20,4 @@ class HistoryAdmin(ModelAdmin):
     list_display = ('uuid', 'name', 'construct', 'job_id', 'deleted', 'created_at')
     search_fields = ('construct', 'job_id')
     ordering = ('-created_at',)
-    readonly_fields = ('uuid', 'request_ip')
+    readonly_fields = ('uuid',)

@@ -1,42 +1,39 @@
 const nameUtils = {
 	/**
 	 * Reformat name to replaces whitespace with underscores.
-	 * @returns {String} New name.
 	 */
   reformatName: (pName: string): string => pName.toString().replace(/ /g, '_'),
 };
 const StringUtil = {
   /** Trims white space at beginning and end of string
-   * @returns {String} line
    */
   trim: (line: string): string => line.replace(/^\s+|\s+$/g, ''),
 
   /** Trims white space at beginning string
-   * @returns {String} line
    */
   ltrim: (line: string): string => line.replace(/^\s+/, ''),
 
   /** Trims white space at end of string
-   * @returns {String} line
    */
   rtrim: (line: string): string => line.replace(/\s+$/, ''),
 
   /** Pads white space at beginning of string
-   * @returns {String} line
    */
   lpad: (line: string, padString, length): string => {
     let str = line;
-    while (str.length < length) str = padString + str;
+    while (str.length < length) {
+      str = padString + str;
+    }
     return str;
   },
 
   /** Pads white space at end of string
-   * @param {String} line
-   * @returns {String} line
    */
   rpad: (line: string, padString, length): string => {
     let str = line;
-    while (str.length < length) str = str + padString;
+    while (str.length < length) {
+      str = str + padString;
+    }
     return str;
   }
 };
@@ -46,6 +43,7 @@ export default class Utils {
   static dnaSeqRegex = /^[CAGTNU\n]+$/i;
   static porteinSeqRegex = /^[ARNDCQEGHILKMFPSTWYVX*]+$/i;
   static urlRegex = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+  static uuidRegex = /[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/;
 
   static array_move(arr: any[], old_index: number, new_index: number) {
     if (new_index >= arr.length) {
@@ -218,8 +216,8 @@ export default class Utils {
     let locStr = '';
 
     // for(var i=0;i<feat.locations.length;i++) {
-    //	var loc = feat.locations[i];
-    //	locStr.push((loc.start+1) + '..' + loc.end);
+    // var loc = feat.locations[i];
+    // locStr.push((loc.start+1) + '..' + loc.end);
     // }
 
     if (feat.locations && feat.locations.length > 1) {
@@ -277,7 +275,7 @@ export default class Utils {
           }
         }
         Object.keys(notes).forEach((key) => {
-          if (key === 'color' || key === 'labelColor') { return; } //we'll handle this below
+          if (key === 'color' || key === 'labelColor') { return; } // we'll handle this below
           if (notes[key] instanceof Array) {
             notes[key].forEach((value) => lines.push(Utils.featureNoteInDataToGenbankString(key, value)));
           } else {
@@ -333,14 +331,13 @@ export default class Utils {
 
     let fastaString = '';
     data.forEach((c: any) => {
-      if (c.sequence) {
-        console.log(c.sequence);
+      if (c.dna_seq) {
         fastaString += `>${c.name || 'Untitled Sequence'}`;
-        fastaString += `|${c.sequence.length}`;
+        fastaString += `|${c.dna_seq.length}`;
         fastaString += c.description ? '|' + c.description : '';
         fastaString += '|' + (c.circular ? 'circular' : 'linear') || 'linear';
         fastaString += '\n';
-        fastaString += (c.sequence.match(/.{1,80}/g) || []).join('\n');
+        fastaString += (c.dna_seq.match(/.{1,80}/g) || []).join('\n');
       }
     });
     return fastaString;

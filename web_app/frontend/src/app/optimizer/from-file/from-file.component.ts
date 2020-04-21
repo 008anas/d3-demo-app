@@ -15,6 +15,10 @@ import { SpecieService } from '@services/specie.service';
 import { UserHistory } from 'app/workspace/shared/user-history';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 import { SqrutinyService } from '@services/sqrutiny.service';
+import { LoaderService } from '@services/loader.service';
+import { NavService } from '@services/nav.service';
+import { FeatureService } from '../shared/feature.service';
+import { Feature } from '../shared/feature';
 
 @Component({
   selector: 'sqy-from-file',
@@ -25,46 +29,48 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   response: any = null;
   sub: Subscription;
-  specie: Specie = null;
+  specie: Specie = new Specie();
   species: Specie[] = [];
   isLoading = false;
   construct: Construct = null;
   history: UserHistory = null;
-  exampleFile = 'assets/files/NC_044937.gbk';
   fileList = [];
   endpoint: string;
   view = true;
   search: string;
   isSubmitting = false;
+  allowedExt = ['.gb', '.gbk', '.genbank'];
+  features: Feature[] = [];
+  featuresArray: string[];
 
   customReq = (item: UploadXHRArgs) => {
-    this.fileList = [item.file];
+    this.loader.startLoading();
     const formData = new FormData();
-    // tslint:disable-next-line:no-any
     formData.append('file', item.file as any);
     const req = new HttpRequest('POST', item.action!, formData, {
       reportProgress: true,
       withCredentials: true
     });
+    this.response = null;
     this.construct = null;
-    return this.http.request(req).subscribe(
-      // tslint:disable-next-line no-any
-      (event: HttpEvent<any>) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          if (event.total! > 0) {
-            // tslint:disable-next-line:no-any
-            (event as any).percent = (event.loaded / event.total!) * 100;
+    return this.http.request(req)
+      .pipe(finalize(() => this.loader.stopLoading()))
+      .subscribe(
+        (event: HttpEvent<any>) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            if (event.total! > 0) {
+              (event as any).percent = (event.loaded / event.total!) * 100;
+            }
+            item.onProgress!(event, item.file!);
+          } else if (event instanceof HttpResponse) {
+            item.file.status = 'done';
+            item.onSuccess!(event.body, item.file!, event);
+            this.construct = new Construct().deserialize(event.body);
+            this.notify.success('GenBank file parsed successfully!');
           }
-          item.onProgress!(event, item.file!);
-        } else if (event instanceof HttpResponse) {
-          item.file.status = 'done';
-          item.onSuccess!(event.body, item.file!, event);
-          this.construct = new Construct().deserialize(event.body);
-          this.notify.success('GenBank file parsed successfully!');
-        }
-      },
-      err => item.onError!({ statusText: err }, item.file!)
-    );
+        },
+        err => this.response = err
+      );
   }
 
   constructor(
@@ -74,18 +80,23 @@ export class FromFileComponent implements OnInit, OnDestroy {
     private router: Router,
     private notify: NzMessageService,
     private http: HttpClient,
-    private modal: NzModalService
+    private modal: NzModalService,
+    private loader: LoaderService,
+    private navSrvc: NavService,
+    private featureSrvc: FeatureService
   ) {
     this.endpoint = env.endpoints.api + '/constructs/from-genbank';
   }
 
   ngOnInit() {
     this.sub = this.route.queryParams.subscribe(params => {
-      if (params.specie) { this.specie = new Specie(); }
-      this.specie.slug = params.specie || null;
+      if (params.specie) {
+        this.specie.slug = params.specie || null;
+        this.getSpecie();
+      }
     });
-    if (this.specie) { this.getSpecie(); }
     this.getSpecies();
+    this.getFeatures();
   }
 
   ngOnDestroy() {
@@ -115,22 +126,15 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
-
-  loadExample() {
-    this.http.get(this.exampleFile, { observe: 'response', responseType: 'blob' })
-      .subscribe((result: HttpResponse<Blob>) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(result.body);
-        reader.onloadend = (ev) => {
-          if (ev.target.readyState === window.FileReader.DONE) {
-            const data = new Blob([ev.target.result]);
-            const arrayOfBlob = new Array<Blob>();
-            arrayOfBlob.push(data);
-            this.fileList = [new File(arrayOfBlob, result.url.split('/').slice(-1)[0])];
-          }
-        };
-      },
-        () => this.notify.warning('Unable to load example file')
+  getFeatures() {
+    this.isLoading = true;
+    this.featureSrvc
+      .getAll()
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(data => {
+        this.features = data.map((e: any) => new Feature().deserialize(e));
+        this.featuresArray = Object.assign([], this.features.map(f => f.alias));
+      }
       );
   }
 
@@ -138,9 +142,10 @@ export class FromFileComponent implements OnInit, OnDestroy {
     this.response = null;
     this.isSubmitting = true;
     this.construct.specie_tax_id = this.specie.tax_id;
-    this.sqrutinySrvc.fromSketch(this.construct)
+    this.sqrutinySrvc.fromConstruct(this.construct, this.featuresArray.length > 0 ? this.featuresArray : null)
       .subscribe(
         (data: UserHistory) => {
+          this.navSrvc.updateBadge();
           this.notify.loading('Your job has been submitted! In a moment you will be redirected. Please be patient');
           setTimeout(() => {
             this.router.navigate(['/workspace', data.id]);
@@ -154,10 +159,13 @@ export class FromFileComponent implements OnInit, OnDestroy {
       );
   }
 
+  featChange(alias: string, isChecked: boolean) {
+    isChecked ? this.featuresArray.push(alias) : this.featuresArray = this.featuresArray.filter(f => f !== alias);
+  }
+
   textModal(str: string) {
     this.modal.create({
       nzContent: TextModalComponent,
-      nzWrapClassName: 'center-modal',
       nzComponentParams: {
         txt: str
       },

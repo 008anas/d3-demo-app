@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
@@ -15,7 +16,6 @@ import { SharedModule } from '../shared/shared.module';
 import { TrackDetailsComponent } from './track-details/track-details.component';
 import { FilterTracksPipe } from './shared/filter-tracks.pipe';
 import { FromFileComponent } from './from-file/from-file.component';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [

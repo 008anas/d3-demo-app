@@ -6,7 +6,6 @@ export class Construct extends Deserializable {
   id?: string;
   name: string;
   circular?: boolean;
-  sequence: string;
   description: string;
   dna_seq: string;
   protein_seq: string;
@@ -14,4 +13,5 @@ export class Construct extends Deserializable {
   specie_tax_id: number;
   tracks: Track[];
   n_tracks: number;
+  from_file: boolean;
 }

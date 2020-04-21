@@ -1,6 +1,5 @@
-import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
 
 import { TitleService } from '@services/title.service';
 import { main } from '@config/main';
@@ -13,15 +12,10 @@ import { main } from '@config/main';
 })
 export class AppComponent implements OnInit {
 
-  isOnline: boolean;
-
   constructor(
     private metaTagSrvc: Meta,
-    private titleSrvc: TitleService,
-    @Inject(PLATFORM_ID) private platformId: object
-  ) {
-    isPlatformBrowser(this.platformId) ? this.isOnline = navigator.onLine : this.isOnline = true;
-  }
+    private titleSrvc: TitleService
+  ) { }
 
   ngOnInit() {
     this.metaTagSrvc.addTags([
@@ -30,7 +24,7 @@ export class AppComponent implements OnInit {
       { name: 'robots', content: 'index, follow' },
       { name: 'author', content: 'Anas Gharrab' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'date', content: '2019-10-31', scheme: 'YYYY-MM-DD' },
+      { name: 'date', content: new Date().toString() },
       { charset: 'UTF-8' }
     ]);
     this.titleSrvc.init();

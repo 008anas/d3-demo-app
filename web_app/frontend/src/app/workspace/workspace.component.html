@@ -36,7 +36,7 @@
         <div class="ui placeholder segment" *ngIf="!isLoading && !histories.length">
           <div class="ui icon header">
             <i class="list ul icon"></i>
-            Yo have no history yet.
+            Yo have no history.
           </div>
         </div>
 
@@ -69,7 +69,7 @@
                 </td>
                 <td>
                   <time [dateTime]="h.created_at">
-                    {{h.created_at | date: ''}}
+                    {{h.created_at | date: 'DD/MM/YYYY hh:mm'}}
                   </time>
                 </td>
                 <td>
@@ -80,6 +80,12 @@
                   </div>
                 </td>
                 <td class="ui center aligned">
+                  <a [sqy-clipboard]="h.id" data-inverted="" data-position="top center" data-tooltip="Copy ID">
+                    <i class="copy icon"></i>
+                  </a>
+                  <a [routerLink]="['/editor', h.id]" data-inverted="" data-position="top center" data-tooltip="Load on vector editor">
+                    <i class="external link icon"></i>
+                  </a>
                   <a (click)="deleteHistory(h.id)" data-inverted="" data-position="top center" data-tooltip="Delete">
                     <i class="trash link red icon"></i>
                   </a>

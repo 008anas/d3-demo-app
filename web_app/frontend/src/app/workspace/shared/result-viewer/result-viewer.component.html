@@ -1,0 +1,285 @@
+<div class="ui vertically divided grid" style="margin-bottom: 4em">
+
+  <div class="equal width center aligned middle aligned row" style="padding: 0em">
+
+    <div class="column">
+      <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="hgMenu" nzPlacement="bottomCenter">
+        Highlight
+        <i class="dropdown icon"></i>
+      </a>
+    </div>
+
+    <div class="column">
+      <a (click)="exportModal()">
+        <i class="download icon"></i>
+        Export
+      </a>
+    </div>
+
+    <div class="column">
+      <div class="ui icon fluid input" [ngClass]="{'loading disabled': isSearching}">
+        <i class="search icon"></i>
+        <input type="text" placeholder="Search for motif" (keyup.enter)="searchMotif($event.target.value)">
+      </div>
+    </div>
+
+    <div class="column">
+      <nz-select class="w-1-1" nzPlaceHolder="Restriction enzyme" (ngModelChange)="searchMotif($event)" nzDisabled [(ngModel)]="enzime" ngDefaultControl nzAllowClear>
+        <nz-option *ngFor="let e of enzimes" [nzLabel]="e" [nzValue]="e"></nz-option>
+      </nz-select>
+    </div>
+
+    <div class="column">
+      <p>
+        <i class="zoom icon"></i> Use <strong>Ctrl</strong> + <strong>Scroll</strong> to zoom.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="one column row">
+
+    <div class="column mt-0">
+
+      <protvista-manager attributes="length displaystart displayend highlight">
+        <div class="ui very padded grid graphs">
+
+          <div class="one column row">
+
+            <div class="column mb-3">
+              <protvista-navigation #navigator class="protvista"></protvista-navigation>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #dnaSeq></protvista-sequence>
+              <protvista-sequence class="protvista" highlight-event="onmouseover" use-ctrl-to-zoom #proteinSeq></protvista-sequence>
+              <protvista-interpro-track class="protvista" shape="roundRectangle" use-ctrl-to-zoom highlight-event="onmouseover" #tracksView></protvista-interpro-track>
+            </div>
+
+            <div class="column">
+              <p class="meta">Click on each feature to show or hide</p>
+            </div>
+
+            <div class="column">
+
+              <div class="ui top attached menu">
+
+                <div class="item">
+                  <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="graphsMenu">
+                    <i class="cogs icon"></i>
+                    Graphs
+                    <i class="dropdown icon"></i>
+                  </a>
+                </div>
+
+                <a class="item" *ngFor="let o of options" [ngClass]="{'non-active': !o.display}" (click)="o.display = !o.display">
+                  <i class="circle icon" [style.color]="o.color"></i>
+                  <p class="feat-label">{{o.name}}</p>
+                </a>
+
+              </div>
+
+            </div>
+
+            <div class="column pt-4" [hidden]="!op.display" *ngFor="let op of options; let i = index">
+
+              <div class="ui padded grid">
+
+                <div class="row">
+                  <div class="column">
+                    <h3 class="ui horizontal divider header">{{op.name}}</h3>
+                  </div>
+                </div>
+
+                <div class="three column row mb-3">
+
+                  <div class="column s-action">
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="acMenu">
+                      Chart
+                      <i class="dropdown icon"></i>
+                    </a>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="dataMenu">
+                      Data
+                      <i class="dropdown icon"></i>
+                    </a>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="sExMenu">
+                      Export
+                      <i class="dropdown icon"></i>
+                    </a>
+                    <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="cutMenu">
+                      Cutoff
+                      <i class="dropdown icon"></i>
+                    </a>
+
+                    <!-- Action -->
+                    <nz-dropdown-menu #acMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="changeColors(op.alias)">
+                          <i class="sync icon"></i>
+                          Change color
+                        </li>
+                        <li nz-menu-item (click)="op.display = false">
+                          <i class="eye slash icon"></i>
+                          Hide
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                    <!-- Data -->
+                    <nz-dropdown-menu #dataMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="displayScore(op.alias)">
+                          <i class="eye icon"></i>
+                          Display all scores
+                        </li>
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="displayCutoffs(op.alias)">
+                          <i class="eye icon"></i>
+                          Display cutoffs positions
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                    <!-- Single Graph Export -->
+                    <nz-dropdown-menu #sExMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="exportToExcel(op.alias)">
+                          <i class="file excel outline icon"></i>
+                          Excel
+                        </li>
+                        <li nz-menu-item (click)="exportToGb({key: op.alias})">
+                          <i class="dna icon"></i>
+                          GenBank
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                    <!-- Cutoff -->
+                    <nz-dropdown-menu #cutMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="cutoffModal(op.alias)">
+                          Set cutoff
+                        </li>
+                        <!-- <li nz-menu-item>
+                          Set cutoff for minimum
+                        </li>
+                        <li nz-menu-item>
+                          Set cutoff for maximum
+                        </li> -->
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="displayCutoffs(op.alias)">
+                          <i class="eye icon"></i>
+                          Display cutoffs positions
+                        </li>
+                        <li nz-submenu nzTitle="Download current threshold" [nzDisabled]="!op.cutoffs">
+                          <ul>
+                            <li nz-menu-item (click)="exportCutoffToGb(op.alias)">
+                              <i class="dna icon"></i> Download as GenBank
+                            </li>
+                            <li nz-menu-item (click)="exportCutoffToExcel(op.alias)">
+                              <i class="file excel outline icon"></i> Download as Excel
+                            </li>
+                          </ul>
+                        </li>
+                        <li nz-menu-item [nzDisabled]="!op.cutoffs" (click)="clearCutoffs(op.alias)">
+                          <i class="eraser icon"></i> Clear cutoffs positions
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                  </div>
+
+                  <div class="column txt-c cutoff" id="cutoffRes{{op.alias}}" style="visibility: hidden">
+                    <p></p>
+                  </div>
+
+                  <div class="column right aligned">
+                    <div class="ui dropdown" nz-dropdown nzTrigger="click" [nzDropdownMenu]="vlMenu">
+                      <div class="text">
+                        <strong>Values: </strong>{{op.type === 'raw' ? 'Raw' : 'Normalized'}}
+                      </div>
+                      <i class="dropdown icon"></i>
+                    </div>
+
+                    <!-- Values -->
+                    <nz-dropdown-menu #vlMenu="nzDropdownMenu">
+                      <ul nz-menu nzSelectable>
+                        <li nz-menu-item (click)="switchScore(op.alias, 'raw')">
+                          Raw <i [hidden]="op.type !== 'raw'" class="check small icon"></i>
+                        </li>
+                        <li nz-menu-item (click)="switchScore(op.alias, 'norm')">
+                          Normalized <i [hidden]="op.type !== 'norm'" class="check small icon"></i>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+
+                    <sqy-info-popup [content]="op.description"></sqy-info-popup>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60" use-ctrl-to-zoom></sqrutiny-matrix>
+
+              <div class="ui two column grid">
+
+                <div class="column">
+                  <span class="meta" style="font-size: .9em !important;">
+                    Min: <strong>{{op.min}}</strong>
+                  </span>
+                </div>
+
+                <div class="column right aligned">
+                  <span class="meta" style="font-size: .9em !important;">
+                    Max: <strong>{{op.max}}</strong>
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </protvista-manager>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Menus -->
+
+<!-- Visibility -->
+<nz-dropdown-menu #graphsMenu="nzDropdownMenu">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item (click)="displayAll()">
+      <i class="eye icon"></i>
+      Display all
+    </li>
+    <li nz-menu-item (click)="hideAll()">
+      <i class="eye icon"></i>
+      Hide all
+    </li>
+    <li nz-menu-item (click)="changeColors()">
+      <i class="sync icon"></i>
+      Change colors
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!-- Highlight -->
+<nz-dropdown-menu #hgMenu="nzDropdownMenu">
+  <ul nz-menu nzSelectable>
+    <li nz-menu-item nz-popover nzType="primary" nzPopoverTrigger="click" nzPopoverTitle="Set highlight by positions" [nzPopoverContent]="hgTmplt">
+      <i class="crosshairs icon"></i>
+      Set highlight
+    </li>
+    <li nz-menu-item (click)="clearHighlight()">
+      <i class="eraser icon"></i>
+      Clear highlight
+    </li>
+  </ul>
+</nz-dropdown-menu>
+
+<!-- Popover templates -->
+<ng-template #hgTmplt>
+  <sqy-set-highlight [max]="_data.construct.dna_seq.length" (onSet)="setHighlight($event)"></sqy-set-highlight>
+</ng-template>

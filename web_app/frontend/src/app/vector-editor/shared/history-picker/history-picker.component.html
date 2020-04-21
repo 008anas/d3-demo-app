@@ -1,0 +1,93 @@
+<!-- User history picker modal-->
+<div class="ui loading segment" *ngIf="isLoading"></div>
+
+<div class="ui padded grid" *ngIf="!isLoading">
+
+  <div class="sixteen wide column" *ngIf="!histories.length">
+    <div class="ui placeholder segment">
+      <div class="ui icon header">
+        <i class="list ul icon"></i>
+        Yo have no history.
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <p>
+        Choose a <strong>cosntruct</strong> from your list oh history to load on the editor.
+        Or cancel to start the editor from scratch.
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="column">
+
+      <table class="ui very basic table b-0" *ngIf="histories.length">
+
+        <thead>
+          <tr>
+            <th colspan="2">
+              <div class="ui fluid mini icon input">
+                <input type="text" name="filter" placeholder="Filter by construct label">
+                <i class="search icon"></i>
+              </div>
+            </th>
+            <th colspan="5" class="right aligned">
+              {{histories.length}} entries
+            </th>
+          </tr>
+
+          <tr>
+            <th>
+              History name
+            </th>
+            <th>
+              Construct
+            </th>
+            <th>
+              Date
+            </th>
+            <th>
+              Status
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr [ngClass]="{'warning':  h.status != 'failed' && h.status != 'finished'}" *ngFor="let h of histories">
+            <td>
+              {{h.name}}
+            </td>
+            <td>
+              <strong>{{h.construct.name}}</strong>
+            </td>
+            <td>
+              <time [dateTime]="h.created_at">
+                {{h.created_at | date: 'DD/MM/YYYY hh:mm'}}
+              </time>
+            </td>
+            <td>
+              <div class="ant-badge ant-badge-status ant-badge-not-a-wrapper link" data-inverted="" data-position="top center" [attr.data-tooltip]="h.status | titlecase">
+                <span class="ant-badge-status-dot" [ngClass]="{'ant-badge-status-error': h.status === 'failed',
+                  'ant-badge-status-success':  h.status === 'finished',
+                  'ant-badge-status-processing': h.status != 'failed' && h.status != 'finished'}"></span>
+              </div>
+            </td>
+            <td>
+              <input type="radio" name="selected" (change)="handleSelect(h, $event.target.checked)">
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</div>

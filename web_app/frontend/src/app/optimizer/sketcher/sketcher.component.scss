@@ -181,7 +181,7 @@
             cursor: pointer !important;
 
             &.selected {
-              border: 2px solid #079ace !important;
+              border: 2px solid var(--main-color) !important;
               border-radius: 2px;
               box-shadow: 1px 1px 1px #eee !important;
             }

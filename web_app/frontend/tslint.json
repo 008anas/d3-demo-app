@@ -13,7 +13,7 @@
       true,
       "attribute",
       "sqy",
-      "camelCase"
+      "kebab-case"
     ],
     "component-selector": [
       true,
@@ -57,7 +57,7 @@
       true,
       "ignore-params"
     ],
-    "no-non-null-assertion": true,
+    "no-non-null-assertion": false,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
     "no-use-before-declare": true,

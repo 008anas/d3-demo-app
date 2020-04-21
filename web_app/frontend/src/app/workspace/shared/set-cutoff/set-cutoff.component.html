@@ -1,0 +1,37 @@
+<form class="ui tiny form">
+
+  <div class="field">
+    <table class="ui table">
+
+      <thead>
+        <tr>
+          <th>Minimum value</th>
+          <th>Maximum value</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>{{option.min}}</td>
+          <td>{{option.max}}</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+  <div class="two fields">
+
+    <div class="field">
+      <nz-select name="operator" nzSize="small" nzPlaceHolder="Operator" required [(ngModel)]="op">
+        <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
+      </nz-select>
+    </div>
+
+    <div class="field">
+      <input type="number" name="value" placeholder="Enter a value" required [(ngModel)]="value"/>
+    </div>
+
+  </div>
+
+</form>

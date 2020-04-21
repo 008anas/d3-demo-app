@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { main } from '@config/main';
@@ -10,15 +10,21 @@ import { SqrutinyService } from '@services/sqrutiny.service';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent {
 
   isLoading = false;
   contact: Contact = new Contact();
-  email: string;
+  email = '';
+  sent = false;
+  response = null;
+  subjectOp = [
+    'Bug',
+    'Feature request'
+  ];
 
-  constructor(private sqrutinySrvc: SqrutinyService) { }
-
-  ngOnInit() {
+  constructor(
+    private sqrutinySrvc: SqrutinyService
+  ) {
     this.email = main.email;
   }
 
@@ -27,11 +33,7 @@ export class ContactComponent implements OnInit {
     this.sqrutinySrvc.contact(this.contact)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
-        () => {
-          console.log('POST call successful value returned in body');
-        },
-        () => {
-          console.log('POST call in error');
-        });
+        () => this.sent = true,
+        err => this.response = err);
   }
 }

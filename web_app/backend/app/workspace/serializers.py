@@ -12,7 +12,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = History
-        exclude = ['uuid', 'request_ip', 'deleted', 'updated_at']
+        exclude = ['uuid', 'deleted', 'updated_at']
 
     def get_url(self, history):
         request = self.context.get('request')
@@ -24,3 +24,18 @@ class HistorySerializer(serializers.ModelSerializer):
     def get_status(self, obj):
         rq_job = django_rq.get_queue('default').fetch_job(str(obj.job_id))
         return rq_job.get_status()
+
+
+class CutoffSerializer(serializers.Serializer):
+    value = serializers.FloatField()
+    op = serializers.ChoiceField(choices=['<', '<=', '=', '>', '>='])
+    type = serializers.ChoiceField(choices=['raw', 'norm'])
+
+
+class OptionsSerializer(serializers.Serializer):
+    key = serializers.CharField()
+    filter = CutoffSerializer(required=False)
+
+
+class ExportResultsSerializer(serializers.Serializer):
+    options = OptionsSerializer(many=True, required=False)

@@ -15,7 +15,11 @@ export class AppHttpInterceptor implements HttpInterceptor {
       withCredentials: true
     });
 
-    if (this.cookieSrvc.get('csrftoken')) {
+    if (!request.headers.has('Accept')) {
+      request = request.clone({ headers: request.headers.set('Accept', 'application/json') });
+    }
+
+    if (!request.headers.has('X-CSRFToken') && this.cookieSrvc.get('csrftoken')) {
       request = request.clone({ headers: request.headers.set('X-CSRFToken', this.cookieSrvc.get('csrftoken')) });
     }
 

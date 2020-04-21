@@ -1,0 +1,25 @@
+<form class="ui tiny form" [formGroup]="highlightForm" (ngSubmit)="set()">
+
+  <div class="field">
+    <span class="meta">Enter positions to define highlight area.</span>
+  </div>
+
+  <div class="fields">
+
+    <div class="field" [ngClass]="{'error': from.invalid && (from.dirty || from.touched)}">
+      <label>From</label>
+      <input type="number" placeholder="From" required name="highl-from" formControlName="from">
+    </div>
+
+    <div class="field" [ngClass]="{'error': to.invalid && (to.dirty || to.touched)}">
+      <label>To</label>
+      <input type="number" placeholder="Max: {{max}}" required name="highl-to" formControlName="to">
+    </div>
+
+  </div>
+
+  <div class="field">
+    <button type="submit" class="ui fluid primary button" [disabled]="highlightForm.invalid">Set</button>
+  </div>
+
+</form>

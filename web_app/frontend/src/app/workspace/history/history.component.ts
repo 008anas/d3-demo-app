@@ -13,9 +13,10 @@ import { Construct } from '@models/construct';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 import { TitleService } from '@services/title.service';
 import { Track } from 'app/optimizer/shared/track';
+import { NavService } from '@services/nav.service';
 
-const MAX_ATTEMPTS = 15;
-const RETRY_IN = 5000;
+const MAX_ATTEMPTS = 20;
+const RETRY_IN = 4000;
 
 @Component({
   selector: 'sqy-history',
@@ -30,7 +31,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   isSearching = false;
   msg: string = null;
   seq: string = null;
-  resultData: { construct: Construct; results: any };
+  resultData: { construct: Construct; result: any[] };
   trackHovered: Track = null;
   interval: any;
   attempts = 0;
@@ -42,7 +43,8 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private jobSrvc: JobService,
     private modal: NzModalService,
     private notify: NzMessageService,
-    private titleSrvc: TitleService
+    private titleSrvc: TitleService,
+    private navSrvc: NavService
   ) { }
 
   ngOnInit() {
@@ -68,15 +70,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
       .subscribe(
         (data: Job) => {
           this.history.job = data;
-          // this.history.job.status = 'queued';
           if (this.history.isDone()) {
             if (this.interval) {
               clearInterval(this.interval);
             }
-            this.resultData = {
-              construct: this.history.construct,
-              results: this.history.job.result
-            };
+            this.resultData = { construct: this.history.construct, result: this.history.job.result };
           } else if (this.history.isActive()) {
             if (!this.interval) {
               this.interval = setInterval(() => this.getJob(), RETRY_IN);
@@ -86,9 +84,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
             if (this.attempts >= MAX_ATTEMPTS) { clearInterval(this.interval); }
           }
         },
-        err => {
-          console.log(err);
-        }
+        err => this.notify.error(err)
       );
   }
 
@@ -98,6 +94,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       this.historySrvc.delete(this.history.id)
         .pipe(finalize(() => this.isLoading = false))
         .subscribe(() => {
+          this.navSrvc.updateBadge();
           this.notify.success('History deleted!');
           this.router.navigate(['/workspace']);
         },
