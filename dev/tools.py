@@ -428,6 +428,8 @@ def checker(sequence,
     # Parse and check elements to explore
     default_elements = {'promoter', 'terminator', 'utr5', 'codon_adaptation', 'ntpi', 'irna', 'restriction_sites',
                         'rbs', 'toxic', 'alternative_start', 'rna_structure20', 'rna_structure60', 'gc20'}
+    default_elements = {'promoter', 'terminator', 'utr5', 'codon_adaptation',
+                        'rbs', 'rna_structure20', 'rna_structure60', 'gc20'}
     if elements == 'all':
         elements = default_elements
     elif type(elements) == str:
