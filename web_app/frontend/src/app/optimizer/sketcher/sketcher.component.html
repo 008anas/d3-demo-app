@@ -213,7 +213,7 @@
               </div>
 
               <div class="field">
-                <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid" type="submit">
+                <button class="ui secondary right labeled fluid icon button" [disabled]="!construct.tracks?.length || constructForm.invalid || (featuresArray && featuresArray.length < 1)" type="submit">
                   Submit
                   <i class="angle right icon"></i>
                 </button>

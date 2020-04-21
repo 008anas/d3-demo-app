@@ -5,4 +5,6 @@ export class Feature extends Deserializable {
   name: string;
   alias: string;
   description: string;
+  genome_min: number;
+  genome_max: number;
 }

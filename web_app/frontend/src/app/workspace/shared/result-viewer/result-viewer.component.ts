@@ -22,8 +22,8 @@ class GraphsOption {
   description?: string;
   display: boolean;
   data: any;
-  max: number;
-  min: number;
+  max?: number;
+  min?: number;
   type: string;
   cutoffs?: number[];
   color: string;
@@ -56,8 +56,6 @@ export class ResultViewerComponent implements AfterViewInit {
         alias: r.alias,
         display: true,
         data: r.scores.map((d: any) => ({ pos: d.start, score: d.raw_score })),
-        max: Math.max.apply(Math, r.scores.map((d: any) => d.raw_score)),
-        min: Math.min.apply(Math, r.scores.map((d: any) => d.raw_score)),
         type: 'raw',
         color: this.getRandomColor()
       });
@@ -318,6 +316,8 @@ export class ResultViewerComponent implements AfterViewInit {
           if (ft) {
             o.name = ft.name;
             o.description = ft.description;
+            o.min = ft.genome_min,
+            o.max = ft.genome_max
           }
         });
         this.loader.stopLoading();

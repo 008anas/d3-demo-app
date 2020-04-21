@@ -54,7 +54,7 @@
     "id": 5,
     "name": "RBS",
     "alias": "rbs",
-    "description": "Detects the presence of ribosome binding site motif upstream of any stop codons in the sequence. Returns a score for each RBS corresponding to its hybridization energy to the anti - motif.",
+    "description": "Detects the presence of ribosome binding site motif upstream of any stop codons in the sequence.",
     "specie_id": 1,
     "genetic_element_id": 4,
     "genome_min": 0,

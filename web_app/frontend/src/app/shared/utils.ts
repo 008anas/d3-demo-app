@@ -331,13 +331,13 @@ export default class Utils {
 
     let fastaString = '';
     data.forEach((c: any) => {
-      if (c.sequence) {
+      if (c.dna_seq) {
         fastaString += `>${c.name || 'Untitled Sequence'}`;
-        fastaString += `|${c.sequence.length}`;
+        fastaString += `|${c.dna_seq.length}`;
         fastaString += c.description ? '|' + c.description : '';
         fastaString += '|' + (c.circular ? 'circular' : 'linear') || 'linear';
         fastaString += '\n';
-        fastaString += (c.sequence.match(/.{1,80}/g) || []).join('\n');
+        fastaString += (c.dna_seq.match(/.{1,80}/g) || []).join('\n');
       }
     });
     return fastaString;
