@@ -402,7 +402,7 @@ def terminator_scoring(sequence, n=40, min_stem_size=3, max_stem_size=12, max_lo
             if i in rs:
                 if d_score>rs[i]:
                     rs[i] = d_score
-            else:
+            elif i<=limit:
                 rs[i] = d_score
 
     print('\tTerminator scoring: Returning results...\n--> Terminator scoring finished.\n\n')
