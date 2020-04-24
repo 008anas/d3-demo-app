@@ -18,7 +18,10 @@ export class FeatureService {
     this.url = env.endpoints.api + URL_ENV;
   }
 
-  getAll(): Observable<Feature[]> {
+  getAll(specie_id?: any): Observable<Feature[]> {
+    if (specie_id) {
+      return this.http.get<Feature[]>(`${this.url}`, { params: { specie_id } }).pipe();
+    }
     return this.http.get<Feature[]>(`${this.url}`).pipe();
   }
 

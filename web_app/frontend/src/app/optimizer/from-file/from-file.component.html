@@ -52,7 +52,7 @@
 
       <div class="one column row mt-7 p-4" *ngIf="construct">
 
-        <div class="column mt-4">
+        <div class="column mt-4 mb-3">
 
           <div class="ui two item secondary pointing menu">
             <a class="item" (click)="view = true" [ngClass]="{'active': view}">
@@ -75,9 +75,9 @@
 
               <div class="required field">
                 <label for="construct_specie">Select organism</label>
-                <select class="ui dropdown" name="construct-specie" id="construct_specie" required [(ngModel)]="specie.tax_id">
-                  <option *ngFor="let s of species" [ngValue]="s.tax_id">{{s.name}}</option>
-                </select>
+                <nz-select name="construct-specie" [(ngModel)]="specie.tax_id" (ngModelChange)="getFeatures()" required [nzLoading]="isFeaturesLoading" [nzDisabled]="isFeaturesLoading" nzShowSearch>
+                  <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s.tax_id"></nz-option>
+                </nz-select>
               </div>
 
               <div class="grouped required fields">
@@ -90,6 +90,9 @@
                       <sqy-info-popup [content]="f.description"></sqy-info-popup>
                     </label>
                   </div>
+                </div>
+                <div class="field txt-c" *ngIf="!featuresArray.length">
+                  <span class="meta">No features available for selected organism.</span>
                 </div>
               </div>
 

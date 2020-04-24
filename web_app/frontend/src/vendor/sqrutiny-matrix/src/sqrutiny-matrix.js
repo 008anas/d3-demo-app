@@ -1,4 +1,3 @@
-import ProtvistaTrack from 'protvista-track';
 import {
   scaleLinear,
   line,
@@ -10,6 +9,8 @@ import {
   mouse,
   format
 } from 'd3';
+
+import ProtvistaTrack from 'protvista-track';
 
 class SqrutinyMatrix extends ProtvistaTrack {
 

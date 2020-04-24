@@ -36,7 +36,10 @@ export class WorkspaceComponent implements OnInit {
     this.isLoading = true;
     this.historySrvc.getAll()
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => this.histories = data.map((h: any) => new UserHistory().deserialize(h)) || []);
+      .subscribe(data => {
+        this.histories = data.map((h: any) => new UserHistory().deserialize(h)) || [];
+        this.navSrvc.updateBadge();
+      });
   }
 
   clearHistory() {

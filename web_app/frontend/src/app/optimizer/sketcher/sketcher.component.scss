@@ -133,9 +133,9 @@
 }
 
 ::ng-deep {
-  // .ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
-  //   border-color: #7da4db;
-  // }
+  .ant-slider:hover .ant-slider-handle:not(.ant-tooltip-open) {
+    border-color: #7da4db;
+  }
 
   .ant-slider-track {
     background-color: var(--main-color);

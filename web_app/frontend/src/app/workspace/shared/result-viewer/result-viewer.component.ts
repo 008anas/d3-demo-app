@@ -4,6 +4,10 @@ import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { ProtvistaSequence } from 'protvista-sequence';
+import { ProtvistaSaver } from 'protvista-saver';
+import { ProtVistaNavigation } from '@vendor/protvista-navigation';
+import { ProtVistaInterproTrack } from 'protvista-interpro-track';
 
 import { SqrutinyService } from '@services/sqrutiny.service';
 import { Track } from 'app/optimizer/shared/track';
@@ -93,10 +97,11 @@ export class ResultViewerComponent implements AfterViewInit {
     '>=': (a: number, b: number) => a >= b,
   };
 
-  @ViewChild('dnaSeq') dnaSeq: ElementRef<HTMLElement>;
-  @ViewChild('proteinSeq') proteinSeq: ElementRef<HTMLElement>;
-  @ViewChild('tracksView') tracksElem: ElementRef<HTMLElement>;
-  @ViewChild('navigator') nav: ElementRef<HTMLElement>;
+  @ViewChild('dnaSeq') dnaSeq: ElementRef<ProtvistaSequence>;
+  @ViewChild('proteinSeq') proteinSeq: ElementRef<ProtvistaSequence>;
+  @ViewChild('tracksView') tracksElem: ElementRef<ProtVistaInterproTrack>;
+  @ViewChild('navigator') nav: ElementRef<ProtVistaNavigation>;
+  @ViewChild('saver') saver: ElementRef<ProtvistaSaver>;
 
   constructor(
     private sqSrvc: SqrutinyService,
@@ -112,17 +117,32 @@ export class ResultViewerComponent implements AfterViewInit {
   ngAfterViewInit() {
     // Init graphs
     if (this._data && this.options) {
-      /* tslint:disable:no-string-literal */
-      this.nav.nativeElement['length'] = this._data.construct.dna_seq.length;
+      this.nav.nativeElement.length = this._data.construct.dna_seq.length;
       document.querySelectorAll('.protvista').forEach((x: any) => x.setAttribute('length', this._data.construct.dna_seq.length));
-      this.dnaSeq.nativeElement['data'] = this._data.construct.dna_seq;
-      this.proteinSeq.nativeElement['data'] = this.toProteinSeqVw(this._data.construct.protein_seq);
-      this.tracksElem.nativeElement['data'] = this.getTrackView(this._data.construct.tracks);
+      this.dnaSeq.nativeElement.data = this._data.construct.dna_seq;
+      this.proteinSeq.nativeElement.data = this.toProteinSeqVw(this._data.construct.protein_seq);
+      this.tracksElem.nativeElement.data = this.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => {
         x.data = this.options[i].data;
         x.setAttribute('color', this.options[i].color);
       });
-      /* tslint:enable:no-string-literal */
+      this.saver.nativeElement.preSave = () => {
+        this.loader.startLoading();
+        const base = document.querySelector('#results-graphs');
+        const title = document.createElement('h1');
+        title.setAttribute('id', 'tmp_title_element');
+        title.innerHTML = 'SQrutiny Result Snapshot';
+        base.insertBefore(title, base.firstChild);
+        base.querySelectorAll('.no-sv').forEach((element: HTMLElement) => element.style.display = 'none');
+        base.querySelectorAll('h3').forEach((element: HTMLElement) => element.style.fontSize = '12px');
+      };
+      this.saver.nativeElement.postSave = () => {
+        const base = document.querySelector('#results-graphs');
+        base.removeChild(document.getElementById('tmp_title_element'));
+        base.querySelectorAll('.no-sv').forEach((element: HTMLElement) => element.style.display = 'inherit');
+        base.querySelectorAll('h3').forEach((element: HTMLElement) => element.style.fontSize = '1.28571429rem');
+        this.loader.stopLoading();
+      };
     }
   }
 
@@ -171,8 +191,8 @@ export class ResultViewerComponent implements AfterViewInit {
     document.getElementById(alias)['cutoffs'] = undefined;
     this.getByAlias(this.options, alias).cutoffs = null;
     this.filters = this.filters.filter(f => f.alias !== alias);
-    document.getElementById('cutoffRes' + alias).getElementsByTagName('p')[0].innerHTML = '';
-    document.getElementById('cutoffRes' + alias).style.visibility = 'hidden';
+    document.getElementById('cutoff_' + alias).getElementsByTagName('p')[0].innerHTML = '';
+    document.getElementById('cutoff_' + alias).style.visibility = 'hidden';
     /* tslint:enable:no-string-literal */
   }
 
@@ -223,7 +243,7 @@ export class ResultViewerComponent implements AfterViewInit {
         document.getElementById(filter.alias)['cutoffs'] = values.map((v: any) => v.pos);
         /* tslint:enable:no-string-literal */
         const element = document.getElementById('cutoffRes' + filter.alias).getElementsByTagName('p')[0];
-        element.innerHTML = `<i class="filter icon"></i> ${operator.desc} ${filter.value}`;
+        element.innerHTML = `<i class='filter icon'></i> ${operator.desc} ${filter.value}`;
         element.style.visibility = 'visible';
       } else {
         this.clearCutoffs(filter.alias);
@@ -275,9 +295,9 @@ export class ResultViewerComponent implements AfterViewInit {
         pos: s.start,
         score: type === 'raw' ? s.raw_score : s.norm_score
       }));
-      // /* tslint:disable:no-string-literal */
+      /* tslint:disable:no-string-literal */
       document.getElementById(alias)['data'] = op.data;
-      // /* tslint:enable:no-string-literal */
+      /* tslint:enable:no-string-literal */
       op.type = type;
     }
   }
@@ -316,8 +336,8 @@ export class ResultViewerComponent implements AfterViewInit {
           if (ft) {
             o.name = ft.name;
             o.description = ft.description;
-            o.min = ft.genome_min,
-            o.max = ft.genome_max
+            o.min = ft.genome_min;
+            o.max = ft.genome_max;
           }
         });
         this.loader.stopLoading();

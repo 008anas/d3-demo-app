@@ -16,6 +16,7 @@ import { SharedModule } from '../shared/shared.module';
 import { TrackDetailsComponent } from './track-details/track-details.component';
 import { FilterTracksPipe } from './shared/filter-tracks.pipe';
 import { FromFileComponent } from './from-file/from-file.component';
+import { SketcherLoadingComponent } from './shared/sketcher-loading/sketcher-loading.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FromFileComponent } from './from-file/from-file.component';
     SketcherComponent,
     TrackDetailsComponent,
     FilterTracksPipe,
-    FromFileComponent
+    FromFileComponent,
+    SketcherLoadingComponent
   ],
   imports: [
     CommonModule,

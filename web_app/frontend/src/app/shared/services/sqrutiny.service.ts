@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 
 import { environment as env } from '@env/environment';
 import { Construct } from '@models/construct';
@@ -23,6 +23,7 @@ export class SqrutinyService {
     if (sequence && motif) {
       return this.http.get(`${this.url}/search-motif`, { params: { sequence, motif } }).pipe();
     }
+    return this.http.get(`${this.url}/search-motif`).pipe();
   }
 
   contact(contact: any) {

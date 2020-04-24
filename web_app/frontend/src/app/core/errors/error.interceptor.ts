@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs/internal/Observable';
 
 import { routes } from '@config/routes';
 import { environment as env } from '@env/environment';
+import { throwError } from 'rxjs/internal/observable/throwError';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

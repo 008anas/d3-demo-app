@@ -40,6 +40,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
   search: string;
   isSubmitting = false;
   allowedExt = ['.gb', '.gbk', '.genbank'];
+  isFeaturesLoading = false;
   features: Feature[] = [];
   featuresArray: string[];
 
@@ -51,6 +52,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
       reportProgress: true,
       withCredentials: true
     });
+    this.fileList = [item.file];
     this.response = null;
     this.construct = null;
     return this.http.request(req)
@@ -103,39 +105,45 @@ export class FromFileComponent implements OnInit, OnDestroy {
     if (this.sub) { this.sub.unsubscribe(); }
   }
 
-  getSpecie() {
+  private getSpecie() {
     this.isLoading = true;
-    this.specieSrvc.getBySlug(this.specie)
+    this.specieSrvc
+      .getBySlug(this.specie)
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => this.specie.deserialize(data));
+      .subscribe(data => {
+        this.specie.deserialize(data);
+        this.getFeatures();
+      });
   }
 
   getSpecies() {
     this.isLoading = true;
-    this.specieSrvc.getAll()
+    this.specieSrvc
+      .getAll()
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
-        data =>
+        data => {
           this.species = data.map((e: any) => {
             const specie = new Specie().deserialize(e);
-            if (!this.specie.slug && specie.default) {
+            if (specie.default && !this.specie.slug) {
               this.specie = Object.assign({}, specie);
             }
             return specie;
-          })
+          });
+          this.getFeatures();
+        }
       );
   }
 
   getFeatures() {
-    this.isLoading = true;
+    this.isFeaturesLoading = true;
     this.featureSrvc
-      .getAll()
-      .pipe(finalize(() => this.isLoading = false))
+      .getAll(this.specie.tax_id || null)
+      .pipe(finalize(() => this.isFeaturesLoading = false))
       .subscribe(data => {
         this.features = data.map((e: any) => new Feature().deserialize(e));
         this.featuresArray = Object.assign([], this.features.map(f => f.alias));
-      }
-      );
+      });
   }
 
   submit() {

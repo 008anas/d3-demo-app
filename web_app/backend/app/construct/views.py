@@ -83,8 +83,14 @@ class FromGenBankView(APIView):
                     for feature in record.features:
                         last_item = tracks[-1]
                         if feature.type.lower() == 'cds':
+                            if last_item['end'] > feature.location.nofuzzy_start:  # No overlapping
+                                return Response(dict(
+                                    msg='The file contains overlapped features. '
+                                        'Overlapping is not supported. '
+                                        'Please correct the file and upload again.'),
+                                    status=status.HTTP_400_BAD_REQUEST)
                             tracks.append(dict(
-                                label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
+                                label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks)+1)),
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color=CDS_COLOR,
@@ -92,7 +98,7 @@ class FromGenBankView(APIView):
                                 end=feature.location.nofuzzy_end))
                         elif feature.type.upper() == FEATURE_PREFIX:
                             sqy_tracks.append(dict(
-                                label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
+                                label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks)+1)),
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color=FEATURES_COLOR,
@@ -101,12 +107,12 @@ class FromGenBankView(APIView):
                         else:
                             if last_item.get('type', '').lower() != 'dummy':
                                 tracks.append(dict(
-                                    label=record.features[0].qualifiers.get('locus_tag', ['Track ' + str(i)])[0],
+                                    label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks)+1)),
                                     type='Dummy',
                                     sequence=str(feature.extract(record.seq)),
                                     color=DUMMY_COLOR,
-                                    start=last_item['start'],
-                                    end=last_item['end']))
+                                    start=last_item['end'] + 1,
+                                    end=feature.location.nofuzzy_end))
                             else:
                                 tracks[-1]['end'] = feature.location.nofuzzy_end
                         i += 1

@@ -10,7 +10,8 @@
       "@pipes/*": ["app/shared/pipes/*"],
       "@models/*": ["app/shared/models/*"],
       "@resolvers/*": ["app/shared/resolvers/*"],
-      "@directives/*": ["app/shared/directives/*"]
+      "@directives/*": ["app/shared/directives/*"],
+      "@vendor/*": ["app/../vendor/*"]
     },
     "outDir": "./dist/out-tsc",
     "sourceMap": true,

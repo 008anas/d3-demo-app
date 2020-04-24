@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { SpecieService } from '@services/specie.service';
 import { Specie } from '@models/specie';
@@ -18,8 +19,9 @@ import { FileService } from '@services/file.service';
 import { NavService } from '@services/nav.service';
 import { FeatureService } from '../shared/feature.service';
 import { Feature } from '../shared/feature';
+import { TextModalComponent } from '@components/text-modal/text-modal.component';
 
-const NAME_IN_SESSION = 'sqy_construct';
+const SESSION_NAME = 'sqy_construct';
 
 class Category {
   name: string;
@@ -48,15 +50,15 @@ export class SketcherComponent implements OnInit, OnDestroy {
   zoom = 75;
   isTracksLoading = false;
   history: UserHistory = null;
-  construct: Construct = new Construct();
+  construct: Construct;
   showIndexes = true;
   view = 'general';
   locked = false;
   search: string;
-  sketcherLoading = false;
   autoSave = true;
   features: Feature[] = [];
-  featuresArray: string[];
+  featuresArray: string[] = [];
+  isFeaturesLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,11 +70,11 @@ export class SketcherComponent implements OnInit, OnDestroy {
     private fileSrvc: FileService,
     private router: Router,
     private notify: NzMessageService,
+    private modal: NzModalService,
     private navSrvc: NavService
   ) { }
 
   ngOnInit() {
-    this.isLoading = true;
     this.sub = this.route.queryParams.subscribe(params => {
       this.specie.slug = params.specie || null;
       params.construct ? this.getConstruct(params.construct) : this.initConstruct();
@@ -82,7 +84,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
     this.getTracks();
     this.getSpecies();
-    this.getFeatures();
   }
 
   ngOnDestroy() {
@@ -92,17 +93,19 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   private initConstruct() {
-    if (this.getFromSession()) {
+    const construct = this.getFromSession();
+    if (construct && !this.isObjectEmpty(construct)) {
       this.construct = this.getFromSession();
     }
   }
 
-  private isConstructEmpty() {
-    for (const key in this.construct) {
-      if (this.construct[key] && this.construct[key] !== null && this.construct[key] !== '') {
+  private isObjectEmpty(obj: Object) {
+    for (const key in obj) {
+      if (obj[key] && obj[key] !== null && obj[key] !== '') {
         return false;
       }
     }
+    return true;
   }
 
   private getSpecie() {
@@ -110,15 +113,18 @@ export class SketcherComponent implements OnInit, OnDestroy {
     this.specieSrvc
       .getBySlug(this.specie)
       .pipe(finalize(() => this.isLoading = false))
-      .subscribe(data => this.specie.deserialize(data));
+      .subscribe(data => {
+        this.specie.deserialize(data);
+        this.getFeatures();
+      });
   }
 
   private getConstruct(id: any) {
     if (id) {
-      this.sketcherLoading = true;
+      this.isLoading = true;
       this.constructSrvc
         .getById(id)
-        .pipe(finalize(() => this.sketcherLoading = false))
+        .pipe(finalize(() => this.isLoading = false))
         .subscribe(
           (data: Construct) => {
             this.construct = new Construct().deserialize(data);
@@ -129,9 +135,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
   }
 
   getExampleConstruct() {
-    this.sketcherLoading = true;
+    this.isLoading = true;
     this.constructSrvc.getExample()
-      .pipe(finalize(() => this.sketcherLoading = false))
+      .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         (data: Construct[]) => {
           if (data.length > 0) {
@@ -149,14 +155,16 @@ export class SketcherComponent implements OnInit, OnDestroy {
       .getAll()
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
-        data =>
-          (this.species = data.map((e: any) => {
+        data => {
+          this.species = data.map((e: any) => {
             const specie = new Specie().deserialize(e);
             if (specie.default && !this.specie.slug) {
               this.specie = Object.assign({}, specie);
             }
             return specie;
-          }))
+          });
+          this.getFeatures();
+        }
       );
   }
 
@@ -175,28 +183,42 @@ export class SketcherComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(data => {
         this.tracks = data;
-        this.new();
+        if (!this.construct) {
+          this.new();
+        }
       });
   }
 
-  private getFeatures() {
-    this.isLoading = true;
+  getFeatures() {
+    this.isFeaturesLoading = true;
     this.featureSrvc
-      .getAll()
-      .pipe(finalize(() => this.isLoading = false))
+      .getAll(this.specie.tax_id || null)
+      .pipe(finalize(() => this.isFeaturesLoading = false))
       .subscribe(data => {
         this.features = data.map((e: any) => new Feature().deserialize(e));
         this.featuresArray = Object.assign([], this.features.map(f => f.alias));
-      }
-      );
+      });
   }
 
   featChange(alias: string, isChecked: boolean) {
     isChecked ? this.featuresArray.push(alias) : this.featuresArray = this.featuresArray.filter(f => f !== alias);
   }
 
+  textModal(str: string) {
+    this.modal.create({
+      nzContent: TextModalComponent,
+      nzWrapClassName: 'center-modal',
+      nzComponentParams: {
+        txt: str
+      },
+      nzFooter: null
+    });
+  }
+
   new() {
-    this.construct.dna_seq = '';
+    if (!this.construct) {
+      this.construct = new Construct();
+    }
     if (this.tracks.some(e => e.default) && !this.construct.tracks) {
       this.construct.tracks = [
         Object.assign(
@@ -204,7 +226,6 @@ export class SketcherComponent implements OnInit, OnDestroy {
           this.tracks.find(e => e.default)
         )
       ];
-      this.saveInSession();
     }
   }
 
@@ -216,7 +237,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     ) {
       this.construct.tracks = [];
       this.construct.dna_seq = '';
-      this.removeFromSession();
+      this.clearSession();
     }
   }
 
@@ -270,16 +291,16 @@ export class SketcherComponent implements OnInit, OnDestroy {
   submit() {
     if (this.checkTracks()) {
       this.response = null;
-      this.sketcherLoading = true;
+      this.isLoading = true;
       this.construct.specie_tax_id = this.specie.tax_id;
       this.sqrutinySrvc.fromConstruct(this.construct, this.featuresArray.length > 0 ? this.featuresArray : null)
-        .pipe(finalize(() => this.sketcherLoading = false))
+        .pipe(finalize(() => this.isLoading = false))
         .subscribe(
           (data: UserHistory) => {
             this.history = new UserHistory().deserialize(data);
             this.navSrvc.updateBadge();
             this.submitted = true;
-            this.saveInSession();
+            this.clearSession();
             setTimeout(() => {
               this.submitted = false;
               this.router.navigate(['/workspace', this.history.id]);
@@ -301,6 +322,9 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   addTrack(track: Track) {
     if (track.pos > -1) {
+      if (this.construct.dna_seq) {
+        this.construct.dna_seq = '';
+      }
       const length = this.construct.dna_seq.length;
       this.construct.tracks[track.pos] = track;
       this.construct.tracks[track.pos].start = length + 1;
@@ -381,16 +405,16 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   // Session storage manage
   private getFromSession() {
-    return JSON.parse(sessionStorage.getItem(NAME_IN_SESSION)) || null;
+    return JSON.parse(sessionStorage.getItem(SESSION_NAME)) || null;
   }
 
   saveInSession() {
     if (this.autoSave && this.construct) {
-      sessionStorage.setItem(NAME_IN_SESSION, JSON.stringify(this.construct));
+      sessionStorage.setItem(SESSION_NAME, JSON.stringify(this.construct));
     }
   }
 
-  private removeFromSession() {
-    sessionStorage.removeItem(NAME_IN_SESSION);
+  private clearSession() {
+    sessionStorage.removeItem(SESSION_NAME);
   }
 }

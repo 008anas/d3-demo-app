@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class SetCutoffComponent {
 
-  @Input() option = null;
+  @Input() option: any = null;
 
   operators = [
     { desc: 'Greater or equal than', op: '<=' },

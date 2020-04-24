@@ -16,7 +16,7 @@ import { Track } from 'app/optimizer/shared/track';
 import { NavService } from '@services/nav.service';
 
 const MAX_ATTEMPTS = 20;
-const RETRY_IN = 4000;
+const RETRY_IN = 3000;
 
 @Component({
   selector: 'sqy-history',
@@ -48,7 +48,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.isLoading = true;
     this.history = new UserHistory().deserialize(this.route.snapshot.data.history);
     this.titleSrvc.setTitle(this.history.name);
     this.getJob();

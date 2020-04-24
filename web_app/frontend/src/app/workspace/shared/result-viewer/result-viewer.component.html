@@ -35,6 +35,14 @@
       </p>
     </div>
 
+    <div class="column">
+      <protvista-saver element-id="results-graphs" #saver file-name="sqrutiny_result">
+        <button class="ui primary button">
+          Download as PNG
+        </button>
+      </protvista-saver>
+    </div>
+
   </div>
 
   <div class="one column row">
@@ -44,7 +52,7 @@
       <protvista-manager attributes="length displaystart displayend highlight">
         <div class="ui very padded grid graphs">
 
-          <div class="one column row">
+          <div class="one column row" id="results-graphs">
 
             <div class="column mb-3">
               <protvista-navigation #navigator class="protvista"></protvista-navigation>
@@ -53,11 +61,11 @@
               <protvista-interpro-track class="protvista" shape="roundRectangle" use-ctrl-to-zoom highlight-event="onmouseover" #tracksView></protvista-interpro-track>
             </div>
 
-            <div class="column">
+            <div class="column no-sv">
               <p class="meta">Click on each feature to show or hide</p>
             </div>
 
-            <div class="column">
+            <div class="column no-sv">
 
               <div class="ui top attached menu">
 
@@ -88,7 +96,7 @@
                   </div>
                 </div>
 
-                <div class="three column row mb-3">
+                <div class="three column row mb-2 no-sv">
 
                   <div class="column s-action">
                     <a nz-dropdown nzTrigger="click" [nzDropdownMenu]="acMenu">
@@ -184,7 +192,7 @@
 
                   </div>
 
-                  <div class="column txt-c cutoff" id="cutoffRes{{op.alias}}" style="visibility: hidden">
+                  <div class="column txt-c cutoff" id="cutoff_{{op.alias}}" style="visibility: hidden">
                     <p></p>
                   </div>
 
@@ -218,7 +226,7 @@
 
               <sqrutiny-matrix class="protvista score-graph" id="{{op.alias}}" height="60" use-ctrl-to-zoom></sqrutiny-matrix>
 
-              <div class="ui two column grid">
+              <div class="ui two column grid no-sv">
 
                 <div class="column">
                   <span class="meta" style="font-size: .9em !important;">

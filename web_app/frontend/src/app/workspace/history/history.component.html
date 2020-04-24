@@ -1,7 +1,7 @@
 <!-- Loading placeholder -->
-<sqy-history-loading *ngIf="isLoading"></sqy-history-loading>
+<sqy-history-loading *ngIf="!history"></sqy-history-loading>
 
-<div class="ui main fluid container p-4 mt-6" *ngIf="!isLoading">
+<div class="ui main fluid container p-4 mt-6" *ngIf="history">
 
   <div class="ui grid">
 
@@ -25,7 +25,7 @@
                 <span class="date">
                   <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
                 </span>
-                <div class="ant-badge ant-badge-status ant-badge-not-a-wrapper">
+                <div [hidden]="!history.job" class="ant-badge ant-badge-status ant-badge-not-a-wrapper">
                   <span class="ant-badge-status-dot" [ngClass]="{'ant-badge-status-error': history.hasFailed(), 'ant-badge-status-processing': history.isActive(), 'ant-badge-status-success': history.isDone()}"></span>
                   <span class="ant-badge-status-text">{{history.job?.status | titlecase}}</span>
                 </div>
@@ -275,14 +275,14 @@
 
             <div class="ui basic segment column" [ngClass]="{'disabled loading': isJobLoading}">
 
-              <div class="ui placeholder segment" *ngIf="history.hasFailed()">
+              <div class="ui placeholder segment" [hidden]="!history.job" *ngIf="history.hasFailed()">
                 <div class="ui icon header">
                   <i class="times circle red icon"></i>
                   It was not possible to show you the results due to an internal problem. Please try again later or <a [routerLink]="'/contact'">contact us</a>.
                 </div>
               </div>
 
-              <div class="ui placeholder segment" *ngIf="history.isActive()">
+              <div class="ui placeholder segment" [hidden]="!history.job" *ngIf="history.isActive()">
                 <div class="ui icon header">
                   <i class="spinner loading icon"></i>
                   The results are processing please be patient...
