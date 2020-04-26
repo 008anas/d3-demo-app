@@ -15,7 +15,7 @@ import { TitleService } from '@services/title.service';
 import { Track } from 'app/optimizer/shared/track';
 import { NavService } from '@services/nav.service';
 
-const MAX_ATTEMPTS = 20;
+const MAX_ATTEMPTS = 50;
 const RETRY_IN = 3000;
 
 @Component({

@@ -1,38 +1,17 @@
 import {
   scaleLinear,
   line,
-  curveMonotoneX,
   select,
+  min,
   max,
   bisector,
-  extent,
   mouse,
   format
 } from 'd3';
 
-import ProtvistaTrack from 'protvista-track';
+import ProtvistaZoomable from 'protvista-zoomable';
 
-class SqrutinyMatrix extends ProtvistaTrack {
-
-  constructor() {
-    super();
-    this._line = line()
-      .defined(d => !isNaN(d.y))
-      .x(d => this.getMiddleXPosition(d.x))
-      .y(d => this._yScale(d.y));
-    // .curve(curveMonotoneX);
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this._height = parseInt(this.getAttribute('height')) || 40;
-    this._color = this.getAttribute('color') || 'darkgrey';
-    this._cutoffs = this.getAttribute('cutoffs') || [];
-    this._yScale = scaleLinear();
-    this._xExtent;
-    this._yExtent;
-  }
+class SqrutinyMatrix extends ProtvistaZoomable {
 
   set data(data) {
     this._data = undefined;
@@ -49,6 +28,7 @@ class SqrutinyMatrix extends ProtvistaTrack {
 
   set color(color) {
     this._color = color;
+    this.refresh();
   }
 
   set cutoffs(cutoffs) {
@@ -56,49 +36,102 @@ class SqrutinyMatrix extends ProtvistaTrack {
       this._cutoffs = [];
     }
     this._cutoffs = cutoffs;
-    this.refresh();
+    this.updateCutoffs();
   }
 
-  updateYScale() {
-    this._xExtent = extent(this._data, d => parseInt(d.x));
-    this._yExtent = extent(this._data, d => d.y);
+  // eslint-disable-next-line class-methods-use-this
+  get margin() {
+    return {
+      top: 20,
+      right: 14,
+      bottom: 20,
+      left: 10
+    };
+  }
 
-    this.xScale.domain(this._xExtent).range([0, this.width]);
-    this._yScale.domain(this._yExtent).range([this._height - this.margin.bottom, this.margin.top]);
+  constructor() {
+    super();
+    this._line = line()
+      .defined(d => !isNaN(d.y))
+      .x(d => this.getMiddleXPos(d.x))
+      .y(d => this.yScale(d.y));
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    this._color = this.getAttribute('color') || 'darkgrey';
+    this._cutoffs = this.getAttribute('cutoffs') || [];
+    this.yScale = scaleLinear();
   }
 
   _createTrack() {
     if (!this.svg) {
+
       this.svg = select(this)
         .append('div')
         .append('svg')
-        .attr('width', this.getWidthWithMargins())
-        .attr('height', this._height);
+        .attr('width', this.width)
+        .attr('height', this.height);
 
-      this.cutoff_g = this.svg.append('g').attr('class', 'cutoff');
+      this.inner_width = this.svg.attr('width') - this.margin.left;
+      this.inner_height = this.svg.attr('height') - this.margin.top - this.margin.bottom;
 
-      this.focus = this.svg.append('g')
+      this.line_chart = this.svg.append('g')
         .attr('class', 'focus')
+        .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
+        .attr('clip-path', 'url(#clip)');
+
+      this.tooltipT = this.svg.append('g')
+        .attr('class', 'tooltip 1')
         .style('display', 'none');
 
-      this.focus.append('circle')
-        .style("fill", "none")
+      this.tooltipB = this.svg.append('g')
+        .attr('class', 'tooltip 2')
+        .style('display', 'none');
+
+      this.tooltipT.append('circle')
         .attr('stroke', 'steelblue')
-        .attr('r', 5);
+        .attr('fill', 'none')
+        .attr('r', 4);
 
-      this.focus.append('rect')
-        .attr('class', 'tooltip')
-        .style('fill', 'none')
-        .attr('width', 50)
-        .attr('height', 38)
-        .attr('x', 10)
-        .attr('y', -22)
-        .attr('rx', 4)
-        .attr('ry', 4);
-
-      this.focus.append('text')
+      this.tooltipT.append('text')
         .attr('class', 'value')
-        .attr('x', 20);
+        .style('font', '11px sans-serif')
+        .attr('x', -3)
+        .attr('y', -7);
+
+      this.tooltipB.append('text')
+        .attr('class', 'value')
+        .style('font', '10px sans-serif')
+        .attr('x', -5)
+        .attr('y', 15);
+
+      this.cutoff_g = this.svg.append('g')
+        .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+
+      this.rect = this.svg.append('rect')
+        .attr('class', 'overlay')
+        .attr('fill', 'none')
+        .attr('width', this.inner_width)
+        .attr('height', this.inner_height + this.margin.top)
+        .attr('transform', `translate(${this.margin.left},0)`)
+        .attr('pointer-events', 'all')
+        .on('mouseover', () => this.svg.selectAll('.tooltip').style('display', null))
+        .on('mouseout', () => this.svg.selectAll('.tooltip').style('display', 'none'))
+        .on('mousemove', () => {
+          this.svg.selectAll('.tooltip').style('display', null);
+          var x0 = this.xScale.invert(mouse(this.rect.node())[0] - this.getSingleBaseWidth() / 2),
+            i = this.bisectDate(this._data, x0),
+            d = this._data[i];
+          if (!d) {
+            return;
+          }
+          this.tooltipT.attr('transform', `translate(${this.getMiddleXPosMargin(d.x)},${this.yScale(d.y) + this.margin.top})`);
+          this.tooltipT.select('.value').text(!(d.y % 1) ? format(',')(d.y) : format(',.2f')(d.y));
+          this.tooltipB.attr('transform', `translate(${this.getMiddleXPosMargin(d.x)},${this.inner_height + this.margin.top})`);
+          this.tooltipB.select('.value').text(d.x);
+        });
 
       this.trackHighlighter.appendHighlightTo(this.svg);
     }
@@ -108,57 +141,58 @@ class SqrutinyMatrix extends ProtvistaTrack {
     this.refresh();
   }
 
+  updateYScale() {
+    this.yScale.domain([min(this._data.map(d => d.y)), max(this._data.map(d => d.y))])
+      .range([this.inner_height, 0]);
+  }
+
   refresh() {
     if (!this.svg) return;
-    this.svg.selectAll('path').remove();
-    this.svg.selectAll('line').remove();
-    this.svg.selectAll('rect').remove();
-    this.svg.append('path')
+
+    this.svg.selectAll('path.line').remove();
+    this.svg.selectAll('g.tooltip').style('display', 'none');
+
+    this.line_chart.append('path')
       .datum(this._data)
-      .attr('d', this._line)
+      .attr('class', 'line')
       .attr('fill', 'none')
       .attr('stroke', this._color)
-      .attr('stroke-width', `1.2px`);
-    // this.svg.append('rect')
-    //   .attr('class', 'overlay')
-    //   .style('fill', 'none')
-    //   .attr('pointer-events', 'all')
-    //   .attr('width', this.width - this.margin.right)
-    //   .attr('height', this.height)
-    //   .attr('transform', `translate(${this.margin.left},0)`)
-    //   .on('mouseover', () => this.focus.style('display', null))
-    //   .on('mouseout', () => this.focus.style('display', 'none'))
-    //   .on('touchmove mousemove', () => {
-    //     var x0 = this.xScale.invert(mouse(this)[0] - this.margin.left),
-    //       i = this.bisectDate(this._data, x0),
-    //       d = this._data[i];
-    //     if (!d) {
-    //       return;
-    //     }
-    //     this.focus.attr('transform', `translate(${this.getMiddleXPosition(d.x)},${this._yScale(d.y)})`);
-    //     this.focus.select('.value')
-    //       .style('font-weight', 'bold')
-    //       .text(!(d.y % 1) ? format(',')(d.y) : format(',.2f')(d.y));
-    //   });
+      .attr('stroke-width', 1)
+      .attr('d', this._line);
+
+    this.updateCutoffs();
+  }
+
+  updateCutoffs() {
+    if (!this.svg) return;
+
+    this.svg.selectAll('line.cutoff').remove();
+
     if (this._cutoffs && this._cutoffs.length) {
       this.cutoff_g
         .selectAll('g')
         .data(this._cutoffs)
         .enter()
         .append('line')
+        .attr('class', 'cutoff')
         .style('stroke', 'rgb(0, 0, 255)')
-        .style('stroke-dasharray', '5px')
+        .style('stroke-dasharray', '4px')
         .style('stroke-width', '1.5px')
-        .attr('x1', d => this.getMiddleXPosition(d))
-        .attr('x2', d => this.getMiddleXPosition(d))
+        .attr('x1', d => this.getMiddleXPos(d))
+        .attr('x2', d => this.getMiddleXPos(d))
         .attr('y1', 0)
-        .attr('y2', this._height);
+        .attr('y2', this.inner_height);
     }
-    this._updateHighlight();
+
+    this.trackHighlighter.updateHighlight();
   }
 
-  getMiddleXPosition(pos) {
-    return (this.getXFromSeqPosition(pos) + this.getXFromSeqPosition(pos + 1)) / 2;
+  getMiddleXPosMargin(pos) {
+    return this.getXFromSeqPosition(pos) + (this.getSingleBaseWidth() / 2);
+  }
+
+  getMiddleXPos(pos) {
+    return this.xScale(pos) + (this.getSingleBaseWidth() / 2);
   }
 }
 

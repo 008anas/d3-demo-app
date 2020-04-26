@@ -124,7 +124,7 @@ export class ResultViewerComponent implements AfterViewInit {
       this.tracksElem.nativeElement.data = this.getTrackView(this._data.construct.tracks);
       document.querySelectorAll('.score-graph').forEach((x: any, i: number) => {
         x.data = this.options[i].data;
-        x.setAttribute('color', this.options[i].color);
+        x.color = this.options[i].color;
       });
       this.saver.nativeElement.preSave = () => {
         this.loader.startLoading();
@@ -242,7 +242,7 @@ export class ResultViewerComponent implements AfterViewInit {
         /* tslint:disable:no-string-literal */
         document.getElementById(filter.alias)['cutoffs'] = values.map((v: any) => v.pos);
         /* tslint:enable:no-string-literal */
-        const element = document.getElementById('cutoffRes' + filter.alias).getElementsByTagName('p')[0];
+        const element = document.getElementById('cutoff_' + filter.alias).getElementsByTagName('p')[0];
         element.innerHTML = `<i class='filter icon'></i> ${operator.desc} ${filter.value}`;
         element.style.visibility = 'visible';
       } else {
@@ -279,10 +279,12 @@ export class ResultViewerComponent implements AfterViewInit {
     if (alias) {
       const op = this.getByAlias(this.options, alias);
       op.color = this.getRandomColor();
-      document.getElementById(alias).setAttribute('color', op.color);
+      /* tslint:disable:no-string-literal */
+      document.getElementById(alias)['color'] = op.color;
+      /* tslint:enable:no-string-literal */
     } else {
       this.options.forEach(o => o.color = this.getRandomColor());
-      document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.setAttribute('color', this.options[i].color));
+      document.querySelectorAll('.score-graph').forEach((x: any, i: number) => x.color = this.options[i].color);
     }
   }
 

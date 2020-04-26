@@ -24,8 +24,8 @@ export class SetHighlightComponent implements OnInit {
 
   ngOnInit(): void {
     this.highlightForm = this.builder.group({
-      from: [0, Validators.compose([
-        Validators.min(0),
+      from: [1, Validators.compose([
+        Validators.min(1),
         Validators.required,
         Validators.max(this.max - 1)
       ])],
@@ -38,7 +38,7 @@ export class SetHighlightComponent implements OnInit {
   }
 
   set() {
-    if (this.from.value < this.to.value) {
+    if (this.from.value <= this.to.value) {
       this.onSet.emit(`${this.from.value}:${this.to.value}`);
     }
   }

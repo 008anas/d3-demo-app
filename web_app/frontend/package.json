@@ -33,6 +33,7 @@
     "ngx-cookie-service": "^2.4.0",
     "open-vector-editor": "^10.1.47",
     "protvista-interpro-track": "^2.6.1",
+    "protvista-manager": "^2.9.1",
     "protvista-saver": "^2.3.0",
     "protvista-sequence": "^2.7.0",
     "protvista-track": "^2.6.1",

@@ -99,7 +99,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isObjectEmpty(obj: Object) {
+  private isObjectEmpty(obj: any) {
     for (const key in obj) {
       if (obj[key] && obj[key] !== null && obj[key] !== '') {
         return false;
@@ -322,7 +322,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
 
   addTrack(track: Track) {
     if (track.pos > -1) {
-      if (this.construct.dna_seq) {
+      if (!this.construct.dna_seq) {
         this.construct.dna_seq = '';
       }
       const length = this.construct.dna_seq.length;
