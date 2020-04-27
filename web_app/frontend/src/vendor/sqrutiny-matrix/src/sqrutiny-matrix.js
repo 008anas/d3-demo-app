@@ -43,7 +43,7 @@ class SqrutinyMatrix extends ProtvistaZoomable {
   get margin() {
     return {
       top: 20,
-      right: 14,
+      right: 15,
       bottom: 20,
       left: 10
     };
@@ -104,6 +104,7 @@ class SqrutinyMatrix extends ProtvistaZoomable {
       this.tooltipB.append('text')
         .attr('class', 'value')
         .style('font', '10px sans-serif')
+        .style('fill', '#ababab')
         .attr('x', -5)
         .attr('y', 15);
 
