@@ -3,12 +3,14 @@
   <div class="two fields">
 
     <div class="field">
+      <label>Option</label>
       <nz-select name="operator" nzSize="small" nzPlaceHolder="Operator" required [(ngModel)]="op">
         <nz-option *ngFor="let o of operators" [nzLabel]="o.desc" [nzValue]="o.op"></nz-option>
       </nz-select>
     </div>
 
     <div class="field">
+      <label>Value</label>
       <input type="number" name="value" placeholder="Enter a value" required [(ngModel)]="value"/>
     </div>
 

@@ -1,9 +1,9 @@
-import { Component, Input, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { ProtvistaSequence } from 'protvista-sequence';
 import { ProtvistaSaver } from 'protvista-saver';
 import { ProtVistaNavigation } from '@vendor/protvista-navigation';
@@ -45,7 +45,7 @@ class Filter {
   templateUrl: './result-viewer.component.html',
   styleUrls: ['./result-viewer.component.scss']
 })
-export class ResultViewerComponent implements AfterViewInit {
+export class ResultViewerComponent implements AfterViewInit, OnDestroy {
 
   @Input() set data(data: any) {
     this._data = [];
@@ -71,6 +71,7 @@ export class ResultViewerComponent implements AfterViewInit {
   isSearching = false;
   options: GraphsOption[] = [];
   filters: Filter[] = [];
+  tplModal: NzModalRef;
   enzime: string;
   enzimes = [
     'GAATTC',
@@ -146,6 +147,10 @@ export class ResultViewerComponent implements AfterViewInit {
     }
   }
 
+  ngOnDestroy() {
+    this.destroyModal();
+  }
+
   private getTrackView(tracks: Track[]) {
     return tracks.map((track: Track) => ({
       accession: 'XXXXX',
@@ -206,11 +211,10 @@ export class ResultViewerComponent implements AfterViewInit {
   cutoffModal(alias: string) {
     const op = this.getByAlias(this.options, alias);
     if (op) {
-      this.modal.create({
+      this.tplModal = this.modal.create({
         nzTitle: 'Set cutoff for ' + op.name,
         nzContent: SetCutoffComponent,
         nzWidth: 450,
-        nzWrapClassName: 'center-modal',
         nzComponentParams: {
           option: op
         },
@@ -220,6 +224,7 @@ export class ResultViewerComponent implements AfterViewInit {
           }
         }
       });
+      this.tplModal.afterClose.subscribe(() => this.destroyModal());
     }
   }
 
@@ -263,7 +268,7 @@ export class ResultViewerComponent implements AfterViewInit {
   }
 
   private valuesModal(values: any[], headers: string[], title?: string) {
-    this.modal.create({
+    this.tplModal = this.modal.create({
       nzContent: DisplayValuesComponent,
       nzWrapClassName: 'center-modal',
       nzComponentParams: {
@@ -271,8 +276,9 @@ export class ResultViewerComponent implements AfterViewInit {
         values,
         title
       },
-      nzFooter: null
+      nzFooter: null,
     });
+    this.tplModal.afterClose.subscribe(() => this.destroyModal());
   }
 
   changeColors(alias?: string) {
@@ -357,7 +363,7 @@ export class ResultViewerComponent implements AfterViewInit {
   }
 
   exportModal() {
-    this.modal.create({
+    this.tplModal = this.modal.create({
       nzTitle: 'Export wizard',
       nzContent: ExportModalComponent,
       nzComponentParams: {
@@ -365,8 +371,15 @@ export class ResultViewerComponent implements AfterViewInit {
       },
       nzWidth: 700,
       nzOkText: 'Export',
-      nzOnOk: (cmp: ExportModalComponent) => cmp.to === 'gb' ? this.exportToGb(cmp.list.map(l => ({ key: l })) || []) : this.exportToExcel(cmp.list || [])
+      nzOnOk: (cmp: ExportModalComponent) => cmp.to === 'gb' ? this.exportToGb(cmp.list.map(l => ({ key: l })) || []) : this.exportToExcel(cmp.list || []),
     });
+    this.tplModal.afterClose.subscribe(() => this.destroyModal());
+  }
+
+  destroyModal() {
+    if (this.tplModal) {
+      this.tplModal.destroy();
+    }
   }
 
   exportToGb(options: any) {

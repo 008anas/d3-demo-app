@@ -141,6 +141,7 @@
                       <th>
                         Size
                       </th>
+                      <th></th>
                     </tr>
                   </thead>
 
@@ -163,7 +164,12 @@
                         {{tr.end}}
                       </td>
                       <td>
-                        {{tr.sequence?.length}}
+                        {{tr.sequence?.length}} bps
+                      </td>
+                      <td class="collapsing">
+                        <a (click)="showTrack(tr)">
+                          <i class="eye icon"></i>
+                        </a>
                       </td>
                     </tr>
 

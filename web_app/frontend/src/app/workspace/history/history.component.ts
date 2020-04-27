@@ -14,6 +14,7 @@ import { TextModalComponent } from '@components/text-modal/text-modal.component'
 import { TitleService } from '@services/title.service';
 import { Track } from 'app/optimizer/shared/track';
 import { NavService } from '@services/nav.service';
+import { TrackDisplayComponent } from '@components/track-display/track-display.component';
 
 const MAX_ATTEMPTS = 50;
 const RETRY_IN = 3000;
@@ -28,13 +29,11 @@ export class HistoryComponent implements OnInit, OnDestroy {
   history: UserHistory = null;
   isLoading = false;
   isJobLoading = false;
-  isSearching = false;
-  msg: string = null;
-  seq: string = null;
   resultData: { construct: Construct; result: any[] };
   trackHovered: Track = null;
   interval: any;
   attempts = 0;
+  tplModal: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,6 +56,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     if (this.interval) {
       clearInterval(this.interval);
     }
+    this.destroyModal();
   }
 
   getJob() {
@@ -87,6 +87,28 @@ export class HistoryComponent implements OnInit, OnDestroy {
       );
   }
 
+  showTrack(track: Track) {
+    if (track) {
+      this.tplModal = this.modal.create({
+        nzContent: TrackDisplayComponent,
+        nzComponentParams: { track },
+        nzCancelText: null,
+        nzOnOk: () => {
+          if (this.tplModal) {
+            this.tplModal.destroy();
+          }
+        }
+      });
+      this.tplModal.afterClose.subscribe(() => this.destroyModal());
+    }
+  }
+
+  destroyModal() {
+    if (this.tplModal) {
+      this.tplModal.destroy();
+    }
+  }
+
   deleteHistory() {
     if (confirm('Are you sure?')) {
       this.isLoading = true;
@@ -103,7 +125,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   textModal(str: string) {
-    this.modal.create({
+    this.tplModal = this.modal.create({
       nzContent: TextModalComponent,
       nzWrapClassName: 'center-modal',
       nzComponentParams: {
@@ -111,6 +133,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
       },
       nzFooter: null
     });
+    this.tplModal.afterClose.subscribe(() => this.destroyModal());
   }
 
 }

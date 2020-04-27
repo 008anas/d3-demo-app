@@ -2,24 +2,22 @@
 
   <div class="ui padded grid p-4">
 
-    <div class="one column row">
+    <div class="sixteen wide column">
+      <h1 class="ui header">Recent history</h1>
+    </div>
 
-      <div class="column">
-        <h1 class="ui header">Recent history</h1>
+    <div class="row">
+
+      <div class="eleven wide column">
         <p>
           Here you can find the history of all the <strong>jobs</strong> submitted.
         </p>
+        <p>
+          <i class="info circle icon"></i> Note that such history is <strong>session</strong> based, this means that it'll expire after a certain time or if browser data is cleared.
+        </p>
       </div>
 
-    </div>
-
-    <div class="two column row">
-
-      <div class="column">
-
-      </div>
-
-      <div class="column right aligned">
+      <div class="five wide column right aligned">
 
         <button type="button" class="ui red right labeled icon button" (click)="clearHistory()" [disabled]="!isLoading && !histories.length" name="button">
           Clear history <i class="trash icon"></i>

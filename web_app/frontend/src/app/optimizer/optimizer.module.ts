@@ -10,7 +10,6 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { OptimizerRoutingModule } from './optimizer-routing.module';
-import { OptimizerComponent } from './optimizer.component';
 import { SketcherComponent } from './sketcher/sketcher.component';
 import { SharedModule } from '../shared/shared.module';
 import { TrackDetailsComponent } from './track-details/track-details.component';
@@ -20,7 +19,6 @@ import { SketcherLoadingComponent } from './shared/sketcher-loading/sketcher-loa
 
 @NgModule({
   declarations: [
-    OptimizerComponent,
     SketcherComponent,
     TrackDetailsComponent,
     FilterTracksPipe,

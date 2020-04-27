@@ -19,6 +19,8 @@ import { LoaderService } from '@services/loader.service';
 import { NavService } from '@services/nav.service';
 import { FeatureService } from '../shared/feature.service';
 import { Feature } from '../shared/feature';
+import { TrackDisplayComponent } from '@components/track-display/track-display.component';
+import { Track } from '../shared/track';
 
 @Component({
   selector: 'sqy-from-file',
@@ -43,6 +45,7 @@ export class FromFileComponent implements OnInit, OnDestroy {
   isFeaturesLoading = false;
   features: Feature[] = [];
   featuresArray: string[];
+  tplModal: any;
 
   customReq = (item: UploadXHRArgs) => {
     this.loader.startLoading();
@@ -103,6 +106,9 @@ export class FromFileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.sub) { this.sub.unsubscribe(); }
+    if (this.tplModal) {
+      this.tplModal.destroy();
+    }
   }
 
   private getSpecie() {
@@ -165,6 +171,21 @@ export class FromFileComponent implements OnInit, OnDestroy {
           this.notify.error(err);
         }
       );
+  }
+
+  showTrack(track: Track) {
+    if (track) {
+      this.tplModal = this.modal.create({
+        nzContent: TrackDisplayComponent,
+        nzComponentParams: { track },
+        nzCancelText: null,
+        nzOnOk: () => {
+          if (this.tplModal) {
+            this.tplModal.destroy();
+          }
+        }
+      });
+    }
   }
 
   featChange(alias: string, isChecked: boolean) {

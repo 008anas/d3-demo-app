@@ -1,7 +1,7 @@
 <!-- Loading placeholder -->
 <sqy-history-loading *ngIf="!history"></sqy-history-loading>
 
-<div class="ui main fluid container p-4 mt-6" *ngIf="history">
+<div class="ui main fluid container p-4 mt-6 basic segment" [ngClass]="{'loading': isLoading}" *ngIf="history">
 
   <div class="ui grid">
 
@@ -240,7 +240,7 @@
                 <div class="construct">
                   <div class="strand">
 
-                    <div class="track" (mouseover)="trackHovered = t" (mouseout)="trackHovered = null" *ngFor="let t of history.construct.tracks; let i = index">
+                    <div class="track" (mouseover)="trackHovered = t" (mouseout)="trackHovered = null" (click)="showTrack(t)" *ngFor="let t of history.construct.tracks; let i = index">
 
                       <div class="header">
                         <h4>{{t.label}}</h4>

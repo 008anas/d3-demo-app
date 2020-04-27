@@ -10,9 +10,9 @@ import { SafeDatePipe } from '@pipes/date.pipe';
 import { CopyClipboardDirective } from '@directives/copy-clipboard.directive';
 import { ErrorsListComponent } from '@components/errors-list/errors-list.component';
 import { IfNotIconComponent } from '@components/if-not-icon/if-not-icon.component';
-import { BytesPipe } from '@pipes/bytes.pipe';
 import { TextModalComponent } from '@components/text-modal/text-modal.component';
 import { InfoPopupComponent } from './components/info-popup/info-popup.component';
+import { TrackDisplayComponent } from './components/track-display/track-display.component';
 
 @NgModule({
   declarations: [
@@ -20,9 +20,9 @@ import { InfoPopupComponent } from './components/info-popup/info-popup.component
     SafeDatePipe,
     CopyClipboardDirective,
     IfNotIconComponent,
-    BytesPipe,
     TextModalComponent,
-    InfoPopupComponent
+    InfoPopupComponent,
+    TrackDisplayComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +39,8 @@ import { InfoPopupComponent } from './components/info-popup/info-popup.component
     IfNotIconComponent,
     TextModalComponent,
     InfoPopupComponent,
-    NzPopoverModule
+    NzPopoverModule,
+    TrackDisplayComponent
   ]
 })
 export class SharedModule { }

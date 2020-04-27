@@ -63,7 +63,7 @@
               <div class="inline four fields m-0">
 
                 <div class="inline field txt-c">
-                  <label>Total length:</label> {{construct.dna_seq?.length}} bps
+                  <label>Total length:</label> {{construct.dna_seq?.length || 0}} bps
                 </div>
 
                 <div class="inline field txt-c">
@@ -355,7 +355,8 @@
             </div>
           </div>
           <div class="eight column row">
-            <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="hoveredName=e.type" (mouseout)="hoveredName=null" (click)="e.selected = !e.selected">
+            <div class="column track" *ngFor="let e of c.elements" [ngClass]="{'selected': e.selected}" [style.background]="'url('+e.glyph_thumbnail+')'" (mouseover)="hoveredName=e.type" (mouseout)="hoveredName=null"
+              (click)="e.selected = !e.selected">
               <a class="floating ui blue label" *ngIf="e.selected">
                 ✓
               </a>

@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from app.construct.models import Construct
 from app.construct.serializers import ConstructRetrieveSerializer
+from app.genetic_element.models import GeneticElement
 from app.serializers import GenBankSerializer
 
 FEATURE_PREFIX = 'SQY_BOX'
@@ -90,7 +91,7 @@ class FromGenBankView(APIView):
                                         'Please correct the file and upload again.'),
                                     status=status.HTTP_400_BAD_REQUEST)
                             tracks.append(dict(
-                                label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks)+1)),
+                                label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks) + 1)),
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color=CDS_COLOR,
@@ -98,7 +99,7 @@ class FromGenBankView(APIView):
                                 end=feature.location.nofuzzy_end))
                         elif feature.type.upper() == FEATURE_PREFIX:
                             sqy_tracks.append(dict(
-                                label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks)+1)),
+                                label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks) + 1)),
                                 type=feature.type,
                                 sequence=str(feature.extract(record.seq)),
                                 color=FEATURES_COLOR,
@@ -107,7 +108,7 @@ class FromGenBankView(APIView):
                         else:
                             if last_item.get('type', '').lower() != 'dummy':
                                 tracks.append(dict(
-                                    label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks)+1)),
+                                    label=feature.qualifiers.get('locus_tag', 'Track ' + str(len(tracks) + 1)),
                                     type='Dummy',
                                     sequence=str(feature.extract(record.seq)),
                                     color=DUMMY_COLOR,
