@@ -29,16 +29,16 @@
 
     <div class="one column row">
 
-      <div class="column">
-
-        <div class="ui placeholder segment" *ngIf="!isLoading && !histories.length">
-          <div class="ui icon header">
-            <i class="list ul icon"></i>
-            Yo have no history.
-          </div>
+      <div class="column center aligned p-8" *ngIf="!isLoading && !histories.length">
+        <div class="ui icon header meta">
+          <i class="inbox icon"></i>
+          Yo have no history.
         </div>
+      </div>
 
-        <div class="ui segment p-0" [ngClass]="{'loading': isLoading}" *ngIf="!isLoading && histories.length">
+      <div class="column" *ngIf="!isLoading && histories.length">
+
+        <div class="ui segment p-0" [ngClass]="{'loading': isLoading}">
 
           <table class="ui very padded selectable basic table b-0">
 

@@ -27,7 +27,10 @@ APP_URL = env('APP_URL', default='localhost')
 
 # EMAIL
 EMAIL_HOST_USER = env('EMAIL_USER', default='sqrutiny.crg.es')
-EMAIL_HOST_PASSWORD = ''
+#EMAIL_HOST_PASSWORD = env('EMAIL_USER')
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp-mail.outlook.com'
+#EMAIL_PORT = 25
 
 LOGGING_DIR = os.path.join(BASE_DIR, 'logs')
 

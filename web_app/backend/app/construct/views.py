@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 
 from app.construct.models import Construct
 from app.construct.serializers import ConstructRetrieveSerializer
-from app.genetic_element.models import GeneticElement
 from app.serializers import GenBankSerializer
 
 FEATURE_PREFIX = 'SQY_BOX'

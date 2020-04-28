@@ -95,6 +95,7 @@
     "id": 8,
     "name": "RNA structure 20",
     "alias": "rna_structure20",
+    "description": "Minimum free energy for RNA secondary structures.",
     "specie_id": 1,
     "genetic_element_id": 9,
     "genome_min": -15.6,

@@ -169,14 +169,23 @@
 
         </div>
 
-        <div class="row">
+        <div class="row" style="max-height: 80vh; overflow: auto">
 
-          <div class="sixteen wide column" style="height: 80vh; overflow: auto">
+          <div class="sixteen wide column" *ngIf="response">
+            <sqy-errors-list [errors]="response"></sqy-errors-list>
+          </div>
+
+          <div class="sixteen wide column">
 
             <form class="ui form" #constructForm="ngForm" (ngSubmit)="submit()" *ngIf="view === 'general'">
 
               <div class="required field">
                 <label class="required-msg">Required fields are shown with</label>
+              </div>
+
+              <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
+                <label for="construct_name">Enter a label</label>
+                <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name" (ngModelChange)="saveInSession()">
               </div>
 
               <div class="required field">
@@ -200,11 +209,6 @@
                 <div class="field txt-c" *ngIf="!featuresArray?.length">
                   <span class="meta">No features available for selected organism.</span>
                 </div>
-              </div>
-
-              <div class="required field" [ngClass]="{'error': name.invalid && (name.dirty || name.touched)}">
-                <label for="construct_name">Enter a label</label>
-                <input type="text" placeholder="Label / Name" id="construct_name" name="construct-name" #name="ngModel" required [(ngModel)]="construct.name" (ngModelChange)="saveInSession()">
               </div>
 
               <div class="inline field">

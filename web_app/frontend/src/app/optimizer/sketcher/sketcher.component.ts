@@ -306,7 +306,7 @@ export class SketcherComponent implements OnInit, OnDestroy {
               this.router.navigate(['/workspace', this.history.id]);
             }, 3000);
           },
-          err => this.notify.error(err)
+          err => this.response = err
         );
     }
   }

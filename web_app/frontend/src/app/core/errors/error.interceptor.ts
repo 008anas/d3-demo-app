@@ -20,7 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       if (env.production) {
         this.processError(err.status);
       }
-      return throwError(err.error || err.error);
+      return throwError(err.error || err.message);
     }));
   }
 

@@ -105,7 +105,9 @@ export class FromFileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.sub) { this.sub.unsubscribe(); }
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
     if (this.tplModal) {
       this.tplModal.destroy();
     }
