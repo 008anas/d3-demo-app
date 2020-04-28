@@ -448,45 +448,45 @@ def checker(sequence,
         if element in parameter_dict:
             standardize = [parameter_dict[element]['min'], parameter_dict[element]['max']]
             matrix_path = parameter_dict[element]['matrix']
-        else:
-            standardize = [0, 1] # default
-            matrix_path = ''
+#        else:
+#            standardize = [0, 1] # default
+#            matrix_path = ''
 
 
-        scores = []
-        if len(matrix_path) == 0:
-            # Methods that do not use matrices
-            if element == 'rna_structure20':
-                scores = RNAstructure_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
-                                              standardize=standardize)
-            elif element == 'rna_structure60':
-                scores = RNAstructure_scoring(sequence, n=60, circular=circular, residue_type=residue_type,
-                                              standardize=standardize)
-            elif element == 'gc20':
-                scores = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
-                                    standardize=standardize)
-            elif element == 'terminator':
-                scores = terminator_scoring(sequence, n=40, circular=circular, residue_type=residue_type,
-                                            standardize=standardize)  # This has a more complex parametrization, check sequence
-            elif element == 'rbs':
-                scores = RBS_scoring(sequence, circular=circular, standardize=standardize)
-        else:
-            # Matrix based methods
-            if element == 'codon_adaptation':
-                scores = codon_adaptation_scoring(sequence, matrix=matrix_path, n=1,
-                                                  circular=circular, residue_type=residue_type,
-                                                  indexed=indexed, standardize=standardize,
-                                                  verbose=verbose)
-            elif element == 'utr5':
-                scores = fixed_matrix_scoring(sequence, matrix=matrix_path, circular=circular,
-                                              residue_type='DNA', fixed_sequences=['ATG', 'GTG', 'TTG'],
-                                              mode=1,
-                                              indexed=indexed, standardize=standardize)
+            scores = []
+            if len(matrix_path) == 0:
+                # Methods that do not use matrices
+                if element == 'rna_structure20':
+                    scores = RNAstructure_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
+                                                  standardize=standardize)
+                elif element == 'rna_structure60':
+                    scores = RNAstructure_scoring(sequence, n=60, circular=circular, residue_type=residue_type,
+                                                  standardize=standardize)
+                elif element == 'gc20':
+                    scores = GC_scoring(sequence, n=20, circular=circular, residue_type=residue_type,
+                                        standardize=standardize)
+                elif element == 'terminator':
+                    scores = terminator_scoring(sequence, n=40, circular=circular, residue_type=residue_type,
+                                                standardize=standardize)  # This has a more complex parametrization, check sequence
+                elif element == 'rbs':
+                    scores = RBS_scoring(sequence, circular=circular, standardize=standardize)
             else:
-                scores = matrix_scoring(sequence, matrix=matrix_path, circular=circular,
+                # Matrix based methods
+                if element == 'codon_adaptation':
+                    scores = codon_adaptation_scoring(sequence, matrix=matrix_path, n=1,
+                                                      circular=circular, residue_type=residue_type,
+                                                      indexed=indexed, standardize=standardize,
+                                                      verbose=verbose)
+                elif element == 'utr5':
+                    scores = fixed_matrix_scoring(sequence, matrix=matrix_path, circular=circular,
+                                                  residue_type='DNA', fixed_sequences=['ATG', 'GTG', 'TTG'],
+                                                  mode=1,
+                                                  indexed=indexed, standardize=standardize)
+                else:
+                    scores = matrix_scoring(sequence, matrix=matrix_path, circular=circular,
                                         residue_type=residue_type,
                                         indexed=indexed, standardize=standardize)
 
-        # Check completness of the dictionary
-        rs.append(dict(alias=element, scores=scores))
+            # Check completness of the dictionary
+            rs.append(dict(alias=element, scores=scores))
     return rs  # TODO second dictionary is expected to be the normalized dictionary
