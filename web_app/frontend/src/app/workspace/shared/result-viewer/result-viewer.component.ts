@@ -72,17 +72,6 @@ export class ResultViewerComponent implements AfterViewInit, OnDestroy {
   options: GraphsOption[] = [];
   filters: Filter[] = [];
   tplModal: NzModalRef;
-  enzime: string;
-  enzimes = [
-    'GAATTC',
-    'CTTAAG',
-    'CCWGG',
-    'GGWCC',
-    'GGATCC',
-    'CCTAGG',
-    'AAGCTT',
-    'TTCGAA'
-  ];
   operators = [
     { desc: 'Greater or equal than', op: '<=' },
     { desc: 'Greater than', op: '<' },

@@ -24,12 +24,6 @@
     </div>
 
     <div class="column">
-      <nz-select class="w-1-1" nzPlaceHolder="Restriction enzyme" (ngModelChange)="searchMotif($event)" nzDisabled [(ngModel)]="enzime" ngDefaultControl nzAllowClear>
-        <nz-option *ngFor="let e of enzimes" [nzLabel]="e" [nzValue]="e"></nz-option>
-      </nz-select>
-    </div>
-
-    <div class="column">
       <p>
         <i class="zoom icon"></i> Use <strong>Ctrl</strong> + <strong>Scroll</strong> to zoom.
       </p>
