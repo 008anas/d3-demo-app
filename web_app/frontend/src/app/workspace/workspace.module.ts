@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 import { WorkspaceRoutingModule } from './workspace-routing.module';
 import { WorkspaceComponent } from './workspace.component';
@@ -33,7 +34,8 @@ import { SetCutoffComponent } from './shared/set-cutoff/set-cutoff.component';
     SharedModule,
     NzModalModule,
     NzDropDownModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NzSelectModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
