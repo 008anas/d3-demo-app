@@ -57,7 +57,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           this.historyModal = this.modal.create({
             nzTitle: 'Choose a history to load in the editor',
             nzContent: HistoryPickerComponent,
-            nzCancelText: 'Go to editor without loading construct',
+            nzCancelText: 'Just go to the editor',
             nzOkText: 'Load',
             nzOnOk: (picker: HistoryPickerComponent) => {
               if (picker.selected) {
