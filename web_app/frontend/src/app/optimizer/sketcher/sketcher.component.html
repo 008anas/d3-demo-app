@@ -115,7 +115,8 @@
 
             <div class="strand" [hidden]="!construct.tracks?.length">
 
-              <div class="track" id="track{{i}}" [style.width]="zoom/5.5+'rem'" *ngFor="let t of construct.tracks; let i = index" (mouseover)="trackHovered=t" (mouseout)="trackHovered=null">
+              <div class="track" id="track{{i}}" data-inverted="" [attr.data-tooltip]="t.type" data-position="bottom center" [style.width]="zoom/5.5+'rem'" *ngFor="let t of construct.tracks; let i = index" (mouseover)="trackHovered=t"
+                (mouseout)="trackHovered=null">
                 <div class="header">
                   <div class="ui fluid transparent large input" [ngClass]="{'show': t.label}">
                     <input type="text" name="track-label" placeholder="(label)" #trackLabel="ngModel" [(ngModel)]="t.label" [disabled]="locked">
