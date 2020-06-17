@@ -554,17 +554,20 @@ def checker(sequence, strand=None, transpose_coords_minus=True,
         if strand==0 or strand=='-' or strand=='minus' and transpose_coords_minus:
             for score in rs:
                 for i in score['scores']:
-                    print('0', i)
                     i['start'] = len(sequence)-i['start']+1
                     i['end']   = len(sequence)-i['end']+1
-                    print('1', i)
     else:
-        rs = {'plus':checker(sequence, strand=1, transpose_coords_minus=transpose_coords_minus,
-                             elements=elements, parameter_dict=parameter_dict,
-                             codon_table=codon_table, circular=circular, residue_type=residue_type,
-                             indexed=indexed, verbose=verbose),
-              'minus':checker(sequence, strand=0, transpose_coords_minus=transpose_coords_minus,
-                              elements=elements, parameter_dict=parameter_dict,
-                              codon_table=codon_table, circular=circular, residue_type=residue_type,
-                              indexed=indexed, verbose=verbose)}
+        rs = checker(sequence, strand=1, transpose_coords_minus=transpose_coords_minus,
+                     elements=elements, parameter_dict=parameter_dict,
+                     codon_table=codon_table, circular=circular, residue_type=residue_type,
+                     indexed=indexed, verbose=verbose)   # direct strand
+        mins = checker(sequence, strand=0, transpose_coords_minus=transpose_coords_minus,
+                       elements=elements, parameter_dict=parameter_dict,
+                       codon_table=codon_table, circular=circular, residue_type=residue_type,
+                       indexed=indexed, verbose=verbose)
+
+        simple_rs_mins = {v['alias']:v['scores'] for v in mins}
+        for entry in rs:
+            entry['scores'] = [{'plus':entry['scores'], 'minus':simple_rs_mins[entry['alias']]}]
+
     return rs
