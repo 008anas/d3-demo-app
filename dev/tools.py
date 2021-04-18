@@ -490,3 +490,51 @@ def checker(sequence,
             # Check completness of the dictionary
             rs.append(dict(alias=element, scores=scores))
     return rs  # TODO second dictionary is expected to be the normalized dictionary
+<<<<<<< HEAD
+=======
+
+
+def checker(sequence, strand=None, transpose_coords_minus=True,
+            elements='all', parameter_dict=None,
+            codon_table=4,
+            circular=True, residue_type='DNA',
+            indexed=True, verbose=0):
+    """
+    strand = allows to run the checkers on a specific orientation:
+        1, '+', 'plus'  = plus strand
+        0, '-', 'minus' = minus strand
+        !=0, !=1, None  = both strands, this is the default
+
+
+    parameter_dict = dictionary to pass paths and parameters in shape:
+        {alias:{min:float, max:float, matrix:string_path}}
+    string_path can be empty for those methods that do not require matrix evaluations
+    """
+    if strand is not None:
+        if strand==0 or strand=='-' or strand=='minus':
+            sequence = reverse_complement(sequence)
+        rs = evaluate_features(sequence,
+                               elements=elements, parameter_dict=parameter_dict,
+                               codon_table=codon_table, circular=circular, residue_type=residue_type,
+                               indexed=indexed, verbose=verbose)
+    if strand==0 or strand=='-' or strand=='minus' and transpose_coords_minus:
+                for score in rs:
+                    for i in score['scores']:
+                        i['start'] = len(sequence)-i['start']+1
+                        i['end']   = len(sequence)-i['end']+1
+    else:
+        rs = checker(sequence, strand=1, transpose_coords_minus=transpose_coords_minus,
+                     elements=elements, parameter_dict=parameter_dict,
+                     codon_table=codon_table, circular=circular, residue_type=residue_type,
+                     indexed=indexed, verbose=verbose)   # direct strand
+        mins = checker(sequence, strand=0, transpose_coords_minus=transpose_coords_minus,
+                       elements=elements, parameter_dict=parameter_dict,
+                       codon_table=codon_table, circular=circular, residue_type=residue_type,
+                       indexed=indexed, verbose=verbose)
+
+        simple_rs_mins = {v['alias']:v['scores'] for v in mins}
+        for entry in rs:
+            entry['scores'] = [{'plus':entry['scores'], 'minus':simple_rs_mins[entry['alias']]}]
+
+    return rs
+>>>>>>> 7455dd1d923439634162d131f7f71584e7585138
