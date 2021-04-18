@@ -40,10 +40,6 @@ def seq_translator(seq, to='DNA'):
     return Seq(seq, generic).translate()
 
 
-def reverse_complement(seq):
-    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
-    return ''.join([complement[k] if k in complement else 'N' for k in seq][::-1])
-
 def load_sequence(sequence):
     """ If sequence is a fasta file, return sequence """
     if os.path.isfile(sequence):
@@ -68,7 +64,7 @@ def check_sequence_iterator(sequence, n, circular=False):
             sequence = sequence + sequence
             limit = l
         else:
-            limit = l - n
+            limit = l - n + 1
         return [sequence, limit]
 
 
@@ -76,18 +72,11 @@ def minmaxscale(val, minimum, maximum):
     return round((val - minimum) / (maximum - minimum), 2)
 
 
-def check_end(i, window_len, seq_len):
-    end = i+window_len
-    if end>seq_len:
-        end = end-seq_len
-    return int(end)
-
-
-def check_outhandle(d, seq_len, window_len=0, minimum=0, maximum=1, limit=0, default=0):
+def check_outhandle(d, window_len=0, minimum=0, maximum=1, limit=0, default=0):
     """ Converts <d> in shape {<position>:<score>} to [{"start":"<position>", "score":"<score>"}] """
     if limit>0 and len(d)!=limit:
         d = {i:d.get(i, default) for i in range(limit)} # autocomplete values to have 1-base scores
-    return [dict(start=k, end=check_end(k, window_len, seq_len), raw_score=round(v, 2), norm_score=minmaxscale(v, minimum, maximum)) for k, v in d.items()]
+    return [dict(start=k, end=k + window_len, raw_score=round(v, 2), norm_score=minmaxscale(v, minimum, maximum)) for k, v in d.items()]
 
 
 def load_matrix(inFile, residue_type='DNA', k=1, indexed=True):
@@ -176,10 +165,7 @@ def matrix_scoring(sequence, matrix, circular=False, residue_type='DNA',
     rs = {i + 1: sum([matrix.at[sequence[i:i + n][subindex], str(subindex + 1)] for subindex in range(n)]) for i in
           range(0, limit)}
     print('\tMatrix scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
+    return check_outhandle(rs, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
 
 
 def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', standardize=[0, 1]):
@@ -194,10 +180,7 @@ def RNAstructure_scoring(sequence, n=20, circular=False, residue_type='DNA', sta
     print('\tRNA structure scoring: Scoring sequence...')
     rs = {i + 1: fold(sequence[i:i + n])[1] for i in range(0, limit)}
     print('\tRNA structure scoring: Returning results...\n--> RNA structure scoring finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
+    return check_outhandle(rs, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
 
 
 def GC_scoring(sequence, n=20, circular=False, residue_type='DNA', standardize=[0, 1]):
@@ -212,10 +195,7 @@ def GC_scoring(sequence, n=20, circular=False, residue_type='DNA', standardize=[
     print('\tGC scoring: Scoring sequence...')
     rs = {i + 1: GC(sequence[i:i + n]) for i in range(0, limit)}
     print('\tGC scoring: Returning results...\n--> GC scoring finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
+    return check_outhandle(rs, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
 
 
 def extract_codons_list(seq, frame=0, checkLengthMultipleOf3=False, frameFromEnd=False):
@@ -266,10 +246,7 @@ def codon_adaptation_scoring(sequence, matrix, circular=False, residue_type='DNA
     rs.index = rs.index + 1
     rs = rs.to_dict()
     if verbose >= 1: print('\tCodon adaptation scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, n, limit=limit, default=0)
+    return check_outhandle(rs, n, limit=limit, default=0)
 
 
 def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA', start_codons=None,
@@ -300,10 +277,7 @@ def RBS_scoring(sequence, motif=RBS_CANONICAL, circular=False, residue_type='DNA
                 # RBSs.append((rbs_start, energy))
 
     print('\RBS_scoring: finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, len(motif), standardize[0], standardize[1], limit=len(sequence), default=0)  # window len not defined
+    return check_outhandle(rs, len(motif), standardize[0], standardize[1], limit=len(sequence), default=0)  # window len not defined
 
 
 def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', fixed_sequences=None,
@@ -351,10 +325,7 @@ def fixed_matrix_scoring(sequence, matrix, circular=False, residue_type='DNA', f
                 rs[i + 1] = 0
 
     print('\tMatrix scoring: Returning results...\n--> Matrix scoring finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
+    return check_outhandle(rs, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
 
 
 ### TERMINATORS ###
@@ -437,29 +408,22 @@ def terminator_scoring(sequence, n=40, min_stem_size=3, max_stem_size=12, max_lo
                 rs[i] = d_score
 
     print('\tTerminator scoring: Returning results...\n--> Terminator scoring finished.\n\n')
-    l = len(sequence)
-    if circular:
-        l/=2
-    return check_outhandle(rs, l, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
+    return check_outhandle(rs, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
 
 ###
 # Main checker
 ###
 
-def evaluate_features(sequence,  elements='all', parameter_dict=None,
-                      codon_table=4,
-                      circular=True, residue_type='DNA',
-                      indexed=True, verbose=0):
+def checker(sequence,
+            elements='all', parameter_dict=None,
+            codon_table=4,
+            circular=True, residue_type='DNA',
+            indexed=True, verbose=0):
     """
-    strand = allows to run the checkers on a specific orientation:
-        1, '+' = plus strand
-        0, '-' = minus strand
-        !=0, !=1, None  = both strands, this is the default
-
-
     parameter_dict = dictionary to pass paths and parameters in shape:
         {alias:{min:float, max:float, matrix:string_path}}
     string_path can be empty for those methods that do not require matrix evaluations
+
     """
     # Parse and check elements to explore
     default_elements = {'promoter', 'terminator', 'utr5', 'codon_adaptation', 'ntpi', 'irna', 'restriction_sites',
@@ -526,54 +490,3 @@ def evaluate_features(sequence,  elements='all', parameter_dict=None,
             # Check completness of the dictionary
             rs.append(dict(alias=element, scores=scores))
     return rs  # TODO second dictionary is expected to be the normalized dictionary
-
-
-def checker(sequence, strand=None, transpose_coords_minus=True, rev_minus=True,
-            elements='all', parameter_dict=None,
-            codon_table=4,
-            circular=True, residue_type='DNA',
-            indexed=True, verbose=0):
-    """
-    strand = allows to run the checkers on a specific orientation:
-        1, '+', 'plus'  = plus strand
-        0, '-', 'minus' = minus strand
-        !=0, !=1, None  = both strands, this is the default
-
-
-    parameter_dict = dictionary to pass paths and parameters in shape:
-        {alias:{min:float, max:float, matrix:string_path}}
-    string_path can be empty for those methods that do not require matrix evaluations
-    """
-    if strand is not None:
-        if strand==0 or strand=='-' or strand=='minus':
-            sequence = reverse_complement(sequence)
-        rs = evaluate_features(sequence,
-                               elements=elements, parameter_dict=parameter_dict,
-                               codon_table=codon_table, circular=circular, residue_type=residue_type,
-                               indexed=indexed, verbose=verbose)
-        if (strand==0 or strand=='-' or strand=='minus'):
-            if transpose_coords_minus:
-                for score in rs:
-                    for i in score['scores']:
-                        i['start'] = len(sequence)-i['start']+1
-                        i['end']   = len(sequence)-i['end']+1
-
-            if rev_minus:
-                for score in rs:
-                    for i in score['scores']:
-                        i['start'], i['end'] = i['end'], i['start']
-    else:
-        rs = checker(sequence, strand=1, transpose_coords_minus=transpose_coords_minus,
-                     elements=elements, parameter_dict=parameter_dict,
-                     codon_table=codon_table, circular=circular, residue_type=residue_type,
-                     indexed=indexed, verbose=verbose)   # direct strand
-        mins = checker(sequence, strand=0, transpose_coords_minus=transpose_coords_minus,
-                       elements=elements, parameter_dict=parameter_dict,
-                       codon_table=codon_table, circular=circular, residue_type=residue_type,
-                       indexed=indexed, verbose=verbose)
-
-        simple_rs_mins = {v['alias']:v['scores'] for v in mins}
-        for entry in rs:
-            entry['scores'] = [{'plus':entry['scores'], 'minus':simple_rs_mins[entry['alias']]}]
-
-    return rs

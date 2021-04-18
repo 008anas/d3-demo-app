@@ -23,7 +23,7 @@
 
               <div class="column">
                 <span class="date">
-                  <time [dateTime]="history.created_at">{{history.created_at | date: 'd MMMM, YYYY hh:mm'}}</time>
+                  <time [dateTime]="history.created_at">{{history.created_at | date: 'DD MMMM, YYYY HH:mm'}}</time>
                 </span>
                 <div [hidden]="!history.job" class="ant-badge ant-badge-status ant-badge-not-a-wrapper">
                   <span class="ant-badge-status-dot" [ngClass]="{'ant-badge-status-error': history.hasFailed(), 'ant-badge-status-processing': history.isActive(), 'ant-badge-status-success': history.isDone()}"></span>
