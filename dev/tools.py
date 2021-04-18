@@ -528,7 +528,7 @@ def evaluate_features(sequence,  elements='all', parameter_dict=None,
     return rs  # TODO second dictionary is expected to be the normalized dictionary
 
 
-def checker(sequence, strand=None, transpose_coords_minus=True, rev_minus=True,
+def checker(sequence, strand=None, transpose_coords_minus=True,
             elements='all', parameter_dict=None,
             codon_table=4,
             circular=True, residue_type='DNA',
@@ -551,17 +551,11 @@ def checker(sequence, strand=None, transpose_coords_minus=True, rev_minus=True,
                                elements=elements, parameter_dict=parameter_dict,
                                codon_table=codon_table, circular=circular, residue_type=residue_type,
                                indexed=indexed, verbose=verbose)
-        if (strand==0 or strand=='-' or strand=='minus'):
-            if transpose_coords_minus:
+    if strand==0 or strand=='-' or strand=='minus' and transpose_coords_minus:
                 for score in rs:
                     for i in score['scores']:
                         i['start'] = len(sequence)-i['start']+1
                         i['end']   = len(sequence)-i['end']+1
-
-            if rev_minus:
-                for score in rs:
-                    for i in score['scores']:
-                        i['start'], i['end'] = i['end'], i['start']
     else:
         rs = checker(sequence, strand=1, transpose_coords_minus=transpose_coords_minus,
                      elements=elements, parameter_dict=parameter_dict,
