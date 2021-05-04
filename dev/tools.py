@@ -12,9 +12,9 @@
 #############################################################
 
 import os
-
-import pandas as pd
 import regex as re
+import random, string
+import pandas as pd
 from Bio import SeqIO
 from Bio.Alphabet import IUPAC, _verify_alphabet, generic_dna
 from Bio.Seq import Seq
@@ -410,6 +410,67 @@ def terminator_scoring(sequence, n=40, min_stem_size=3, max_stem_size=12, max_lo
     print('\tTerminator scoring: Returning results...\n--> Terminator scoring finished.\n\n')
     return check_outhandle(rs, n, standardize[0], standardize[1], limit=limit, default=standardize[0])
 
+
+###
+# PROMOTER PREDICTOR from https://academic.oup.com/nar/article/43/7/3442/2414365
+###
+
+def RF_promoter(sequence, tmpdir='/tmp/',
+                pribnow='./promoter_predictor/data/Promoter_PribnowMod.txt', 
+                motif35='./promoter_predictor/data/matrix_motif_35.txt',
+                entable='./promoter_predictor/data/EnergyTable2.txt',
+                rfrdata='./promoter_predictor/RandomForest.RData',
+                standardize=[0,1], rmtmp=False):
+    
+    # Define a random name to write the output (<k> characters)
+    project_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        
+    # Create directory
+    workdir = '{}{}'.format(tmpdir, project_name)
+    if not os.path.isdir(workdir):
+        os.mkdir(workdir)
+        
+        # Write the sequence
+        tmpfa = '{}/{}.fa'.format(workdir, project_name)
+        with open(tmpfa, 'w') as fo:
+            fo.write('>{}\n{}'.format(project_name, sequence))
+        
+        # Getting all parameters
+        cmd = './promoter_predictor/promoterNewVero {} {} {} {} {}'.format(tmpfa, entable, project_name, pribnow, motif35)
+        os.system(cmd)
+        
+        # move to tmp
+        cmd = 'mv {}_*.txt {}'.format(project_name, workdir)
+        os.system(cmd)
+        
+        # Predict
+        cmd = 'Rscript ./promoter_predictor/predict_promoters.R {}/{} {}'.format(workdir, project_name, rfrdata)
+        os.system(cmd)
+    
+        # Retrieve best
+        dataP = '{}/{}_final_plus.txt'.format(workdir, project_name)
+        
+        # for the other strand (not required here):
+        # dataM = '{}/{}_final_minus.txt'.format(workdir, project_name)
+        # dataFINAL = '{}/{}_filtered.txt'.format(workdir, project_name)
+        # cmd = 'Rscript ../promoter_predictor/retrievePromoters.R {} {} {}'.format(dataP, dataM, dataFINAL)
+        # os.system(cmd)
+
+
+        pred = pd.read_csv(dataP, sep='\t', index_col=0)
+        pred.columns = list(pred.columns[0:-1])+['Probability']
+        rs = {pos:prob for pos, prob in zip(pred.index, pred.Probability)}
+        
+        # Remove tmp files
+        if rmtmp:
+            os.system('rm {}/{}*').format(workdir, project_name)
+            os.system('rmdir {}').format(workdir)
+        
+        # Output result
+        return check_outhandle(rs, 0, standardize[0], standardize[1], limit=len(sequence), default=standardize[0])
+    else:
+        raise ValueError('Working directory already exists.')
+
 ###
 # Main checker
 ###
@@ -483,6 +544,15 @@ def checker(sequence,
                                                   mode=1,
                                                   indexed=indexed, standardize=standardize)
                 else:
+                    if element=='promoter':
+			#and 'myco_pneu' in matrix_path:
+                        # Run random forest predictor (matrix path track species)
+                        scores = RF_promoter(sequence, standardize=standardize)
+                    else:
+                        scores = matrix_scoring(sequence, matrix=matrix_path, circular=circular,
+                                                residue_type=residue_type,
+                                                indexed=indexed, standardize=standardize)
+
                     scores = matrix_scoring(sequence, matrix=matrix_path, circular=circular,
                                         residue_type=residue_type,
                                         indexed=indexed, standardize=standardize)
