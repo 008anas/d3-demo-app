@@ -1,8 +1,8 @@
 {
   "name": "sqrutiny",
   "description": "SQRUTINY frontend",
-  "author": "Anas <anas.gharrab@crg.es>",
-  "version": "1.0.0",
+  "author": "Anas <anas.gharrab@gmail.com>",
+  "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --aot",
