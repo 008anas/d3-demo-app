@@ -1,0 +1,41 @@
+a.non-active {
+  color: currentColor;
+  opacity: 0.5;
+  text-decoration: none;
+}
+
+.graphs .column {
+  padding: 0;
+}
+
+.s-action a {
+  margin: 0 0.7em;
+}
+@media only screen and (min-width: 1920px) {
+  .ui.dropdown .scrolling.menu,
+  .ui.scrolling.dropdown .menu {
+    max-height: 25.57142857rem;
+  }
+}
+
+.feat-label {
+  font-size: 12px;
+  margin-left: .5em;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: steelblue;
+}
+
+.tooltip {
+  fill: none;
+}
+
+.value {
+  font-weight: bold;
+}

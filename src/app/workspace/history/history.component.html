@@ -1,0 +1,306 @@
+<!-- Loading placeholder -->
+<sqy-history-loading *ngIf="!history"></sqy-history-loading>
+
+<div class="ui main fluid container p-4 mt-6 basic segment" [ngClass]="{'loading': isLoading}" *ngIf="history">
+
+  <div class="ui grid">
+
+    <div class="row" id="history">
+
+      <div class="ui container">
+
+        <div class="sixteen wide column">
+
+          <div class="ui padded one column grid">
+
+            <div class="column">
+              <h1 class="ui header">
+                {{history.name}}
+              </h1>
+            </div>
+
+            <div class="two column row">
+
+              <div class="column">
+                <span class="date">
+                  <time [dateTime]="history.created_at">{{history.created_at | date: 'DD MMMM, YYYY HH:mm'}}</time>
+                </span>
+                <div [hidden]="!history.job" class="ant-badge ant-badge-status ant-badge-not-a-wrapper">
+                  <span class="ant-badge-status-dot" [ngClass]="{'ant-badge-status-error': history.hasFailed(), 'ant-badge-status-processing': history.isActive(), 'ant-badge-status-success': history.isDone()}"></span>
+                  <span class="ant-badge-status-text">{{history.job?.status | titlecase}}</span>
+                </div>
+              </div>
+
+              <div class="column txt-r">
+
+                <a class="m-4" *ngIf="history.isActive()" (click)="getJob()">
+                  <i class="sync icon"></i>
+                  Refresh content
+                </a>
+
+                <a class="m-4 delete" (click)="deleteHistory()">
+                  <i class="trash icon"></i>
+                  Delete history
+                </a>
+
+              </div>
+
+            </div>
+
+            <div class="eleven wide column">
+              <div class="ui very relaxed horizontal selection large list">
+                <div class="item">
+                  <i class="barcode large icon"></i>
+                  <div class="content">
+                    <a class="header" onclick="window.location.hash = 'construct'">Construct</a>
+                    <p>Check Construct details</p>
+                  </div>
+                </div>
+                <div class="item">
+                  <i class="chart bar outline large icon"></i>
+                  <div class="content">
+                    <a class="header" onclick="window.location.hash = 'results'">Plot area</a>
+                    <p>Go to results visualizator area</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="five wide column right aligned">
+              <div class="ui action fluid input">
+                <input type="text" [value]="history.id" name="history-id">
+                <button type="button" class="ui right labeled icon primary button" name="copy" [sqy-clipboard]="history.id">
+                  Copy <i class="copy icon"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row" id="construct">
+
+      <div class="ui container">
+
+        <div class="sixteen wide column">
+
+          <div class="ui padded form construct-summary grid">
+
+            <div class="one column row">
+              <div class="column txt-c">
+                <h2>Construct summary</h2>
+              </div>
+            </div>
+
+            <div class="one column row">
+
+              <div class="column">
+
+                <div class="field" [hidden]="!history.construct.description">
+                  <p>{{history.construct.description}}</p>
+                </div>
+
+                <div class="four inline fields">
+
+                  <div class="field">
+                    <label>Label:</label>
+                    {{history.construct.name}}
+                  </div>
+
+                  <div class="field">
+                    <label>Number of tracks:</label>
+                    {{history.construct.n_tracks}}
+                  </div>
+
+                  <div class="field">
+                    <label>Circular:</label>
+                    <i class="circle icon" [ngClass]="{'check green': history.construct.circular, 'times red': !history.construct.circular}"></i>
+                  </div>
+
+                  <div class="field">
+                    <a routerLink="/optimize/sketcher" [queryParams]="{construct: history.construct.id}">See it on Sketcher <i class="external link icon"></i> </a>
+                  </div>
+
+                  <div class="field">
+                    <a [routerLink]="['/editor', history.id]">See it on Vector Editor <i class="external link icon"></i> </a>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="one column row">
+
+              <div class="column">
+                <h4 class="ui horizontal divider header">
+                  <i class="bug icon"></i>
+                  Organism
+                </h4>
+              </div>
+
+              <div class="column">
+                <p>Open on <a [href]="history.construct.specie?.tax_link" target="_blank">NCBI Taxonomy browser</a> organism info</p>
+
+                <div class="two inline fields">
+                  <div class="inline field">
+                    <label>Name:</label>
+                    <a [href]="history.construct.specie?.tax_link" target="_blank">
+                      {{history.construct.specie?.name}}
+                    </a>
+                  </div>
+                  <div class="inline field">
+                    <label>Taxonomy ID:</label>
+                    {{history.construct.specie?.tax_id}}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="one column row">
+
+              <div class="column">
+                <h4 class="ui horizontal divider header">
+                  <i class="dna icon"></i>
+                  Sequence
+                </h4>
+              </div>
+
+              <div class="column">
+                <p> <i class="info icon"></i> Click on sequence to display full content</p>
+
+                <table class="ui blue padded sequence definition table">
+
+                  <tbody>
+                    <tr>
+                      <th>DNA</th>
+                      <td class="link" (click)="textModal(history.construct.dna_seq)">
+                        {{history.construct.dna_seq}}
+                      </td>
+                      <td>
+                        <strong>Total:</strong>
+                        {{history.construct.dna_seq.length}} bps
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Protein</th>
+                      <td class="link" (click)="textModal(history.construct.protein_seq)">
+                        {{history.construct.protein_seq}}
+                      </td>
+                      <td>
+                        <strong>Total:</strong>
+                        {{history.construct.protein_seq.length}}
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+
+            </div>
+
+            <div class="one column row">
+
+              <div class="column">
+                <h4 class="ui horizontal divider header">
+                  Tracks
+                </h4>
+              </div>
+
+              <div class="column" style="min-height: 18px">
+                <div class="ui grid">
+                  <div class="four wide column">
+                    <p> <i class="info icon"></i> Hover a track to display information</p>
+                  </div>
+                  <div class="three wide column center aligned" [hidden]="!trackHovered">
+                    <strong>Start:</strong> {{trackHovered?.start}}
+                  </div>
+                  <div class="three wide column center aligned" [hidden]="!trackHovered">
+                    <strong>End:</strong> {{trackHovered?.end}}
+                  </div>
+                  <div class="three wide column center aligned" [hidden]="!trackHovered">
+                    <strong>Length:</strong> {{trackHovered?.sequence.length}} bps
+                  </div>
+                  <div class="right floated two wide column right aligned">
+                    <p class="meta">{{history.construct.n_tracks}} tracks</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="column">
+
+                <div class="construct">
+                  <div class="strand">
+
+                    <div class="track" (mouseover)="trackHovered = t" (mouseout)="trackHovered = null" (click)="showTrack(t)" *ngFor="let t of history.construct.tracks; let i = index">
+
+                      <div class="header">
+                        <h4>{{t.label}}</h4>
+                      </div>
+                      <div class="image" [ngStyle]="{background: 'url('+t.glyph_thumbnail+')', 'border-bottom': '1.5px solid '+t.color}" data-inverted="" [attr.data-tooltip]="t.name" data-position="bottom center"></div>
+                      <div class="index">
+                        {{i + 1}}
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="one column row" id="results">
+
+      <div class="column">
+        <div class="ui protvista padded grid">
+
+          <div class="one column row">
+
+            <div class="ui basic segment column" [ngClass]="{'disabled loading': isJobLoading}">
+
+              <div class="ui placeholder segment" [hidden]="!history.job" *ngIf="history.hasFailed()">
+                <div class="ui icon header">
+                  <i class="times circle red icon"></i>
+                  It was not possible to show you the results due to an internal problem. Please try again later or <a [routerLink]="'/contact'">contact us</a>.
+                </div>
+              </div>
+
+              <div class="ui placeholder segment" [hidden]="!history.job" *ngIf="history.isActive()">
+                <div class="ui icon header">
+                  <i class="spinner loading icon"></i>
+                  The results are processing please be patient...
+                </div>
+                <button class="ui primary right labeled icon button" (click)="getJob()" [disabled]="isJobLoading" type="button" name="refresh">
+                  Refresh <i class="sync icon"></i>
+                </button>
+              </div>
+
+              <sqy-result-viewer [data]="resultData" *ngIf="history.isDone()"></sqy-result-viewer>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>

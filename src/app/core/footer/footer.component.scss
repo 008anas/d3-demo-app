@@ -1,0 +1,14 @@
+div.footer {
+  margin-top: 2em;
+  background-color: var(--main-color) !important;
+  border-radius: 0 !important;
+
+  * {
+    color: var(--text-color) !important;
+  }
+
+  a {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}

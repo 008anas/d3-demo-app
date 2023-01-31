@@ -1,0 +1,259 @@
+<div class="ui main container">
+
+  <div class="ui very padded masthead segment">
+
+    <div class="ui grid">
+
+      <div class="row">
+        <div class="column">
+          <div class="ui secondary huge menu">
+            <a class="item" (click)="option = 1" [ngClass]="{'active': option === 1}">
+              Skecther
+            </a>
+            <a class="item" (click)="option = 2" [ngClass]="{'active': option === 2}">
+              From file
+            </a>
+            <a class="item" (click)="option = 3" [ngClass]="{'active': option === 3}">
+              Retrieve history
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="nine wide column">
+
+          <div class="ui one column text grid" *ngIf="option === 1">
+
+            <div class="column">
+              <h1 class="ui header">Sqrutiny sketcher</h1>
+            </div>
+
+            <div class="column">
+              <p><strong>SQrutiny</strong> is a web-based tool to assist the design of <strong>standard</strong> and <strong>orthogonal</strong> synthetic biology constructs.</p>
+              <p>Select an <strong>organisme</strong> to start using the sketcher.</p>
+            </div>
+
+            <div class="column">
+              <nz-select [(ngModel)]="specie" [nzLoading]="isLoading" [nzDisabled]="isLoading" nzSize="large" nzShowSearch>
+                <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s"></nz-option>
+              </nz-select>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" [ngClass]="{'disabled': !specie}" (click)="goTo('sketcher')">Use the sketcher <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+            <div class="column comment" *ngIf="specie?.comment">
+              <span class="meta"> <i class="info icon"></i> {{specie.comment}}</span>
+            </div>
+
+          </div>
+
+          <div class="ui one column text grid" *ngIf="option === 2">
+
+            <div class="column">
+              <h1 class="ui header">Upload your file</h1>
+            </div>
+
+            <div class="column">
+              <p>Upload a <strong>GenBank</strong> file.</p>
+            </div>
+
+            <div class="column">
+              <nz-select [(ngModel)]="specie" [nzLoading]="isLoading" [nzDisabled]="isLoading" nzSize="large" nzShowSearch>
+                <nz-option *ngFor="let s of species" [nzLabel]="s.name" [nzValue]="s"></nz-option>
+              </nz-select>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" [ngClass]="{'disabled': !specie}" (click)="goTo('upload')">Upload a file <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+            <div class="column comment" *ngIf="specie?.comment">
+              <span class="meta"> <i class="info icon"></i> {{specie.comment}}</span>
+            </div>
+
+          </div>
+
+          <div class="ui one column text grid" *ngIf="option === 3">
+
+            <div class="column">
+              <h1 class="ui header">Retrieve an history</h1>
+            </div>
+
+            <div class="column">
+              <p>Enter the <strong>history ID</strong> below .Once you have entered a valid id you will be redirected to the corresponding history.
+                If you do not know the id of the history you can find all your history in <a [routerLink]="['/workspace']">Workspace</a> section.</p>
+            </div>
+
+            <div class="column">
+              <form class="ui form" #retrieveHistory="ngForm" (ngSubmit)="getHistory()">
+
+                <div class="field" [ngClass]="{'error': historyID.errors?.pattern && (historyID.dirty || historyID.touched)}">
+                  <div class="ui big action fluid input" [ngClass]="{'loading': isRetriving}">
+                    <input type="text" name="id" [(ngModel)]="historyId" required [pattern]="uuidRegex" #historyID="ngModel" placeholder="history id...">
+                    <button type="submit" [disabled]="retrieveHistory.invalid || !historyId" class="ui primary right labeled icon button">
+                      Retrieve <i class="right arrow icon"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="field" *ngIf="historyID.errors?.pattern && (historyID.dirty || historyID.touched)">
+                  <span class="error">This is a not valid ID</span>
+                </div>
+
+                <div class="field">
+                  <sqy-errors-list [errors]="response"></sqy-errors-list>
+                </div>
+
+              </form>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="seven wide column carousel background" [ngStyle]="{'background-image': 'url('+ carousel[option-1] +')'}"></div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="column dots">
+          <a class="ui empty circular label" (click)="option = 1" [ngClass]="{'active': option === 1}"></a>
+          <a class="ui empty circular label" (click)="option = 2" [ngClass]="{'active': option === 2}"></a>
+          <a class="ui empty circular label" (click)="option = 3" [ngClass]="{'active': option === 3}"></a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="ui very padded masthead segment">
+
+    <div class="ui grid">
+
+      <div class="row">
+
+        <div class="seven wide column" style="background-image: url(assets/img/teselagen_open_vector_editor.png);
+        background-size: 600px;
+        background-repeat: no-repeat;
+        background-position: center;"></div>
+
+        <div class="nine wide column">
+
+          <div class="ui one column text grid">
+
+            <div class="column">
+              <h1 class="ui header">Vector Editor</h1>
+            </div>
+
+            <div class="column">
+              <p>
+                <strong>Open Vector Editor</strong> originally designed by <strong>Teselagen</strong> has so many features, it allows to build a whole construct with so many features.
+              </p>
+              <div class="ui bulleted list">
+                <div class="item">See the sequence of a feature</div>
+                <div class="item">Update the sequence of a feature</div>
+                <div class="item">Manage all properties</div>
+                <div class="item">Manage primers</div>
+                <div class="item">Manage protein translations</div>
+                <div class="item">Manage cut sites</div>
+                <div class="item">Manage ORFs</div>
+                <div class="item bold">Load data from history</div>
+              </div>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header">
+                <a class="action" routerLink="/editor">Start using vector editor <i class="right arrow icon"></i> </a>
+              </h3>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="ui very padded masthead segment">
+
+    <div class="ui grid">
+
+      <div class="row">
+
+        <div class="nine wide column">
+
+          <div class="ui one column text grid">
+
+            <div class="column">
+              <h1 class="ui header">A BioRoboost project</h1>
+            </div>
+
+            <div class="column">
+              <p>SQrutiny has been developed in the frame of the project “ <strong>BioRoboost</strong> : Fostering
+                Synthetic Biology standardisation through international collaboration”. This project has received
+                funding from the European Union's Horizon 2020 Research and Innovation Programme under grant agreement N820699.</p>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" href="https://standardsinsynbio.eu/" target="_blank">See it in more details <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="seven wide column background" style="background-image: url(assets/img/bioroboost.png)"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="ui very padded masthead segment">
+
+    <div class="ui grid">
+
+      <div class="two column row">
+
+        <div class="seven wide column background" style="background-image: url(assets/img/CNAG_logo.jpg)"></div>
+
+        <div class="nine wide column">
+
+          <div class="ui one column text grid">
+
+            <div class="column">
+              <h1 class="ui header">Powered by CRG</h1>
+            </div>
+
+            <div class="column">
+              <p>This project was developed and hosted by <strong>CRG</strong>.
+                The CRG is an international biomedical research institute of excellence whose mission is to discover and advance knowledge for the benefit of society, public health and economic prosperity.
+              </p>
+            </div>
+
+            <div class="column">
+              <h3 class="ui header"><a class="action" href="https://www.crg.eu" target="_blank">Visit CRG site <i class="right arrow icon"></i> </a></h3>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

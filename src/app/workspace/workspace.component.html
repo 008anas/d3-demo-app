@@ -1,0 +1,102 @@
+<div class="ui main container">
+
+  <div class="ui padded grid p-4">
+
+    <div class="sixteen wide column">
+      <h1 class="ui header">Recent history</h1>
+    </div>
+
+    <div class="row">
+
+      <div class="eleven wide column">
+        <p>
+          Here you can find the history of all the <strong>jobs</strong> submitted.
+        </p>
+        <p>
+          <i class="info circle icon"></i> Note that such history is <strong>session</strong> based, this means that it'll expire after a certain time or if browser data is cleared.
+        </p>
+      </div>
+
+      <div class="five wide column right aligned">
+
+        <button type="button" class="ui red right labeled icon button" (click)="clearHistory()" [disabled]="!isLoading && !histories.length" name="button">
+          Clear history <i class="trash icon"></i>
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="one column row">
+
+      <div class="column center aligned p-8" *ngIf="!isLoading && !histories.length">
+        <div class="ui icon header meta">
+          <i class="inbox icon"></i>
+          Yo have no history.
+        </div>
+      </div>
+
+      <div class="column" *ngIf="!isLoading && histories.length">
+
+        <div class="ui segment p-0" [ngClass]="{'loading': isLoading}">
+
+          <table class="ui very padded selectable basic table b-0">
+
+            <thead>
+              <tr>
+                <th colspan="5">
+                  Your history
+                </th>
+                <th class="right aligned">
+                  {{histories.length}} entries
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr [ngClass]="{'warning':  h.status != 'failed' && h.status != 'finished'}" *ngFor="let h of histories">
+                <td>
+                  <h3><a [routerLink]="[h.id]">{{h.name}}</a></h3>
+                </td>
+                <td>
+                  <h3><a class="disabled">{{h.construct.label}}</a></h3>
+                </td>
+                <td>
+                  {{h.construct?.specie?.name}}
+                </td>
+                <td>
+                  <time [dateTime]="h.created_at">
+                    {{h.created_at | date: 'DD/MM/YYYY HH:mm'}}
+                  </time>
+                </td>
+                <td>
+                  <div class="ant-badge ant-badge-status ant-badge-not-a-wrapper link" data-inverted="" data-position="top center" [attr.data-tooltip]="h.status | titlecase">
+                    <span class="ant-badge-status-dot" [ngClass]="{'ant-badge-status-error': h.status === 'failed',
+                      'ant-badge-status-success':  h.status === 'finished',
+                      'ant-badge-status-processing': h.status != 'failed' && h.status != 'finished'}"></span>
+                  </div>
+                </td>
+                <td class="ui center aligned">
+                  <a [sqy-clipboard]="h.id" data-inverted="" data-position="top center" data-tooltip="Copy ID">
+                    <i class="copy icon"></i>
+                  </a>
+                  <a [routerLink]="['/editor', h.id]" data-inverted="" data-position="top center" data-tooltip="Load on vector editor">
+                    <i class="external link icon"></i>
+                  </a>
+                  <a (click)="deleteHistory(h.id)" data-inverted="" data-position="top center" data-tooltip="Delete">
+                    <i class="trash link red icon"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

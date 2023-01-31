@@ -1,0 +1,14 @@
+.ui.stackable.fixed.menu {
+  background-color: var(--main-color) !important;
+  box-shadow: none !important;
+  height: 45px;
+  border: 0 !important;
+
+  .ui.secondary.pointing.menu {
+    border-color: transparent !important;
+
+    .item {
+      font-weight: bold !important;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "sqrutiny-matrix",
+  "version": "1.0.0",
+  "files": [ "dist", "src" ],
+  "main": "dist/sqrutiny-matrix.js",
+  "module": "src/SqrutinyMatrix.js",
+  "keywords": ["nightingale", "webcomponents", "customelements"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ebi-webcomponents/nightingale.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ebi-webcomponents/nightingale/issues"
+  },
+  "homepage": "https://ebi-webcomponents.github.io/nightingale/"
+}

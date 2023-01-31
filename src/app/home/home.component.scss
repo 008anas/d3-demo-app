@@ -1,0 +1,78 @@
+.ui.container {
+  padding: 2.5em 0;
+}
+
+.ui.segment.masthead {
+  min-height: 350px;
+  margin-bottom: 5em;
+  border-radius: 40px !important;
+
+  .ui.menu.secondary {
+    .item {
+      font-weight: bold;
+
+      &:hover {
+        background-color: var(--hover-color);
+      }
+
+      &.active {
+        background-color: var(--main-color);
+        color: var(--text-color);
+      }
+    }
+  }
+
+  .ui.text {
+    text-align: center;
+    padding: 2em;
+
+    .column:not(.row) {
+      padding-top: 0.8rem !important;
+      padding-bottom: 0.8rem !important;
+    }
+
+    h1.ui.header {
+      font-size: 4.5em;
+      font-weight: normal;
+    }
+
+    h3 {
+      font-size: 1em;
+      font-weight: normal;
+    }
+
+    p:not(.comment), .ui.list > .item{
+      font-size: 1.3em;
+    }
+
+    a.action {
+      font-size: 1.7em;
+    }
+  }
+
+  .column.background {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    border-radius: 10px;
+
+    &.carousel {
+      background-size: cover !important;
+    }
+  }
+
+  .dots {
+    text-align: center;
+
+    a.ui.label.active {
+      background-color: var(--main-color);
+    }
+  }
+}
+
+::ng-deep {
+  .ant-select,
+  .ant-select-selection-selected-value {
+    width: 100% !important;
+  }
+}

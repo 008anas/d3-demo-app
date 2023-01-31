@@ -1,0 +1,56 @@
+<div class="ui padded grid">
+
+  <div class="row">
+    <div class="sixteen wide column">
+      <h2 class="ui header no-bold">Export as</h2>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="four wide column">
+      <label class="sqy label">
+        <i class="file outline icon"></i> GenBank
+      </label>
+      <input type="radio" name="to" value="gb" [(ngModel)]="to">
+    </div>
+
+    <div class="four wide column">
+      <label class="sqy label">
+        <i class="file excel outline icon"></i> Excel
+      </label>
+      <input type="radio" name="to" value="excel" [(ngModel)]="to">
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <h2 class="ui header no-bold">Select items to export</h2>
+    </div>
+  </div>
+
+  <div class="one column row">
+
+    <div class="column">
+      <span class="meta">If there is no item selected only scores will be exported.</span>
+    </div>
+
+    <div class="column pt-3">
+      <span class="meta">{{list.length}} / {{_items.length}} selected</span>
+    </div>
+
+    <div class="column" *ngFor="let f of _items">
+      <div class="ui checkbox">
+        <input type="checkbox" name="features" checked (change)="featChange(f.alias, $event.target.checked)">
+        <label>
+          <i class="circle icon" [style.color]="f.color"></i> {{f.name}}
+          <sqy-info-popup [content]="f.description"></sqy-info-popup>
+        </label>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

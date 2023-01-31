@@ -1,0 +1,13 @@
+.ui.form {
+  height: 100%;
+
+  .bottom.fields {
+    width: 100%;
+    position: absolute;
+    bottom: 1rem;
+  }
+}
+
+::ng-deep .ant-drawer-body {
+  height: 100%;
+}

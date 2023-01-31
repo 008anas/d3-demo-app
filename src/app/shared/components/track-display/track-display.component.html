@@ -1,0 +1,32 @@
+<div class="ui form">
+
+  <div class="field txt-c">
+    <h2 class="ui header">{{track.label}}</h2>
+  </div>
+
+  <div class="field" [ngStyle]="{'border-bottom': '1.5px solid '+track.color}">
+    <img [src]="track?.glyph_thumbnail" class="ui medium circular centered image">
+  </div>
+
+  <div class="three fields">
+    <div class="field">
+      <label>Type</label>
+      {{track.type}}
+    </div>
+    <div class="field">
+      <label>Start</label>
+      {{track.start}}
+    </div>
+    <div class="field">
+      <label>Start</label>
+      {{track.end}}
+    </div>
+  </div>
+
+  <div class="field seq">
+    <label>Sequence</label>
+    <span class="meta">{{track.sequence.length}} bps</span>
+    <p>{{track.sequence}}</p>
+  </div>
+
+</div>

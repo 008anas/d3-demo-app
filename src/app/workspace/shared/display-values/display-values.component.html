@@ -1,0 +1,52 @@
+<!-- Values viewer modal-->
+<div class="ui padded grid">
+
+  <div class="row" [hidden]="!title">
+    <div class="column">
+      <h2 class="ui header no-bold">{{title}}</h2>
+    </div>
+  </div>
+
+  <div class="two column row">
+
+    <div class="column">
+      <strong> Total score:</strong> {{values?.length}}
+    </div>
+
+    <div class="column pr-5 right aligned">
+      <button type="button" name="download" class="ui primary right labeled icon button" (click)="exportToExcel()">
+        Download as Excel
+        <i class="download icon"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="row">
+
+    <div class="column">
+      <table class="ui selectable small compact table">
+
+        <thead>
+          <tr>
+            <th *ngFor="let h of headers">
+              {{h}}
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let value of values">
+            <td *ngFor="let key of objectKeys(value)">
+              {{value[key]}}
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</div>

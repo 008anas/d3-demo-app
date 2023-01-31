@@ -1,0 +1,22 @@
+<!-- Sequence modal-->
+<div class="ui padded grid">
+
+  <div class="one column row">
+    <div class="column">
+      <strong> {{description | titlecase}} Length:</strong>{{txt?.length}}
+    </div>
+    <div class="column txt-r" *ngIf="copy">
+      <button class="ui compact right labeled icon primary button" [sqy-clipboard]="txt">
+        <i class="copy icon"></i>
+        Copy
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="column">
+      <p>{{txt}}</p>
+    </div>
+  </div>
+
+</div>

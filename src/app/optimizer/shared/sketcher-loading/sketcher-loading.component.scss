@@ -1,0 +1,32 @@
+.sketcher {
+  max-height: 100vh;
+  max-width: 100vw;
+  margin-top: var(--top-margin) !important;
+
+  .canvas {
+    height: 90vh;
+
+    .top-details-bar {
+      padding: 0.3em 1em;
+    }
+
+    .construct {
+      min-height: 75vh;
+      max-height: 85vh;
+      overflow-y: auto;
+
+      .strand {
+        width: 100%;
+        display: inline-block;
+
+        .track {
+          display: inline-block;
+          width: 150px;
+          position: relative;
+          align-items: center;
+          margin: 0 1em;
+        }
+      }
+    }
+  }
+}

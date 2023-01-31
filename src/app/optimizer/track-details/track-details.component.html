@@ -1,0 +1,89 @@
+<nz-drawer [nzVisible]="display" [nzWidth]="640" (nzOnClose)="display = false">
+
+  <form class="ui form" [formGroup]="trackForm" (ngSubmit)="updateTrack()">
+
+    <div class="field">
+      <img [src]="_track?.glyph_thumbnail" class="ui medium circular centered image">
+    </div>
+
+    <div class="field">
+
+      <table class="ui collapsing inverted blue table w-1-2 m-auto">
+
+        <thead>
+          <tr>
+            <th>
+              Type
+            </th>
+            <th>
+              Position
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>{{_track?.type | titlecase}}</td>
+            <td>#{{_track?.pos+1}}</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <div class="fields">
+
+      <div class="nine wide field">
+        <label>Label</label>
+        <input type="text" name="track-label" formControlName="label">
+      </div>
+
+      <div class="seven wide field">
+        <label>Color</label>
+        <nz-select nzShowSearch nzPlaceHolder="Select color" name="track-color" formControlName="color" [nzCustomTemplate]="custom">
+          <nz-option *ngFor="let c of colors" nzCustomContent [nzLabel]="c" [nzValue]="c">
+            <i class="circle icon" [style.color]="c"></i> {{c}}
+          </nz-option>
+        </nz-select>
+        <ng-template #custom let-selected>
+          <span><i class="circle icon" [style.color]="selected.nzValue"></i> {{ selected.nzValue }}</span>
+        </ng-template>
+      </div>
+
+    </div>
+
+    <div class="required field" [ngClass]="{'error': sequence.invalid && (sequence.dirty || sequence.touched)}">
+      <label>Sequence</label>
+      <textarea name="track-seq" rows="8" cols="80" required formControlName="sequence"></textarea>
+      <span class="ui error" *ngIf="sequence.errors?.pattern && (sequence.dirty || sequence.touched)">Not a valid DNA sequence</span>
+    </div>
+
+    <div class="bottom three fields">
+
+      <div class="field">
+        <button class="ui left labeled icon primary fluid button" name="action" type="button" (click)="change(_track?.pos-1)" [disabled]="_track?.pos+1 < 2">
+          <i class="left arrow icon"></i>
+          Previous
+        </button>
+      </div>
+
+      <div class="field">
+        <button class="ui right labeled icon secondary fluid button" name="action" type="submit" [disabled]="!trackForm.dirty || trackForm.invalid">
+          <i class="save icon"></i>
+          Save
+        </button>
+      </div>
+
+      <div class="field">
+        <button class="ui right labeled icon primary fluid button" name="action" type="button" (click)="change(_track?.pos+1)" [disabled]="_track?.pos+1 === max">
+          <i class="right arrow icon"></i>
+          Next
+        </button>
+      </div>
+
+    </div>
+
+  </form>
+
+</nz-drawer>

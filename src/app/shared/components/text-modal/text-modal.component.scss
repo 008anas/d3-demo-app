@@ -1,0 +1,8 @@
+::ng-deep .ant-modal {
+  width: 1000px !important;
+
+  .ant-modal-body {
+    max-height: calc(90vh - 5em);
+    overflow: auto;
+  }
+}
