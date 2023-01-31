@@ -1,3 +1,0 @@
-Started Tue Jul  2 12:35:31 2019
-muscle -in ./promoters_TATAAT.fa -out ./promoters_TATAAT.aln -clwstrict -quiet -log ./promoters_TATAAT.aln.log 
-Finished Tue Jul  2 12:35:31 2019
